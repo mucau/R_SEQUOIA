@@ -1,0 +1,46 @@
+# Lancement des library
+if (!require("tcltk")) {install.packages("tcltk")}
+if (!require("sf")) {install.packages("sf")}
+
+BDFORETonSHP <- function(shp = F, repBDTOPO=F){
+  message('- - - Géologie sur emprise shapefile - - -')
+
+  if(isFALSE(shp)){
+    shp_rep  <- tcltk::tk_choose.files(default = "~", caption = "Selectionner le fichier .shp",
+                                       filter = matrix(c("ESRI Shapefile", ".shp"), 1, 2, byrow = TRUE))
+  }
+  if(!length(shp)){stop("        Aucun fichier sélectionné >> Traitement annulé")}
+
+  if(isFALSE(repBDTOPO)) {
+    repBDTOPO <- tk_choose.dir(default= getwd(),
+                               caption = "Choisir le répertoire de l'IGN© BD FORET V2®")
+  }
+  if (!length(repBDTOPO)){stop("Aucune sélection effectuée > Traitement annulé \n")}
+
+  # Lecture des données
+  message('        Lecture des données')
+  shp <- st_read(shp_rep, options = "ENCODING=UTF-8", agr="constant", quiet=T)  # Lecture du shapefile
+  cat("        Le fichier .shp a été chargé avec succès  \n \n")
+
+  repBDTOPO <- paste(repBDTOPO,
+                     list.files(path = repBDTOPO, pattern = "FORMATION_VEGETALE.shp", recursive = T),
+                     sep="/")
+
+  FORET <- st_read(repBDTOPO ,options = "ENCODING=windows-1252", quiet=T)
+  cat("        La BD FORET V2 a été chargé avec succès  \n \n")
+
+    # Intersection avec l'emprise
+  message("        Intersection avec l'emprise")
+  foret_shp <- st_intersection(st_transform(st_sf(st_union(shp)), 2154),
+                              st_transform(FORET,2154))
+  cat("        Intersection effectuée \n")
+  foret_shp$SURF_SIG <- st_area(foret_shp)
+  cat("        Calcul des SURF_SIG effectué \n \n")
+
+  # Export des données
+  message("        Export des données")
+  NAME <- winDialogString("Entrer le nom du fichier de sortie: ", "")
+  if(!length(NAME)){NAME <- ""} else {NAME <- paste0(NAME,'_')}
+
+  SEQUOIA:::WRITE(foret_shp, dirname(shp_rep), paste0(NAME,"BDFORET_polygon.shp"))
+}
