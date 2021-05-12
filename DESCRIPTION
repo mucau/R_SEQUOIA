@@ -6,7 +6,7 @@ Author: Matthieu CHEVEREAU
 Maintainer: Matthieu CHEVEREAU <matthieuchevereau@yahoo.fr>
 Description: Boite a outils a destination des forestiers
 LazyData: true
-Imports: data.table, dplyr, plyr, foreign, gdalUtils, osmdata, R.utils, raster, RCurl, readxl, rlist, rvest, sf, smoothr, stringr, tcltk, openxlsx, XML, xml2, units, nngeo, sp, ClimClass, geosphere, plotly, lwgeom
+Imports: data.table, dplyr, plyr, foreign, gdalUtils, osmdata, R.utils, raster, RCurl, readxl, rlist, rvest, sf, smoothr, stringr, tcltk, openxlsx, XML, xml2, units, nngeo, sp, ClimClass, geosphere, plotly, lwgeom, stars
 Depends: R (>= 4.0.0)
 License: Package developpe sous RStudio Version 1.2.1335. Tous droits reserves. Usage reserve
 Encoding: UTF-8

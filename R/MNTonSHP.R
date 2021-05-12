@@ -5,15 +5,15 @@ if (!require("elevatr")) {install.packages("elevatr")}
 if (!require("raster")) {install.packages("raster")}
 if (!require("smoothr")) {install.packages("smoothr")}
 if (!require("stringr")) {install.packages("stringr")}
-if (!require("gdalUtils")) {install.packages("gdalUtils")}
-if (!require("rgdal")) {install.packages("rgdal")}
+if (!require("stars")) {install.packages("stars")}
 
 MNTonSHP <- function(REP_SHP=F, NAME=NULL, TEMP=NULL){ # Function
+  options(warn=-1) # Déctivation des warnings
   message('- - - MNT et courbes de niveau - - -')
 
 # Sélection du fichier .shp
   if(isFALSE(REP_SHP)){
-    REP_SHP  <- tk_choose.files(caption = "Choisir le fichier .shp contenant le parcellaire cadastral",
+    REP_SHP  <- tk_choose.files(caption = "Choisir le fichier .shp",
                                 filter = matrix(c("ESRI Shapefile", ".shp"), 1, 2, byrow = TRUE))
   }
   if (!length(REP_SHP)){stop("Aucune sélection effectuée > Traitement annulé \n")}
@@ -21,6 +21,18 @@ MNTonSHP <- function(REP_SHP=F, NAME=NULL, TEMP=NULL){ # Function
   # Lecture du fichier .shp
   SHP <- st_read(REP_SHP, options = "ENCODING=UTF-8", agr="constant", quiet=T)  # Lecture du shapefile
   cat("        Le fichier .shp a été chargé avec succès \n")
+  if (grepl("PARCA", REP_SHP )){
+    NAME <- str_sub(REP_SHP,
+                    str_locate_all(REP_SHP,'/')[[1]][nrow(str_locate_all(REP_SHP,'/')[[1]]),1]+1,
+                    str_locate(REP_SHP,'_PARCA')[1,1]-1)
+    assign("NAME", NAME, envir=globalenv())
+  }
+  if (grepl("UA", REP_SHP )){
+    NAME <- str_sub(REP_SHP,
+                    str_locate_all(REP_SHP,'/')[[1]][nrow(str_locate_all(REP_SHP,'/')[[1]]),1]+1,
+                    str_locate(REP_SHP,'_UA')[1,1]-1)
+    assign("NAME", NAME, envir=globalenv())
+  }
 
   # Création d'une emprise
   convex <- function(shp, buffer){
@@ -41,7 +53,6 @@ MNTonSHP <- function(REP_SHP=F, NAME=NULL, TEMP=NULL){ # Function
   # Choix de la source de données
   form <- c("IGN© BD ALTI®",
             "IGN© RGE ALTI 5m",
-            "IGN© RGE ALTI 1m",
             "Amazon Web Services")
 
   RES <- select.list(form,
@@ -51,7 +62,7 @@ MNTonSHP <- function(REP_SHP=F, NAME=NULL, TEMP=NULL){ # Function
   if (!length(RES)){stop("Aucune sélection effectuée > Traitement annulé \n")}
 
   # Récupération du MNT > IGN© RGE ALTI 5m"
-  if(RES=="IGN© RGE ALTI 5m" | RES=="IGN© RGE ALTI 1m") {
+  if(RES=="IGN© RGE ALTI 5m") {
     # Boucle IGN© RGE ALTI 5m"
     REP_MNT  <- tk_choose.dir(default = getwd(),
                               caption = "Choisir le dossier contenant les couches RASTER")
@@ -84,7 +95,7 @@ MNTonSHP <- function(REP_SHP=F, NAME=NULL, TEMP=NULL){ # Function
       }
     } # x min et x max
     REP_ASC <- unique(REP_ASC) # Suppression du doublons en cas de dalle unique
-    cat("Détection de", length(REP_ASC)," dalles \n")
+    cat("        Détection de", length(REP_ASC)," dalles \n")
 
     if (length(REP_ASC)>1){ # Merge des dalles
       MNT <- raster::raster(REP_ASC[[1]][1])
@@ -97,7 +108,7 @@ MNTonSHP <- function(REP_SHP=F, NAME=NULL, TEMP=NULL){ # Function
     }
     MNT <- raster::crop(MNT, as(st_transform(EMPRISE, st_crs(2154)), "Spatial"))
     raster::writeRaster(MNT, paste0(dirname(REP_SHP),"/","MNT.tif"), overwrite=TRUE)
-    cat("Le MNT a été récupéré avec succès \n")
+    cat("        Le MNT a été récupéré avec succès \n")
   }# Fin boucle IGN© RGE ALTI 5m"
 
   # Récupération du MNT > IGN© BD ALTI®
@@ -110,7 +121,7 @@ MNTonSHP <- function(REP_SHP=F, NAME=NULL, TEMP=NULL){ # Function
 
     LISTE_ASC <- list.files(REP_MNT, "*.asc$") # Détection des fichiers .asc dans le répertoire sélectionné
     IDU <- str_sub(LISTE_ASC[1], 1, 12) # Détection du MNT IGN© BD ALTI®
-    cat("Le MNT utilisé est",IDU,"\n")
+    cat("        Le MNT utilisé est",IDU,"\n")
 
     REP_ASC <- list()
     # Boucle en cas de chevauchement sur plusieurs dalles
@@ -151,7 +162,7 @@ MNTonSHP <- function(REP_SHP=F, NAME=NULL, TEMP=NULL){ # Function
     } # Fin x
 
     REP_ASC <- unique(REP_ASC) # Suppression du doublons en cas de dalle unique
-    cat("Détection de", length(REP_ASC)," dalles \n")
+    cat("        Détection de", length(REP_ASC)," dalles \n")
 
     if (length(REP_ASC)>1){ # Merge des dalles
       MNT <- raster::raster(REP_ASC[[1]][1])
@@ -166,7 +177,7 @@ MNTonSHP <- function(REP_SHP=F, NAME=NULL, TEMP=NULL){ # Function
     MNT <- raster::crop(MNT, as(st_transform(EMPRISE, st_crs(2154)), "Spatial"))
     raster::writeRaster(MNT, paste0(dirname(REP_SHP),"/","MNT.tif"), overwrite=TRUE) # Créer ton raster MNT au format tiff, spécifie le chemin de sauvegarde, lisible ensuite sans problème sur QGis
 
-    cat("Le MNT a été récupéré avec succès \n")
+    cat("        Le MNT a été récupéré avec succès \n")
   } # Fin boucle IGN© BD ALTI®
   # Récupération du MNT > Amazon Web Services
   if(RES=="Amazon Web Services") {
@@ -196,42 +207,30 @@ MNTonSHP <- function(REP_SHP=F, NAME=NULL, TEMP=NULL){ # Function
 
 
   # Création du .shp TOPO_line non lissé
+  test = st_as_stars(MNT)
+  ext = range(getValues(MNT), na.rm = TRUE)
+  ext = round(ext,-1)
+  
   equid <- winDialogString("Entrer l'équidistance :", "10")
   if(!length(equid)){equid <- as.numeric("10")} else {equid <- as.numeric(equid)}
-
-  REP_TOPO_line <- paste(dirname(REP_SHP), "TOPO_line.shp", sep="/") # Répertoire de sortie du fichier
-  DEM <- paste0(dirname(REP_SHP),"/","MNT.tif")
-
-  cat("Création des contours > Veuillez patienter ... \n")
-  line <- gdalUtils::gdal_contour(src_filename = DEM,
-                                  dst_filename = REP_TOPO_line,
-                                  b = 1,
-                                  a = "ELEVATION",
-                                  i = equid,
-                                  f = "ESRI Shapefile",
-                                  output_Vector=TRUE)
-
-  cat("Les contours ont été générés avec succès \n")
-
-  # Export définitif du .shp TOPO_line
-  TOPO_line <- st_as_sf(line)
-  st_crs(TOPO_line) <-2154
-  TOPO_line <- st_intersection(TOPO_line, EMPRISE) # Intersection du .shp TOPO_line lissé avec le sf EMPRISE
-
-  if(RES=="IGN© BD ALTI®") {
-    TOPO_line <- smooth(TOPO_line, method = "ksmooth") # Lissage du .shp TOPO_line
-    cat("Les contours ont été liséés avec succès \n")
+  
+  brk = seq(ext[1], ext[2]-equid, by = equid)
+  courbeNiv = st_contour(test, contour_lines = T, breaks = brk)
+  st_crs(courbeNiv) <- 2154
+  colnames(courbeNiv) <- c("ELEVATION", "geometry")
+  
+  TOPO_line <- st_intersection(courbeNiv, EMPRISE)
+  
+  if(RES=="IGN© BD ALTI®" | RES=="IGN© RGE ALTI 5m") {
+    TOPO_line <- smoothr::smooth(TOPO_line, method = "ksmooth") # Lissage du .shp TOPO_line
+    cat("        Les contours ont été liséés avec succès \n")
   }
-
+  
   if(is.null(NAME)){
     NAME <- winDialogString("Entrer le nom du fichier de sortie (optionnel) : ", "")
   }
-  if(!length(NAME)) {NAME <- "TOPO_line.shp"} else {NAME <- paste0(NAME,"_TOPO_line.shp")}
-
-  st_write(TOPO_line, dsn= dirname(REP_SHP), layer = NAME, update=TRUE, delete_layer = TRUE,
-           driver = "ESRI Shapefile", quiet =T, layer_options = "ENCODING=UTF-8")
-
-  cat(paste0("Le fichier ", NAME, " a été exporté dans", dirname(REP_SHP), "\n"))
-
-  return(TOPO_line)
+  if(!length(NAME)) {NAME <- ""} else {NAME <- paste0(NAME,"_")}
+  
+  SEQUOIA::WRITE(TOPO_line, dirname(REP_SHP), paste(NAME,"TOPO_line.shp",sep="_"))
+  options(warn=1) # Activation des warnings
 } # Fin function

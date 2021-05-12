@@ -28,6 +28,14 @@ PARCAtoUA <- function(rep=F) {
   assign("repout2", repout2, envir=globalenv())
   repout3 <- paste(dirname(dirname(dirname(rep))),"SIG","3 TEMPO",sep="/")
   assign("repout3", repout3, envir=globalenv())
+  
+  # Correction de PARCA
+  PARCA_cor <- PARCA[!st_is_empty(PARCA),,drop=FALSE]
+  if (nrow(PARCA_cor)<nrow(PARCA)){
+    cat("        Des polygones vides ont été détectés dans PARCA  \n")
+    SEQUOIA:::WRITE(PARCA_cor, repout2, paste(NAME,"PARCA_polygon.shp",sep="_"))
+    PARCA <- PARCA_cor
+  }
 
   # Création du .shp "UA_polygon"
   message('        Création de UA_polygon')

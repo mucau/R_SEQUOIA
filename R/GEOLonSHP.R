@@ -6,9 +6,8 @@ if (!require("osmdata")) {install.packages("osmdata")}
 if (!require("stringr")) {install.packages("stringr")}
 if (!require("lwgeom")) {install.packages("lwgeom")}
 
-GEOLonSHP <- function(shp = F){
+GEOLonSHP <- function(shp = F, NAME=NULL){
   message('- - - Géologie sur emprise shapefile - - -')
-
   if(isFALSE(shp)){
     shp_rep  <- tcltk::tk_choose.files(default = "~", caption = "Selectionner le fichier .shp",
                                    filter = matrix(c("ESRI Shapefile", ".shp"), 1, 2, byrow = TRUE))
@@ -19,6 +18,22 @@ GEOLonSHP <- function(shp = F){
   message('        Lecture des données')
   shp <- st_read(shp_rep, options = "ENCODING=UTF-8", agr="constant", quiet=T)  # Lecture du shapefile
   cat("        Le fichier .shp a été chargé avec succès  \n \n")
+  if (grepl("PARCA", REP_SHP )){
+    NAME <- str_sub(REP_SHP,
+                    str_locate_all(REP_SHP,'/')[[1]][nrow(str_locate_all(REP_SHP,'/')[[1]]),1]+1,
+                    str_locate(REP_SHP,'_PARCA')[1,1]-1)
+    assign("NAME", NAME, envir=globalenv())
+  }
+  if (grepl("UA", REP_SHP )){
+    NAME <- str_sub(REP_SHP,
+                    str_locate_all(REP_SHP,'/')[[1]][nrow(str_locate_all(REP_SHP,'/')[[1]]),1]+1,
+                    str_locate(REP_SHP,'_UA')[1,1]-1)
+    assign("NAME", NAME, envir=globalenv())
+  }
+  if(is.null(NAME)){
+    NAME <- winDialogString("Entrer le nom du fichier de sortie (optionnel) : ", "")
+  }
+  if(!length(NAME)) {NAME <- ""} else {NAME <- paste0(NAME,"_")}
 
   # Récupération des départements
   message('        Récupération des départements')
@@ -76,9 +91,6 @@ GEOLonSHP <- function(shp = F){
 
   # Export des données
   message("        Export des données")
-  NAME <- winDialogString("Entrer le nom du fichier de sortie: ", "")
-  if(!length(NAME)){NAME <- ""} else {NAME <- paste0(NAME,'_')}
-
   SEQUOIA:::WRITE(geol_shp, dirname(shp_rep), paste0(NAME,"geol_polygon.shp"))
   #st_write(geol_shp, dsn=dirname(shp_rep), layer ="geol.shp", update=TRUE, delete_layer = TRUE, driver = "ESRI Shapefile", quiet =T, layer_options = "ENCODING=UTF-8")
 }

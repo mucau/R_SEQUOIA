@@ -7,7 +7,7 @@ SEQUOIA <- function(enrg=FALSE) {
            "rvest", "sf", "smoothr", "stringr", "tcltk",
            "tidyverse", "openxlsx", "XML", "xml2", "units",
            "measurements", "nngeo", "sp", "elevatr", "svGUI", "installr",
-           "ClimClass", "geosphere", "plotly")
+           "ClimClass", "geosphere", "plotly", "stars")
   package.check <- lapply(
     packages,
     FUN = function(x) {
@@ -113,8 +113,9 @@ SEQUOIA <- function(enrg=FALSE) {
 
     if ("Outils cartographiques" %in% RES1) { # Outils cartographiques
 
-      form <- c("MNT et courbes de niveau",
+      form <- c("MNT sur shapefile",
                 "Zonnage environnementaux",
+                "MH sur shapefile",
                 "Création d'une fiche Climatologique",
                 "Géologie sur shapefile",
                 "BD Foret sur shapefile")
@@ -125,16 +126,20 @@ SEQUOIA <- function(enrg=FALSE) {
                           graphics = T)
       if (!length(RES3)){stop("Aucune sélection effectuée > Traitement annulé \n")}
 
-        if ("MNT et courbes de niveau" %in% RES3) {
+        if ("MNT sur shapefile" %in% RES3) {
           if(!exists("repPARCA")) {repPARCA <- F}
           SEQUOIA:::MNTonSHP(repPARCA, NAME)
         }
 
+        if ("MH sur shapefile" %in% RES3) {
+          SEQUOIA:::MHonSHP (F)
+        }
+      
         if ("Zonnage environnementaux" %in% RES3) {
           if(!exists("repRdata")) {repRdata <- F}
           SEQUOIA:::INPNonSHP(F, repRdata)
         }
-
+      
         if ("Création d'une fiche Climatologique" %in% RES3) {
           if(!exists("repPARCA")) {repPARCA <- F}
           SEQUOIA:::CLIMonSHP(repPARCA)
