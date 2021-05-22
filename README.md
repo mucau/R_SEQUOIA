@@ -19,7 +19,7 @@ L'idée serait d'extraire les données dans un répertoire du type : `GIS DataBa
 ## Comment on joue ?
 Pour télécharger, c'est simple, vous tapez: 
 
-`install_github("mucau/R_SEQUOIA")`
+`devtools::install_github("mucau/R_SEQUOIA")`
 
 Pour utiliser, c'est simple aussi:
 
