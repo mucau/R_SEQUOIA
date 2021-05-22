@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>R_SEQUOIA</title>
+
+<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">R_SEQUOIA</h1>
+
+
+
+<div id="objectifs" class="section level2">
+<h2>Objectifs</h2>
+<p>Création de script sous R accélérant la récupération de données cartographiques libres pour faciliter la production d’une cartographie forestière ponctuelle sous Qgis.</p>
+<p>Création de script d’outils simple dans le cadre de la cartographie forestière</p>
+</div>
+<div id="fonctionnement" class="section level2">
+<h2>Fonctionnement</h2>
+<p>La fonction <code>SEQUOIA::SEQUOIA(T)</code> appelle les autres fonctions.</p>
+<ul>
+<li>Téléchargements de données
+<ul>
+<li>1 Données INPN/INSEE
+<ul>
+<li><code>INSEEtoRDATA</code> &amp; <code>INSEEtoRDATA</code></li>
+</ul></li>
+<li>2 Données IGN
+<ul>
+<li><code>LOADfromIGN</code></li>
+</ul></li>
+</ul></li>
+</ul>
+<hr />
+<ul>
+<li>Aide à la création d’une cartographie ponctuelle
+<ul>
+<li>1 Conversion .html vers.xlsx
+<ul>
+<li><code>HTMLtoXLSX</code></li>
+</ul></li>
+<li>2 Création du PARCA
+<ul>
+<li><code>XLSXtoPARCA</code></li>
+</ul></li>
+<li>3 Création du fond vectoriel
+<ul>
+<li><code>CAGEF</code> lance <code>OSMonPARCA</code>, <code>BDTOPOonPARCA</code>, <code>BDTOPO_HYDRO</code>, <code>BDTOPO_VEG</code>, <code>ETALAB</code>, <code>BD_PARCA</code>, <code>EDIGEO</code></li>
+</ul></li>
+<li>4 Création UA
+<ul>
+<li><code>PARCAtoUA</code></li>
+</ul></li>
+<li>5 Conversion ROAD vers ROUTE
+<ul>
+<li><code>ROADtoROUTE</code></li>
+</ul></li>
+<li>6 Finalisation UA
+<ul>
+<li><code>UAtoUA</code></li>
+<li><code>UAtoSSPF</code></li>
+</ul></li>
+</ul></li>
+</ul>
+<hr />
+<ul>
+<li>Outils cartographiques
+<ul>
+<li>MNT et courbes de niveau
+<ul>
+<li><code>MNTonSHP</code></li>
+</ul></li>
+<li>Zonnage environnementaux
+<ul>
+<li><code>INPNonPARCA</code></li>
+</ul></li>
+<li>Création d’une fiche climatologique
+<ul>
+<li><code>CLIMonSHP</code> lance <code>IFNtoSHP</code>, <code>METEOFRANCEonSHP</code>, <code>BHbyDRIAS</code></li>
+</ul></li>
+<li>MH sur shapefile
+<ul>
+<li><code>MHonSHP</code></li>
+</ul></li>
+<li>AAC sur shapefile
+<ul>
+<li><code>AAConSHP</code></li>
+</ul></li>
+<li>Géologie sur shapefile
+<ul>
+<li><code>GEOLonSHP</code></li>
+</ul></li>
+<li>BD Foret sur shapefile
+<ul>
+<li><code>BDFORETonSHP</code></li>
+</ul></li>
+</ul></li>
+</ul>
+<p>Le détail des fonctions est donné sur R dans la rubrique d’aides.</p>
+</div>
+<div id="processus-sequoia" class="section level2">
+<h2>Processus Sequoia</h2>
+<ol style="list-style-type: decimal">
+<li>Obtention d’une matrice Excel
+<ul>
+<li>Soit Automatiquement avec R par <code>HTMLtoXLSX</code></li>
+<li>Soit Manuellement en utilisant directement excel.</li>
+</ul></li>
+<li>Création du parcellaire
+<ul>
+<li>Automatiquement avec R par <code>XLSXtoPARCA</code></li>
+</ul></li>
+<li>Création du fond vectoriel : OPTIONEL
+<ul>
+<li>Automatiquement avec R par <code>CAGEF</code></li>
+</ul></li>
+<li>Création de UA
+<ul>
+<li>Mannuellement sur Qgis vous devez corriger les erreurs topologiques avant !!!</li>
+<li>Automatiquement avec R par <code>PARCAtoUA</code></li>
+</ul></li>
+<li>Conversion ROAD vers ROUTE : OPTIONEL
+<ul>
+<li>Automatiquement avec R par <code>ROADtoROUTE</code></li>
+</ul></li>
+<li>Finalisation de UA
+<ul>
+<li>Mannuellement sur Qgis vous découper et remplir UA</li>
+<li>Automatiquement avec R par <code>UAtoUA</code> &amp; <code>UAtoSSPF</code></li>
+</ul></li>
+</ol>
+<hr />
+<p>A l’étape 3, la création du fond vectoriel réclame pas mal de décision.</p>
+<p>Pour aider :</p>
+<table>
+<colgroup>
+<col width="35%" />
+<col width="19%" />
+<col width="12%" />
+<col width="23%" />
+<col width="8%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Choix</th>
+<th align="left">Limites_administratives</th>
+<th align="left">Infrastructures</th>
+<th align="left">Hydrologie</th>
+<th align="left">Végétation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">J’ai la IGN © BD TOPO® départementale</td>
+<td align="left">IGN © BD TOPO®</td>
+<td align="left">IGN © BD TOPO®</td>
+<td align="left">IGN © BD TOPO® départementale</td>
+<td align="left">Oui</td>
+</tr>
+<tr class="even">
+<td align="left">Je n’ai pas la IGN © BD TOPO® départementale</td>
+<td align="left">OpenStreetMap</td>
+<td align="left">OpenStreetMap</td>
+<td align="left">IGN © BD TOPO® métropole</td>
+<td align="left">Non</td>
+</tr>
+</tbody>
+</table>
+<p>La IGN © BD TOPO® métropole est celle à télécharger à <a href="https://drive.google.com/file/d/17ln_TH416HzwNKS9m-HTFcmZ0E7B-d8s/view?usp=sharing" class="uri">https://drive.google.com/file/d/17ln_TH416HzwNKS9m-HTFcmZ0E7B-d8s/view?usp=sharing</a></p>
+<hr />
+<p>Amusez-vous bien !</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
