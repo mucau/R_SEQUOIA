@@ -1,8 +1,8 @@
 ---
-title: "SEQUOIA - Notice"
+title: "R_SEQUOIA"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{SEQUOIA - Notice}
+  %\VignetteIndexEntry{R_SEQUOIA}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -11,22 +11,96 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## Objectifs
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+Création de script sous R accélérant la récupération de données cartographiques libres pour faciliter la
+production d’une cartographie forestière ponctuelle sous Qgis.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+Création de script d'outils simple dans le cadre de la cartographie forestière
 
-```{r cars}
-summary(cars)
+## Fonctionnement
+La fonction `SEQUOIA::SEQUOIA(T)` appelle les autres fonctions.
+
+- Téléchargements de données
+  - 1 Données INPN/INSEE
+    - `INSEEtoRDATA` & `INSEEtoRDATA`
+  - 2 Données IGN
+    - `LOADfromIGN`
+    
+***
+- Aide à la création d'une cartographie ponctuelle
+  - 1 Conversion .html vers.xlsx
+    - `HTMLtoXLSX`
+  - 2 Création du PARCA
+    - `XLSXtoPARCA`
+  - 3 Création du fond vectoriel
+    - `CAGEF` lance `OSMonPARCA`, `BDTOPOonPARCA`, `BDTOPO_HYDRO`, `BDTOPO_VEG`, `ETALAB`, `BD_PARCA`, `EDIGEO`
+  - 4 Création UA
+    - `PARCAtoUA`
+  - 5 Conversion ROAD vers ROUTE
+    - `ROADtoROUTE`
+  - 6 Finalisation UA
+    - `UAtoUA`
+    - `UAtoSSPF`
+    
+***
+- Outils cartographiques
+  - MNT et courbes de niveau
+    - `MNTonSHP`
+  - Zonnage environnementaux
+    - `INPNonPARCA`
+  - Création d'une fiche climatologique
+    - `CLIMonSHP` lance `IFNtoSHP`, `METEOFRANCEonSHP`, `BHbyDRIAS`
+  - MH sur shapefile
+    - `MHonSHP`
+  - AAC sur shapefile
+    - `AAConSHP`
+  - Géologie sur shapefile
+    - `GEOLonSHP`
+  - BD Foret sur shapefile
+    - `BDFORETonSHP`
+    
+Le détail des fonctions est donné sur R dans la rubrique d’aides.
+
+## Processus Sequoia
+1. Obtention d'une matrice Excel
+   - Soit Automatiquement avec R par `HTMLtoXLSX`
+   - Soit Manuellement en utilisant directement excel.
+2. Création du parcellaire
+   - Automatiquement avec R par `XLSXtoPARCA`
+3. Création du fond vectoriel : OPTIONEL
+   - Automatiquement avec R par `CAGEF`
+4. Création de UA
+   - Mannuellement sur Qgis vous devez corriger les erreurs topologiques avant !!!
+   - Automatiquement avec R par `PARCAtoUA`
+5. Conversion ROAD vers ROUTE : OPTIONEL
+   - Automatiquement avec R par `ROADtoROUTE`
+6. Finalisation de UA
+   - Mannuellement sur Qgis vous découper et remplir UA
+   - Automatiquement avec R par `UAtoUA` & `UAtoSSPF`
+
+***
+
+A l'étape 3, la création du fond vectoriel réclame pas mal de décision.
+
+Pour aider :
+
+```{r choix, echo=FALSE, results='asis', fig.width=10}
+Choix = c("J’ai la IGN © BD TOPO® départementale",
+          "Je n’ai pas la IGN © BD TOPO® départementale")
+Limites_administratives = c("IGN © BD TOPO®", "OpenStreetMap")
+Infrastructures = c("IGN © BD TOPO®", "OpenStreetMap")
+Hydrologie = c("IGN © BD TOPO® départementale", "IGN © BD TOPO® métropole")
+Végétation = c("Oui", "Non")
+
+df <- data.frame(Choix, Limites_administratives, Infrastructures, Hydrologie, Végétation)
+
+knitr::kable(df, caption = "", align = "l")
 ```
 
-## Including Plots
+La IGN © BD TOPO® métropole est celle à télécharger à https://drive.google.com/file/d/17ln_TH416HzwNKS9m-HTFcmZ0E7B-d8s/view?usp=sharing
 
-You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
+***
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Amusez-vous bien !
