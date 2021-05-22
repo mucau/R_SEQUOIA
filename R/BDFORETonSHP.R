@@ -2,7 +2,7 @@
 if (!require("tcltk")) {install.packages("tcltk")}
 if (!require("sf")) {install.packages("sf")}
 
-BDFORETonSHP <- function(shp = F, repBDTOPO=F){
+BDFORETonSHP <- function(shp = F, repBDFORET=F){
   message('- - - Géologie sur emprise shapefile - - -')
 
   if(isFALSE(shp)){
@@ -11,22 +11,22 @@ BDFORETonSHP <- function(shp = F, repBDTOPO=F){
   }
   if(!length(shp)){stop("        Aucun fichier sélectionné >> Traitement annulé")}
 
-  if(isFALSE(repBDTOPO)) {
-    repBDTOPO <- tk_choose.dir(default= getwd(),
+  if(isFALSE(repBDFORET)) {
+    repBDFORET <- tk_choose.dir(default= getwd(),
                                caption = "Choisir le répertoire de l'IGN© BD FORET V2®")
   }
-  if (!length(repBDTOPO)){stop("Aucune sélection effectuée > Traitement annulé \n")}
+  if (!length(repBDFORET)){stop("Aucune sélection effectuée > Traitement annulé \n")}
 
   # Lecture des données
   message('        Lecture des données')
   shp <- st_read(shp_rep, options = "ENCODING=UTF-8", agr="constant", quiet=T)  # Lecture du shapefile
   cat("        Le fichier .shp a été chargé avec succès  \n \n")
 
-  repBDTOPO <- paste(repBDTOPO,
-                     list.files(path = repBDTOPO, pattern = "FORMATION_VEGETALE.shp", recursive = T),
+  repBDFORET <- paste(repBDFORET,
+                     list.files(path = repBDFORET, pattern = "FORMATION_VEGETALE.shp", recursive = T),
                      sep="/")
 
-  FORET <- st_read(repBDTOPO ,options = "ENCODING=windows-1252", quiet=T)
+  FORET <- st_read(repBDFORET ,options = "ENCODING=windows-1252", quiet=T)
   cat("        La BD FORET V2 a été chargé avec succès  \n \n")
 
     # Intersection avec l'emprise

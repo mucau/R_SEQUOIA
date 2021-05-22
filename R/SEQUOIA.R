@@ -116,6 +116,7 @@ SEQUOIA <- function(enrg=FALSE) {
       form <- c("MNT sur shapefile",
                 "Zonnage environnementaux",
                 "MH sur shapefile",
+                "AAC sur shapefile",
                 "Création d'une fiche Climatologique",
                 "Géologie sur shapefile",
                 "BD Foret sur shapefile")
@@ -132,9 +133,13 @@ SEQUOIA <- function(enrg=FALSE) {
         }
 
         if ("MH sur shapefile" %in% RES3) {
-          SEQUOIA:::MHonSHP (F)
+          SEQUOIA:::MHonSHP(F)
         }
       
+        if ("AAC sur shapefile" %in% RES3) {
+          SEQUOIA:::AAConSHP(F)
+        }
+
         if ("Zonnage environnementaux" %in% RES3) {
           if(!exists("repRdata")) {repRdata <- F}
           SEQUOIA:::INPNonSHP(F, repRdata)

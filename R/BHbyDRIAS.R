@@ -1,5 +1,6 @@
 # Lancement des library
 if (!require("dplyr")) {install.packages("dplyr")}
+if (!require("stringr")) {install.packages("stringr")}
 
 BHbyDRIAS <- function(txt=F) {
   if(isFALSE(txt)){
@@ -35,6 +36,8 @@ BHbyDRIAS <- function(txt=F) {
   
   data3 <- SEQUOIA::THORNTHWAITE(serie, latitude)%>%mutate(Annee=Res)
   
-  assign("DRIAS_df", serie, envir=globalenv())
+  assign("Periode", Res, envir=globalenv())
+  assign("DRIAS_serie", serie, envir=globalenv())
+  assign("DRIAS_df", data, envir=globalenv())
   assign("DRIAS_bh", data3, envir=globalenv())
 }

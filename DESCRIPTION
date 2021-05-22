@@ -2,11 +2,11 @@ Package: SEQUOIA
 Type: Package
 Title: SEQUOIA : Boite a outils a destination des forestiers
 Version: 0.3.00
-Author: Matthieu CHEVEREAU
+Author: Matthieu CHEVEREAU, Paul CARTERON
 Maintainer: Matthieu CHEVEREAU <matthieuchevereau@yahoo.fr>
 Description: Boite a outils a destination des forestiers
 LazyData: true
-Imports: data.table, dplyr, plyr, foreign, gdalUtils, osmdata, R.utils, raster, RCurl, readxl, rlist, rvest, sf, smoothr, stringr, tcltk, openxlsx, XML, xml2, units, nngeo, sp, ClimClass, geosphere, plotly, lwgeom, stars
+Imports: data.table, dplyr, plyr, foreign, gdalUtils, osmdata, R.utils, raster, RCurl, readxl, rlist, rvest, sf, smoothr, stringr, tcltk, openxlsx, XML, xml2, units, nngeo, sp, ClimClass, geosphere, plotly, lwgeom, stars, leaflet
 Depends: R (>= 4.0.0)
 License: Package developpe sous RStudio Version 1.2.1335. Tous droits reserves. Usage reserve
 Encoding: UTF-8

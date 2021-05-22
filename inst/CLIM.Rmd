@@ -93,7 +93,6 @@ graph <- function(data, n, p){
     plot <- plotly::plot_ly(data, x = ~Mois, y = ~Precipitation, type = 'bar', name = 'Précipitation') %>%
       add_trace(y = ~ETP, name = 'ETP') %>%
       add_trace(y = ~Precipitation-ETP, name = 'P-ETP') %>%
-      add_trace(y = ~Bilan, name = 'Bilan') %>%
       layout(xaxis = list(title = "", 
                           ticktext = list("Jan.", "Fev.", "Mars", "Avril", "Mai", "Juin",
                                           "Jui.", "Aout", "Sep", "Oct.", "Nov.", "Dec."),
@@ -202,15 +201,15 @@ if(Rdata!=""){
   AU_Tx <- df[5,]
   AU_Ge <- df[6,]
   
-  print(knitr::kable(AU_Tx, caption = "Température maximale (Moyenne en °C)", align = "l"), row.names = FALSE)
+  print(knitr::kable(AU_Tx, caption = "Température maximale (Moyenne en °C)", align = "l", row.names = FALSE))
   cat("\n")
-  print(knitr::kable(AU_Tm, caption = "Température moyenne (Moyenne en °C)", align = "l"), row.names = FALSE)
+  print(knitr::kable(AU_Tm, caption = "Température moyenne (Moyenne en °C)", align = "l", row.names = FALSE))
   cat("\n")
-  print(knitr::kable(AU_Tn, caption = "Température minimale (Moyenne en °C)", align = "l"), row.names = FALSE)
+  print(knitr::kable(AU_Tn, caption = "Température minimale (Moyenne en °C)", align = "l", row.names = FALSE))
   cat("\n")
-  print(knitr::kable(AU_Pm, caption = "Précipitations : Hauteur moyenne mensuelle (mm)", align = "l"), row.names = F)
+  print(knitr::kable(AU_Pm, caption = "Précipitations : Hauteur moyenne mensuelle (mm)", align = "l", row.names = F))
   cat("\n")
-  print(knitr::kable(AU_Ge, caption = "Nombre moyen de jours de gel (nbr/mois)", align = "l"), row.names = FALSE)
+  print(knitr::kable(AU_Ge, caption = "Nombre moyen de jours de gel (nbr/mois)", align = "l", row.names = FALSE))
   cat("\n")
   
   serie <- AURELHY_df %>%
@@ -235,7 +234,7 @@ p=F
 ```{r text, echo=FALSE, results='asis', fig.width=10}
 if(txt!=""){
   cat("# Les futurs du climat\n\n")
-  cat("Drias [les futurs du climat] a pour vocation de mettre à disposition des projections climatiques régionalisées réalisées dans les laboratoires français de modélisation du climat.")
+  cat("Drias-les futurs du climat a pour vocation de mettre à disposition des projections climatiques régionalisées réalisées dans les laboratoires français de modélisation du climat.")
 }
 ```
 
@@ -243,36 +242,71 @@ if(txt!=""){
 if(txt!=""){
   SEQUOIA:::BHbyDRIAS(txt)
   
-  DRIAS_df <- DRIAS_df %>%
-  mutate(Tm = (Tn+Tx)/2)
-  df <- data.table::transpose(DRIAS_df[3:6]) 
-  df$Annee <- as.numeric(1.1)
+  tab_indice <- function(indice, data, ndec, sum){
+      ind_brut  <- paste0("NOR", indice)
+      ind_ecart <- paste0("A", indice)
+      
+      
+      df <- data[,c(1,5,6,grep(ind_brut, colnames(data))[1],grep(ind_ecart, colnames(data))[1])] 
+      colnames(df)<-c("point","periode","mois", "ind_brut", "ind_ecart")
+      
+      df <- df %>%
+        mutate(H0=ind_brut-ind_ecart,
+               H3=ind_brut,
+               EC=ind_ecart) %>%
+        filter(periode %in% Periode) 
+      
+      df2 <- df %>%
+        group_by(mois) %>% 
+        summarize(H0 = round(mean(H0),ndec), 
+                  H3 = round(mean(H3),ndec), 
+                  EC = round(mean(EC),ndec))
+      
+      mois <- "TOT"
+      if (sum==1){
+        H0 <- sum(unlist(df2[2]))
+        H3 <- sum(unlist(df2[3]))
+        EC <- sum(unlist(df2[4]))
+      } else {
+        H0 <- round(mean(unlist(df2[2])),ndec)
+        H3 <- round(mean(unlist(df2[3])),ndec)
+        EC <- round(mean(unlist(df2[4])),ndec)
+      }
+
+      
+      df3 <- data.frame(mois, H0, H3, EC)
+      
+      df2 <- rbind(df2, df3)
+      return(df2)
+  }
   
-  df[1,13] <- mean(unlist(df[1,1:12]))
-  df[2,13] <- mean(unlist(df[2,1:12]))
-  df[3,13] <- sum(df[3,1:12])
-  df[4,13] <- mean(unlist(df[4,1:12]))
+  indices_brut <- c("TXAV", "TAV", "TNAV")
+  indices_noms <- c("Température maximale journalière (°C)", 
+                    "Température moyenne journalière (°C)",
+                    "Température minimale journalière (°C)")
   
+  for (i in 1:length(indices_brut)){
+    indice_brut <- indices_brut[i]
+    indice_nom <- indices_noms[i]
+    tab <- tab_indice(indice_brut, DRIAS_df, 1, 0)
+    tab2<-data.table::transpose(tab[2:4])
+    tab2 <- cbind(SOURCE=c("H0",Periode,"EC"), tab2)
+    colnames(tab2) <- MOIS
+    
+    print(knitr::kable(tab2, caption = indice_nom, align = "l", row.names = FALSE))
+    
+  }
   
-  df <- cbind(SOURCE="DRIAS", df)
-  colnames(df) <- MOIS
+  indice_brut <- c("RR")
+  indice_nom <- c("Cumul de précipitation (mm)")
+  tab <- tab_indice(indice_brut, DRIAS_df, 0, 1)
+  tab2<-data.table::transpose(tab[2:4])
+  tab2 <- cbind(SOURCE=c("H0",Periode,"EC"), tab2)
+  colnames(tab2) <- MOIS
+  print(knitr::kable(tab2, caption = indice_nom, align = "l", row.names = FALSE))
   
-  DRIAS_Pm <- df[3,]
-  DRIAS_Tn <- df[1,]
-  DRIAS_Tm <- df[4,]
-  DRIAS_Tx <- df[2,]
-  
-  print(knitr::kable(DRIAS_Tx, caption = "Température maximale (Moyenne en °C)", align = "l"), row.names = FALSE)
-  cat("\n")
-  print(knitr::kable(DRIAS_Tm, caption = "Température moyenne (Moyenne en °C)", align = "l"), row.names = FALSE)
-  cat("\n")
-  print(knitr::kable(DRIAS_Tn, caption = "Température minimale (Moyenne en °C)", align = "l"), row.names = FALSE)
-  cat("\n")
-  print(knitr::kable(DRIAS_Pm, caption = "Précipitations : Hauteur moyenne mensuelle (mm)", align = "l"), row.names = F)
-  cat("\n")
-  
-  serie <- DRIAS_df %>%
-    mutate(year = 2050) %>%
+  serie <- DRIAS_serie %>%
+    mutate(Tm=(Tx+Tn)/2, P=Pl) %>%
     select(year, month, Tn, Tm, Tx, P)
   data2 <- DRIAS_bh %>%
     mutate(Bilan=Surplus-Deficit)
@@ -290,6 +324,27 @@ graph(data2,2,p)
 p=F
 ```
 
+```{r , echo=FALSE, results='asis', fig.width=10}
+if(txt!=""){
+  indices_brut <- c("TNFD", "RR1MM", "PXCDD", "TXHWD", "TX35")
+  indices_noms <- c("Nombre de jours de gel (jour(s))", 
+                    "Nombre de jours de pluie (jour(s))",
+                    "Période de sécheresse (jour(s))",
+                    "Nombre de jours d'une vague de chaleur (jour(s))",
+                    "Nombre de jours de fortes chaleur ( TX>35°C ) (jour(s))")
+  
+  for (i in 1:length(indices_brut)){
+    indice_brut <- indices_brut[i]
+    indice_nom <- indices_noms[i]
+    tab <- tab_indice(indice_brut, DRIAS_df, 0, 1)
+    tab2<-data.table::transpose(tab[2:4])
+    tab2 <- cbind(SOURCE=c("H0",Periode,"EC"), tab2)
+    colnames(tab2) <- MOIS
+    
+    print(knitr::kable(tab2, caption = indice_nom, align = "l", row.names = FALSE))
+  }
+}
+```
 ***
 
 ```{r, echo=FALSE}
