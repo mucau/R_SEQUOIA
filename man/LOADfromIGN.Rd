@@ -4,7 +4,7 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 %%  ~~function to do ... ~~
-Telechargement des données IGN
+Telechargement des donnees IGN
 }
 \description{
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
