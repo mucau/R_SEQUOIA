@@ -62,7 +62,9 @@ La propriété est située dans la sylvoécorégion `r SER_NOM` correspondante �
 **Sylvoécorégion** : `r SER_CODE` - `r SER_NOM`  
 **Région forestière** : `r RFN_CODE` - `r RFN_NOM`
 
-# Données climatiques de Météo-France 
+# Données normales
+
+## climatiques de Météo-France 
 La station Météo France la plus proche de la propriété est la station de `r STATION` située à `r DISTANCE` km à une altitude de `r ALTITUDE` m.  
 Les informations ci-dessous correspondantes aux normales et records disponibles pour cette station. `r STAT`
 
@@ -170,7 +172,7 @@ assign("METEOFRANCE_etp", data4, envir=globalenv())
 
 ```{r texte, echo=FALSE, results='asis', fig.width=10}
 if(Rdata!=""){
-  cat("# Données climatiques d'AURELHY\n\n")
+  cat("## Données climatiques d'AURELHY\n\n")
   cat("Les données climatiques Aurelhy [© Météo-France, 2001] ont été obtenues à partir de jeux de données ponctuelles des stations Météo-France qui ont été spatialisées en utilisant des modèles statistiques élaborés à l’aide de variables topographiques.
 Les informations ci-dessous correspondantes aux normales déterminés par le modèle Aurelhy sur une étendue de 2,5 km autour de la forêt pour la période 1981-2010.")
 }
@@ -233,7 +235,7 @@ p=F
 
 ```{r text, echo=FALSE, results='asis', fig.width=10}
 if(txt!=""){
-  cat("# Les futurs du climat\n\n")
+  cat("# Données futures \n\n")
   cat("Drias-les futurs du climat a pour vocation de mettre à disposition des projections climatiques régionalisées réalisées dans les laboratoires français de modélisation du climat.")
 }
 ```
