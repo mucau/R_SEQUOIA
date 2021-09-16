@@ -256,8 +256,9 @@ XLSXtoPARCA <- function(rep=F){
 
     if(ERR>0){
       message("\n        Une ou plusieurs références sont manquantes")
-      ask <- winDialog(type = "yesno", "Voulez-vous utiliser une autre source de données?")
+      ask <- askYesNo("Voulez-vous utiliser une autre source de données?")
       if(ask == "NO"){break}
+      if(is.na(ask)){break}
     } else {
       break
     }
@@ -273,11 +274,15 @@ XLSXtoPARCA <- function(rep=F){
     repout3 <- paste(dirname(rep),"SIG","3 TEMPO",sep="/")
     assign("repout2", repout2, envir=globalenv())
     assign("repout3", repout3, envir=globalenv())
-
-    NAME <- winDialogString("Entrer le nom du fichier de sortie:", "")
+    
+    if (Sys.info()["sysname"]=="Windows"){
+      NAME <- winDialogString("Entrer le nom du fichier de sortie:", "")
+    }else {
+      NAME <- readline(prompt="Entrer le nom du fichier de sortie:")
+    }
     assign("NAME", NAME, envir=globalenv())
 
-    SEQUOIA:::WRITE(PARCA, repout2, paste(NAME,"PARCA.shp",sep="_"))
+    SEQUOIA:::WRITE(PARCA, repout2, paste(NAME,"PARCA-ARCHIVE_polygon.shp",sep="_"))
     SEQUOIA:::WRITE(PARCA, repout2, paste(NAME,"PARCA_polygon.shp",sep="_"))
 
     assign("repPARCA", paste(repout2, paste(NAME,"PARCA_polygon.shp",sep="_"), sep="/"), envir=globalenv())

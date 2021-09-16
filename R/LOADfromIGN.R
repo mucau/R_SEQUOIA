@@ -27,7 +27,7 @@ LOADfromIGN <- function(rep=F){
     BD <- "BDPARCELLAIRE_1-2_VECTEUR"}
   
   if ("BD TOPO®" %in% Res) {
-    url <- "http://files.opendatarchives.fr/professionnels.ign.fr/bdtopo/latest/BDTOPO_3-0_TOUSTHEMES_SHP_DEPARTEMENTS/"
+    url <- "http://files.opendatarchives.fr/professionnels.ign.fr/bdtopo/latest/"
     BD <- "BDTOPO_3-0"}
   
   if ("BD FORET® V2" %in% Res) {
@@ -52,8 +52,12 @@ LOADfromIGN <- function(rep=F){
     filter(grepl(BD,urls))
   
   #Sélection du département
-  NAME <- winDialogString("Entrer le n° de département: ", "")
-  if(!length(NAME)){stop("Aucune sélection effectuée > Traitement annulé \n")}
+  if (Sys.info()["sysname"]=="Windows"){
+    NAME <- winDialogString("Entrer le n° de département: ", "")
+  }else {
+    NAME <- readline(prompt="Entrer le n° de département: ")
+  }
+  if(!length(NAME)||NAME==""){stop("Aucune sélection effectuée > Traitement annulé \n")}
   Dep <- as.integer(NAME)
   if(is.na(Dep)){stop("Aucune sélection effectuée > Traitement annulé \n")}
   Dep <- str_pad(str_pad(Dep, 3, "left", '0'), 4, "left", 'D')

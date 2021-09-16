@@ -39,7 +39,11 @@ BDFORETonSHP <- function(shp = F, repBDFORET=F){
 
   # Export des données
   message("        Export des données")
-  NAME <- winDialogString("Entrer le nom du fichier de sortie: ", "")
+  if (Sys.info()["sysname"]=="Windows"){
+    NAME <- winDialogString("Entrer le nom du fichier de sortie:", "")
+  }else {
+    NAME <- readline(prompt="Entrer le nom du fichier de sortie:")
+  }
   if(!length(NAME)){NAME <- ""} else {NAME <- paste0(NAME,'_')}
 
   SEQUOIA:::WRITE(foret_shp, dirname(shp_rep), paste0(NAME,"BDFORET_polygon.shp"))

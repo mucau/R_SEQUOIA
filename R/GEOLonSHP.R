@@ -18,20 +18,25 @@ GEOLonSHP <- function(shp = F, NAME=NULL){
   message('        Lecture des données')
   shp <- st_read(shp_rep, options = "ENCODING=UTF-8", agr="constant", quiet=T)  # Lecture du shapefile
   cat("        Le fichier .shp a été chargé avec succès  \n \n")
-  if (grepl("PARCA", REP_SHP )){
-    NAME <- str_sub(REP_SHP,
-                    str_locate_all(REP_SHP,'/')[[1]][nrow(str_locate_all(REP_SHP,'/')[[1]]),1]+1,
-                    str_locate(REP_SHP,'_PARCA')[1,1]-1)
+  if (grepl("PARCA", shp_rep )){
+    NAME <- str_sub(shp_rep,
+                    str_locate_all(shp_rep,'/')[[1]][nrow(str_locate_all(shp_rep,'/')[[1]]),1]+1,
+                    str_locate(shp_rep,'_PARCA')[1,1]-1)
     assign("NAME", NAME, envir=globalenv())
   }
-  if (grepl("UA", REP_SHP )){
-    NAME <- str_sub(REP_SHP,
-                    str_locate_all(REP_SHP,'/')[[1]][nrow(str_locate_all(REP_SHP,'/')[[1]]),1]+1,
-                    str_locate(REP_SHP,'_UA')[1,1]-1)
+  if (grepl("UA", shp_rep )){
+    NAME <- str_sub(shp_rep,
+                    str_locate_all(shp_rep,'/')[[1]][nrow(str_locate_all(shp_rep,'/')[[1]]),1]+1,
+                    str_locate(shp_rep,'_UA')[1,1]-1)
     assign("NAME", NAME, envir=globalenv())
   }
   if(is.null(NAME)){
-    NAME <- winDialogString("Entrer le nom du fichier de sortie (optionnel) : ", "")
+    
+    if (Sys.info()["sysname"]=="Windows"){
+      NAME <- winDialogString("Entrer le nom du fichier de sortie:", "")
+    }else {
+      NAME <- readline(prompt="Entrer le nom du fichier de sortie:")
+    }
   }
   if(!length(NAME)) {NAME <- ""} else {NAME <- paste0(NAME,"_")}
 

@@ -211,7 +211,12 @@ MNTonSHP <- function(REP_SHP=F, NAME=NULL, TEMP=NULL){ # Function
   ext = range(getValues(MNT), na.rm = TRUE)
   ext = round(ext,-1)
   
-  equid <- winDialogString("Entrer l'équidistance :", "10")
+  if (Sys.info()["sysname"]=="Windows"){
+    equid <- winDialogString("Entrer l'équidistance :", "10")
+  }else {
+    equid <- readline(prompt="Entrer l'équidistance :")
+  }
+  
   if(!length(equid)){equid <- as.numeric("10")} else {equid <- as.numeric(equid)}
   
   brk = seq(ext[1], ext[2]-equid, by = equid)
@@ -227,9 +232,13 @@ MNTonSHP <- function(REP_SHP=F, NAME=NULL, TEMP=NULL){ # Function
   }
   
   if(is.null(NAME)){
-    NAME <- winDialogString("Entrer le nom du fichier de sortie (optionnel) : ", "")
+    if (Sys.info()["sysname"]=="Windows"){
+      NAME <- winDialogString("Entrer le nom du fichier de sortie:", "")
+    }else {
+      NAME <- readline(prompt="Entrer le nom du fichier de sortie:")
+    }
   }
-  if(!length(NAME)) {NAME <- ""} else {NAME <- paste0(NAME,"_")}
+  if(!length(NAME)||NAME=="") {NAME <- ""} else {NAME <- paste0(NAME,"_")}
   
   SEQUOIA::WRITE(TOPO_line, dirname(REP_SHP), paste(NAME,"TOPO_line.shp",sep="_"))
   options(warn=1) # Activation des warnings

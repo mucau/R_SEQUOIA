@@ -13,7 +13,9 @@ CLIMonSHP <- function(shp = F){
   if (!length(shp)){stop("Pas de shapefile sélectionné")}
 
   # Bloc Aurelhy
-  AURELHY <- winDialog(type = "yesno", "Voulez-vous intégrer les données AURELHY ?")
+  AURELHY <- askYesNo("Voulez-vous intégrer les données AURELHY ?")
+  if(is.na(AURELHY)){break}
+  
   if(AURELHY == "YES"){
     if(exists("repRdata")) {Rdata <- repRdata} else {
       Rdata <- tcltk::tk_choose.dir(caption = "Choisir le dossier contenant les données AURELHY.Rdata")
@@ -22,7 +24,9 @@ CLIMonSHP <- function(shp = F){
   } else {Rdata<-""}
 
   # Bloc DRIAS
-  DRIAS <- winDialog(type = "yesno", "Voulez-vous intégrer les données DRIAS ?")
+  DRIAS <- askYesNo("Voulez-vous intégrer les données DRIAS ?")
+  if(is.na(DRIAS)){break}
+  
   if(DRIAS == "YES"){
     txt  <- tcltk::tk_choose.files(default = "~", caption = "Selectionner le fichier .txt de donnée",
                                    filter = matrix(c("Fichier texte", ".txt"), 1, 2, byrow = TRUE))
@@ -31,14 +35,21 @@ CLIMonSHP <- function(shp = F){
 
   # Répertoire
   dsn <- setwd("~/")
-  ask <- winDialog(type = "yesno", paste0("Le fichier sera exporté dans ", dsn, "\nC'est bon pour vous ?"))
+  ask <- askYesNo(paste0("Le fichier sera exporté dans ", dsn, "\nC'est bon pour vous ?"))
+  if(is.na(ask)){break}
+  
   if(ask == "NO") {
     dsn <- tcltk::tk_choose.dir(default = dirname(shp), caption = "Choisir le dossier de destination")
     if(is.na(dsn)){dsn <- setwd("~/")}
   }
 
   # Nom de fichier
-  name <- winDialogString("Entrer le nom du fichier de sortie: ", "")
+  if (Sys.info()["sysname"]=="Windows"){
+    name <- winDialogString("Entrer le nom du fichier de sortie:", "")
+  }else {
+    name <- readline(prompt="Entrer le nom du fichier de sortie:")
+  }
+
   if(!length(name)){name <- paste0("Fiche_du_", format(Sys.time(), '%y.%m.%d'))}
 
   # Affectation du wd

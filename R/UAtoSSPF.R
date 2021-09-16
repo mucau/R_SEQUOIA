@@ -63,11 +63,12 @@ UAtoSSPF <- function(rep=F) {
   setwd(dirname(rep))
 
   if (paste(NAME,"PF_line.shp",sep="_") %in% LIST_SHP) {
-    RES <- winDialog(type = "yesno","Voulez-vous remplacer PF_line ?")
+    RES <- askYesNo("Voulez-vous remplacer PF_line ?")
     if (RES=="YES") {
       cat("        Remplacement de PF_line","\n \n")
       SEQUOIA:::WRITE(PF_LINE, repout2, paste(NAME,"PF_line.shp",sep="_"))
     } else {
+      if(is.na(RES)){break}
       cat("        Pas de remplacement de PF_line","\n \n")
     }
   } else {
@@ -87,7 +88,7 @@ UAtoSSPF <- function(rep=F) {
 
   # Actualisation de SSPF_line
   if (paste(NAME,"SSPF_line.shp",sep="_") %in% LIST_SHP) {
-    RES1 <- winDialog(type = "yesno","Voulez-vous actualisez SSPF_line ?")
+    RES1 <- askYesNo("Voulez-vous actualisez SSPF_line ?")
     if (RES1=="YES") {
       message('\n        Actualisation de SSPF_line')
 
@@ -100,11 +101,13 @@ UAtoSSPF <- function(rep=F) {
         dplyr::select(PARFOR, PLT_TYPE, PLT_ESS, PLT_STR, PLT_TSE, SURF_COR, LblField:LblAShow)
 
       SEQUOIA:::WRITE(SSPF_TEMPO, repout2, paste(NAME,"SSPF_line.shp",sep="_"))
+    } else {
+      if(is.na(RES1)){break}
     }
   }
 
   # Créatio de AME_polygon
-  RES2 <- winDialog(type = "yesno","Voulez-vous créer AME_polygon ?")
+  RES2 <- askYesNo(type = "yesno","Voulez-vous créer AME_polygon ?")
   if (RES2=="YES") {
     message('\n        Création de AME_polygon')
     AME_list <- unique(as.data.frame(SHP["AME_TYPE"])[1])%>%
@@ -121,6 +124,8 @@ UAtoSSPF <- function(rep=F) {
     names(AME_polygon) <- c("BLOC","PARFOR", "PLT_TYPE", "AME_CODE", "AME_TYPE", "SURF_COR","geometry")
 
     SEQUOIA:::WRITE(AME_polygon, repout2, paste(NAME,"AME_polygon.shp",sep="_"))
+  } else {
+    if(is.na(RES2)){break}
   }
   options(warn=1)
 }

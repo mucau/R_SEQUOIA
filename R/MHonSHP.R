@@ -1,4 +1,4 @@
-if (!require("cadastreAnalysis")) {install_github("paul-carteron/cadastreAnalysis")}
+if (!require("cadastreAnalysis")) {devtools::install_github("paul-carteron/cadastreAnalysis")}
 library(cadastreAnalysis)
 if (!require("tcltk")) {install.packages("tcltk")}
 if (!require("sf")) {install.packages("sf")}

@@ -11,7 +11,8 @@ SSPFinUA <- function(rep=F){
   }
   if (!length(rep)){stop("Aucune sélection effectuée > Traitement annulé \n")}
   
-  UA <- st_read(rep, stringsAsFactors=F, options = "ENCODING=UTF-8", quiet=T)  # Lecture du shapefile
+  UA <- st_read(rep, stringsAsFactors=F, options = "ENCODING=UTF-8", quiet=T)%>%
+    mutate(id=seq(1:nrow(UA)))
   NAME <- str_sub(rep,
                   str_locate_all(rep,'/')[[1]][nrow(str_locate_all(rep,'/')[[1]]),1]+1,
                   str_locate(rep,'_UA')[1,1]-1)
@@ -52,5 +53,5 @@ SSPFinUA <- function(rep=F){
       } #end if
     }
   }
-  if(nrow(UARV)==nrow(UA)){SEQUOIA:::WRITE(UARV, getwd(), paste(NAME,"PROP_point.shp"))}
+  if(nrow(UARV)==nrow(UA)){SEQUOIA:::WRITE(UARV, dirname(rep), paste0(NAME,"_UA_polygon.shp"))}
 }

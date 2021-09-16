@@ -91,8 +91,13 @@ ROADtoROUTE <- function(road=F){
 
     # Entrée des paramètres
     cat('        Entrée des paramètres \n \n')
-    B1 <- as.numeric(winDialogString("Tempon RN+RD:",default = ""))
-    B2 <- as.numeric(winDialogString("Tempon RC+RF:",default = ""))
+    if (Sys.info()["sysname"]=="Windows"){
+      B1 <- as.numeric(winDialogString("Tempon RN+RD:",default = ""))
+      B2 <- as.numeric(winDialogString("Tempon RC+RF:",default = ""))
+    }else {
+      B1 <- as.numeric(readline(prompt="Tempon RN+RD:"))
+      B2 <- as.numeric(readline(prompt="Tempon RC+RF:"))
+    }
 
     # Création des buffers
     RN_buffer <- getpolygon(type="RN", B=B1+1)[, ]

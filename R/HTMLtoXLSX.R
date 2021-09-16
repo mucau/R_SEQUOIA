@@ -15,7 +15,8 @@ HTMLtoXLSX <- function(rephtml=F,repRdata=F) {
 # Import des données .html
   if(isFALSE(rephtml)){
     rephtml <- tk_choose.dir(default= getwd(),
-                             caption = "Choisir le dossier contenant les matrices")}
+                             caption = "Choisir le dossier contenant les matrices")
+    }
   if (!length(rephtml)){stop("Pas de dossier sélectionnés > Traitement annulé","\n")}
 
   if(isFALSE(repRdata)) {
@@ -30,7 +31,8 @@ HTMLtoXLSX <- function(rephtml=F,repRdata=F) {
     cat(paste0("Le dossier choisi contient ",length(LISTE_HTML)," fichiers."),"\n")
 
     sortie <- data.frame() # Création d'un dataframe vierge de sortie
-
+    sortie2 <- data.frame() # Création d'un dataframe vierge de sortie
+    
     # Boucle de traitement
     for (i in LISTE_HTML) { # Pour chaque fichier .html de la liste
       urldata <- RCurl::getURL(paste("file:/",rephtml,i, sep="/")) # Chargement du fichier .html
@@ -135,7 +137,7 @@ HTMLtoXLSX <- function(rephtml=F,repRdata=F) {
                COM_NOM  = Com_Nom,          # Création du champs COM_NOM
                PROP     = Nom,              # Création du champs PROP
                ADRESSE  = Coord) %>%        # Création du champs ADRESSE
-        dplyr::select(DEP_CODE, COM_CODE,COM_NOM,PROP,ADRESSE,SECTION:LIEUDIT, NATURE,REV_CAD,SURFACE) # Mise en ordre des champs
+        dplyr::select(DEP_CODE, COM_CODE,COM_NOM,PROP,ADRESSE,SECTION:LIEUDIT, SUB, NATURE,REV_CAD,SURFACE) # Mise en ordre des champs
 
       ### Création de la dataframes de données des subdivisions fiscales
       tab <- data.frame()   # Création d'un tableau de données vierge
@@ -154,7 +156,7 @@ HTMLtoXLSX <- function(rephtml=F,repRdata=F) {
                N_PARCA   = str_pad(N_PARCA, 4, "left", pad = "0"),   # Complément de N_PARCA avec "0"
                PREFIXE   = "000",                                    # Création du champ PREFIXE
                GROUPE    = "") %>%
-        dplyr::select(DEP_CODE:ADRESSE,PREFIXE,SECTION:LIEUDIT,GROUPE,NATURE:SURFACE) # Mise en ordre des champs
+        dplyr::select(DEP_CODE:ADRESSE,PREFIXE,SECTION:LIEUDIT,GROUPE, SUB, NATURE:SURFACE) # Mise en ordre des champs
 
       ### Calcul des variables PREFIXE et SECTION
       for (k in 1:nrow(tab)){                            # Boucle sur les lignes
@@ -211,7 +213,7 @@ HTMLtoXLSX <- function(rephtml=F,repRdata=F) {
       ### Création du tableur de sortie
       matrice <- merge(x = tab, y = tab2, by = "IDU", all.y = TRUE) # Jointure des tables 1 et 2
       matrice <- merge(x = matrice, y = tab3, by = "IDU", all.y = TRUE) # Jointure des tables 1/2 et 3
-      matrice <- matrice[,-c(11,12,13,14)] # Suppression des champs liés au subdivisions : NATURE, GROUPE, SURFACE, REV_CAD
+      matrice <- matrice[,-c(11,12,13,14,15)] # Suppression des champs liés au subdivisions : NATURE, GROUPE, SURFACE, REV_CAD
 
       names(INSEE_DEPS)<-c("REG_CODE","DEP_CODE","CHEFLIEU","TNCC","DEP_NOM","DEP_NOMI")
       INSEE_DEPS <- INSEE_DEPS %>%
@@ -228,19 +230,24 @@ HTMLtoXLSX <- function(rephtml=F,repRdata=F) {
       # /!\  tab contient l'ensemble des données des parcelles cadastrales. Les subdivisions n'y sont plus présentes
       # /!\  si on souhaite exporté tab et non matrice --> remplacement de la ligne suivante par la seconde:
 
-      if (is.null(nrow(sortie))){
-        sortie=matrice
-      }else{
-        sortie = rbind(sortie, matrice)} # Concatene dans sortie l'ensemble des matrices
-      # # if (is.null(nrow(sortie))){sortie=tab}else{sortie = rbind(sortie, tab)}
+      if (is.null(nrow(sortie))){sortie=matrice}else{sortie = rbind(sortie, matrice)} # Concatene dans sortie l'ensemble des matrices
+      if (is.null(nrow(sortie2))){sortie2=tab}else{sortie2 = rbind(sortie2, tab)}
       cat(paste("Traitement terminé du fichier", i),"\n")
     }
 
     ## Sortie définitive d'un .xlsx
-    NAME <- winDialogString("Entrer le nom du fichier de sortie:", "")
-    repOut <- paste(rephtml, paste0(NAME,".xlsx"), sep="/")
+    if (Sys.info()["sysname"]=="Windows"){
+      NAME <- winDialogString("Entrer le nom du fichier de sortie:", "")
+    }else {
+      NAME <- readline(prompt="Entrer le nom du fichier de sortie:")
+    }
+    
+    repOut <- paste(rephtml, paste0(NAME,"_matrice.xlsx"), sep="/")
+    cat(paste("Liste parcelles cadastrales enregistree dans le repertoire : ", repOut),"\n")
     #Encoding(sortie) <- "latin1"
     openxlsx::write.xlsx(sortie, repOut)
+    repOut <- paste(rephtml, paste0(NAME,"_subdi.xlsx"), sep="/")
+    openxlsx::write.xlsx(sortie2, repOut)
     cat(paste("Liste parcelles cadastrales enregistree dans le repertoire : ", repOut),"\n")
 
     assign("XLSX",sortie,envir=globalenv())

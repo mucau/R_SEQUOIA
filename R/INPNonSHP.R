@@ -22,20 +22,24 @@ INPNonSHP <- function(shp = F, repRdata = F, NAME=NULL){
   SHP <- st_read(shp, options = "ENCODING=UTF-8", quiet=T, stringsAsFactors = F)  # Lecture du shapefile
   SHP <- st_sf(st_combine(SHP))
   cat("        Le fichier .shp a été chargé avec succès \n")
-  if (grepl("PARCA", REP_SHP )){
-    NAME <- str_sub(REP_SHP,
-                    str_locate_all(REP_SHP,'/')[[1]][nrow(str_locate_all(REP_SHP,'/')[[1]]),1]+1,
-                    str_locate(REP_SHP,'_PARCA')[1,1]-1)
+  if (grepl("PARCA", shp )){
+    NAME <- str_sub(shp,
+                    str_locate_all(shp,'/')[[1]][nrow(str_locate_all(shp,'/')[[1]]),1]+1,
+                    str_locate(shp,'_PARCA')[1,1]-1)
     assign("NAME", NAME, envir=globalenv())
   }
-  if (grepl("UA", REP_SHP )){
-    NAME <- str_sub(REP_SHP,
-                    str_locate_all(REP_SHP,'/')[[1]][nrow(str_locate_all(REP_SHP,'/')[[1]]),1]+1,
-                    str_locate(REP_SHP,'_UA')[1,1]-1)
+  if (grepl("UA", shp )){
+    NAME <- str_sub(shp,
+                    str_locate_all(shp,'/')[[1]][nrow(str_locate_all(shp,'/')[[1]]),1]+1,
+                    str_locate(shp,'_UA')[1,1]-1)
     assign("NAME", NAME, envir=globalenv())
   }
   if(is.null(NAME)){
-    NAME <- winDialogString("Entrer le nom du fichier de sortie (optionnel) : ", "")
+    if (Sys.info()["sysname"]=="Windows"){
+      NAME <- winDialogString("Entrer le nom du fichier de sortie:", "")
+    }else {
+      NAME <- readline(prompt="Entrer le nom du fichier de sortie:")
+    }
   }
   if(!length(NAME)) {NAME <- ""} else {NAME <- paste0(NAME,"_")}
   
