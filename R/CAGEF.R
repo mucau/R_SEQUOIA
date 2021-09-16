@@ -35,7 +35,7 @@ CAGEF <- function(rep=F, CODECA=1){
   bdtopo <- askYesNo("Voulez-vous utiliser une IGN© BD TOPO® départementale ?")
   if(is.na(bdtopo)){break}
 
-  if (bdtopo=="YES") {
+  if (isTRUE(bdtopo)) {
     repTOPO <- tk_choose.dir(default= getwd(),
                              caption = "Choisir le répertoire de l'IGN (c) BD TOPO (r)")
     assign("repTOPO", repTOPO, envir=globalenv())
@@ -48,7 +48,7 @@ CAGEF <- function(rep=F, CODECA=1){
   # Téléchargement des données BDTOPO_HYDRO
   message(" \n        Téléchargement des données IGN© BD TOPO® Hydrologie")
 
-  if (bdtopo=="YES") {
+  if (isTRUE(bdtopo)) {
     SEQUOIA:::BDTOPO_HYDRO(PARCA, "IGN© BD TOPO® Hydrographie Départementale")
   } else {
     SEQUOIA:::BDTOPO_HYDRO(PARCA, "IGN© BD TOPO® Hydrographie Métropole")
@@ -60,7 +60,7 @@ CAGEF <- function(rep=F, CODECA=1){
 
   # Import de la végétation
   message("        Import de la végétation depuis IGN© BD TOPO®")
-  if (bdtopo=="YES") {
+  if (isTRUE(bdtopo)) {
     SEQUOIA:::BDTOPO_VEG(PARCA, repTOPO)
     INFRA_polygon <- rbind(INFRA_polygon, VEG_polygon)
     INFRA_line <- rbind(INFRA_line, VEG_line)

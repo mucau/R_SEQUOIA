@@ -64,7 +64,7 @@ UAtoSSPF <- function(rep=F) {
 
   if (paste(NAME,"PF_line.shp",sep="_") %in% LIST_SHP) {
     RES <- askYesNo("Voulez-vous remplacer PF_line ?")
-    if (RES=="YES") {
+    if (isTRUE(RES)) {
       cat("        Remplacement de PF_line","\n \n")
       SEQUOIA:::WRITE(PF_LINE, repout2, paste(NAME,"PF_line.shp",sep="_"))
     } else {
@@ -89,7 +89,7 @@ UAtoSSPF <- function(rep=F) {
   # Actualisation de SSPF_line
   if (paste(NAME,"SSPF_line.shp",sep="_") %in% LIST_SHP) {
     RES1 <- askYesNo("Voulez-vous actualisez SSPF_line ?")
-    if (RES1=="YES") {
+    if (isTRUE(RES1)) {
       message('\n        Actualisation de SSPF_line')
 
       SSPF_LINE <- st_read(paste(dirname(rep),paste(NAME,"SSPF_line.shp",sep="_"),sep="/"),
@@ -108,7 +108,7 @@ UAtoSSPF <- function(rep=F) {
 
   # Créatio de AME_polygon
   RES2 <- askYesNo(type = "yesno","Voulez-vous créer AME_polygon ?")
-  if (RES2=="YES") {
+  if (isTRUE(RES2)) {
     message('\n        Création de AME_polygon')
     AME_list <- unique(as.data.frame(SHP["AME_TYPE"])[1])%>%
       mutate(AME_CODE = as.character(NA))

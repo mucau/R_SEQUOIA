@@ -16,7 +16,7 @@ CLIMonSHP <- function(shp = F){
   AURELHY <- askYesNo("Voulez-vous intégrer les données AURELHY ?")
   if(is.na(AURELHY)){break}
   
-  if(AURELHY == "YES"){
+  if(isTRUE(AURELHY)){
     if(exists("repRdata")) {Rdata <- repRdata} else {
       Rdata <- tcltk::tk_choose.dir(caption = "Choisir le dossier contenant les données AURELHY.Rdata")
       if(is.na(Rdata)){stop("Pas de dossier sélectionné")}
@@ -27,7 +27,7 @@ CLIMonSHP <- function(shp = F){
   DRIAS <- askYesNo("Voulez-vous intégrer les données DRIAS ?")
   if(is.na(DRIAS)){break}
   
-  if(DRIAS == "YES"){
+  if(isTRUE(DRIAS)){
     txt  <- tcltk::tk_choose.files(default = "~", caption = "Selectionner le fichier .txt de donnée",
                                    filter = matrix(c("Fichier texte", ".txt"), 1, 2, byrow = TRUE))
     if (!length(txt)){stop("Pas de txt sélectionné")}
@@ -38,7 +38,7 @@ CLIMonSHP <- function(shp = F){
   ask <- askYesNo(paste0("Le fichier sera exporté dans ", dsn, "\nC'est bon pour vous ?"))
   if(is.na(ask)){break}
   
-  if(ask == "NO") {
+  if(isFALSE(ask)) {
     dsn <- tcltk::tk_choose.dir(default = dirname(shp), caption = "Choisir le dossier de destination")
     if(is.na(dsn)){dsn <- setwd("~/")}
   }
@@ -65,23 +65,23 @@ CLIMonSHP <- function(shp = F){
                     dsn, encoding = "UTF-8")
 
   # Export des tableurs de données
-  if (AURELHY=="NO" & DRIAS=="NO"){
+  if (isFALSE(AURELHY) & isFALSE(DRIAS)){
     export <- list("METEOFRANCE_ombro" = METEOFRANCE_ombro,
                    "METEOFRANCE_etp" = METEOFRANCE_etp)
   }
-  if (AURELHY!="NO" & DRIAS=="NO"){
+  if (isTRUE(AURELHY) & isFALSE(DRIAS)){
     export <- list("METEOFRANCE_ombro" = METEOFRANCE_ombro,
                    "METEOFRANCE_etp" = METEOFRANCE_etp,
                    "AURELHY_ombro"=AURELHY_ombro,
                    "AURELHY_etp"=AURELHY_etp)
   }
-  if (AURELHY=="NO" & DRIAS!="NO"){
+  if (isFALSE(AURELHY) & isTRUE(DRIAS)){
     export <- list("METEOFRANCE_ombro" = METEOFRANCE_ombro,
                    "METEOFRANCE_etp" = METEOFRANCE_etp,
                    "DRIAS_ombro"=DRIAS_ombro,
                    "DRIAS_etp"=DRIAS_etp)
   }
-  if (AURELHY!="NO" & DRIAS!="NO"){
+  if (isTRUE(AURELHY) & isTRUE(DRIAS)){
     export <- list("METEOFRANCE_ombro" = METEOFRANCE_ombro,
                    "METEOFRANCE_etp" = METEOFRANCE_etp,
                    "AURELHY_ombro"=AURELHY_ombro,

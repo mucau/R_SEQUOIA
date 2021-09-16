@@ -257,7 +257,7 @@ XLSXtoPARCA <- function(rep=F){
     if(ERR>0){
       message("\n        Une ou plusieurs références sont manquantes")
       ask <- askYesNo("Voulez-vous utiliser une autre source de données?")
-      if(ask == "NO"){break}
+      if(isFALSE(ask)){break}
       if(is.na(ask)){break}
     } else {
       break
