@@ -1,9 +1,29 @@
+#' @title BDTOPO_VEG
+#' Telechargement de vegetation depuis IGN(c) BD TOPO(r))
+#' @encoding UTF-8
+#' @description 
+#' La fonction \code{BDTOPO_VEG} charge les données de végétations depuis IGN© BD TOPO® autour d'un parcellaire cadastral (sf) et génère un ensemble d'objet sf nécessaires à la réalisation d'une cartographie forestière ponctuelle.
+#' @usage BDTOPO_VEG(PARCA, repBDTOPO)
+#' @param PARCA sf du parcellaire cadastral. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du shapefile
+#' @param repBDTOPO Répertoire de la IGN© BD TOPO®. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du dossier
+#' @return
+#' \item{VEG_polygon}{Objet sf ; Polygones des surfaces forestières ; TYPE='VEG'}
+#' \item{VEG_line}{Objet sf ;Lignes contours surfaces forestières ; TYPE='VEG'}
+#' \item{VEG_point}{Objet sf ;Points natures de culture ; TYPE='VEG'}
+#' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
+#' @examples 
+#' ### Fonctionnement :
+#'  BDTOPO_VEG(PARCA=F, repBDTOPO=F))
+#' @export
+#' 
+#' @import tcltk sf dplyr stringr lwgeom
+
 # Lancement des library
-if (!require("tcltk")) {install.packages("tcltk")}
-if (!require("sf")) {install.packages("sf")}
-if (!require("dplyr")) {install.packages("dplyr")}
-if (!require("stringr")) {install.packages("stringr")}
-if (!require("lwgeom")) {install.packages("lwgeom")}
+# if (!require("tcltk")) {install.packages("tcltk")}
+# if (!require("sf")) {install.packages("sf")}
+# if (!require("dplyr")) {install.packages("dplyr")}
+# if (!require("stringr")) {install.packages("stringr")}
+# if (!require("lwgeom")) {install.packages("lwgeom")}
 
 BDTOPO_VEG <- function(PARCA=F, repBDTOPO=F){
   options(warn=-1) # Désactivation des warnings
@@ -58,6 +78,9 @@ BDTOPO_VEG <- function(PARCA=F, repBDTOPO=F){
 
   # Difference
   VEG <- st_difference(VEG, st_make_valid(st_union(PARCA)))
+  if(exists("INFRA_polygon")){
+    VEG <- st_difference(VEG, st_make_valid(st_buffer(st_combine(INFRA_polygon),5)))
+  }
   VEG <- st_make_valid(st_cast(VEG, 'MULTIPOLYGON'))
 
   # Création de VEG_polygon

@@ -1,11 +1,32 @@
-# Lancement des library
-if (!require("sf")) {install.packages("sf")}
-if (!require("rvest")) {install.packages("rvest")}
-if (!require("R.utils")) {install.packages("R.utils")}
-if (!require("stringr")) {install.packages("stringr")}
-if (!require("tcltk")) {install.packages("tcltk")}
+#' @title ETALAB
+#' Telechargement des donnees ETALAB
+#' @encoding UTF-8
+#' @description 
+#' La fonction \code{ETALAB} télécharge les données ETALAB autour d'un parcellaire cadastral (sf) et génère un ensemble de .shp (EPSG 2154) et d'objet sf nécessaires ou utiles à la réalisation d'une cartographie forestière ponctuelle.
+#' @usage ETALAB(PARCA)
+#' @param PARCA sf du parcellaire cadastrale. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.
+#' @return
+#' \item{BATICA_polygon}{Fichier shapefile ; Batiments cadastré environnants la propriété}
+#' \item{LIEUDIT_point}{Fichier shapefile ; Lieudits environnants la propriété}
+#' \item{ROAD_polygon}{Fichier shapefile ; Vides cadatrés environnants la propriété : routes+tronçons fluviaux}
+#' \item{PARCELLES_polygon}{Fichier shapefile ; Parcellaire cadastral global des communes}
+#' \item{SUBDFISC_polygon}{Fichier shapefile ; Subdivisions fiscales}
+#' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
+#' @examples 
+#' ### Fonctionnement :
+#'   ETALAB(PARCA)
+#' @export
+#' 
+#' @import tcltk sf dplyr stringr
 
-ETALAB <- function(PARCA=T){
+# Lancement des library
+# if (!require("sf")) {install.packages("sf")}
+# if (!require("rvest")) {install.packages("rvest")}
+# if (!require("R.utils")) {install.packages("R.utils")}
+# if (!require("stringr")) {install.packages("stringr")}
+# if (!require("tcltk")) {install.packages("tcltk")}
+
+ETALAB <- function(PARCA=F){
   if(isFALSE(PARCA)) {
     rep<-tk_choose.files(caption = "Choisir le fichier .shp du parcellaire cadastral (PARCA)")
 

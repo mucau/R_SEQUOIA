@@ -1,9 +1,29 @@
+#' @title BDTOPO_HYDRO
+#' Telechargement des donnees IGN(c) BD TOPO(r) HYDROGRAPHIE
+#' @encoding UTF-8
+#' @description 
+#' La fonction \code{BDTOPO_HYDRO} charge et exporte les données IGN© BD TOPO® HYDROGRAPHIE autour d'un parcellaire cadastral (sf) et génère un ensemble d'objet sf nécessaires à la réalisation d'une cartographie forestière ponctuelle.
+#' @usage BDTOPO_HYDRO(PARCA, repBDTOPO)
+#' @param PARCA sf du parcellaire cadastral Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du shapefile
+#' @param repBDTOPO Répertoire de la IGN© BD TOPO® HYDROGRAPHIE. Deux choix possibles: départementale ou métropolitaine.
+#' @return
+#' \item{HYDRO_polygon}{Objet sf ; SURFO: polygones hydrologique des surfaces hydrographiques permanentes, SURFOi: intermittentes, RESO: réservoirs d'eau}
+#' \item{HYDRO_line}{Objet sf ; RU: lignes hydrologiques des tronçons fluviaux permanentes, RUi: intermittents, CANO: canalisations}
+#' \item{HYDRO_point}{Objet sf ; PTSO : Points hydrologiques des points d'eau; NOMO: hydronymes}
+#' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
+#' @examples 
+#' ### Fonctionnement :
+#'   BDTOPO_HYDRO(PARCA, repBDTOPO)
+#' @export
+#' 
+#' @import tcltk sf dplyr stringr lwgeom
+
 # Lancement des library
-if (!require("tcltk")) {install.packages("tcltk")}
-if (!require("sf")) {install.packages("sf")}
-if (!require("dplyr")) {install.packages("dplyr")}
-if (!require("stringr")) {install.packages("stringr")}
-if (!require("lwgeom")) {install.packages("lwgeom")}
+# if (!require("tcltk")) {install.packages("tcltk")}
+# if (!require("sf")) {install.packages("sf")}
+# if (!require("dplyr")) {install.packages("dplyr")}
+# if (!require("stringr")) {install.packages("stringr")}
+# if (!require("lwgeom")) {install.packages("lwgeom")}
 
 BDTOPO_HYDRO <- function(PARCA=F, source=F){
   options(warn=-1) # Désactivation des warnings

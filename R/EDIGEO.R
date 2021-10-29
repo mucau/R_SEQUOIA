@@ -1,8 +1,34 @@
+#' @title EDIGEO
+#' Chargement et export des donnees EDIGEO du cadastre.gouv.fr
+#' @encoding UTF-8
+#' @description 
+#' La fonction \code{EDIGEO} charge les données EDIGEO du cadastre.gouv.fr autour d'un parcellaire cadastral (sf) et génère un ensemble de .shp (EPSG 2154) nécessaires ou utiles à la réalisation d'une cartographie forestière ponctuelle.
+#' @usage EDIGEO(PARCA, rep_EDIGEO)
+#' @param PARCA sf du parcellaire cadastrale.
+#' @param rep_EDIGEO repertoire des données EDIGEO.
+#' @return 
+#' \item{LIEUDIT_point}{Fichier shapefile ; Lieudits environnants la propriété}
+#' \item{ROAD_polygon}{Fichier shapefile ; Vides cadatrés environnants la propriété : routes+tronçons fluviaux}
+#' \item{BATICA_polygon}{Fichier shapefile ; Batiments cadastré environnants la propriété}
+#' \item{PARCELLES_polygon}{Fichier shapefile ; Parcellaire cadastral global des communes}
+#' \item{TSURF_polygon}{Fichier shapefile ; Etangs et mares cadastrées}
+#' \item{TINE_line}{Fichier shapefile ; Lignes cadastrales : chemins, notes, etc.}
+#' \item{TRONFLUV_polygon}{Fichier shapefile ; Ruisseaux cadastrés}
+#' \item{COMMUNI_line}{Fichier shapefile ; Tronçons routiers inscrits au cadastre}
+#' \item{SUBDFISC_polygon}{Fichier shapefile ; Subdivisions fiscales}
+#' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
+#' @examples 
+#' ### Fonctionnement :
+#'   EDIGEO(PARCA)
+#' @export
+#' 
+#' @import tcltk sf dplyr stringr
+
 # Lancement des library
-if (!require("sf")) {install.packages("sf")}
-if (!require("rvest")) {install.packages("rvest")}
-if (!require("R.utils")) {install.packages("R.utils")}
-if (!require("stringr")) {install.packages("stringr")}
+# if (!require("sf")) {install.packages("sf")}
+# if (!require("rvest")) {install.packages("rvest")}
+# if (!require("R.utils")) {install.packages("R.utils")}
+# if (!require("stringr")) {install.packages("stringr")}
 
 
 EDIGEO <- function(PARCA, rep_EDIGEO){

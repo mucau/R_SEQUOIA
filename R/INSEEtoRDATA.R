@@ -1,5 +1,29 @@
+#' @title INSEEtoRDATA
+#' Recuperation des donnees administratives et creation d'une archive R.data
+#' @encoding UTF-8
+#' @description 
+#' La fonction \code{INSEEtoRDATA} télécharge depuis la plateforme ouverte des données publiques françaises (data.gouv) et du site de l'INSEE plusieurs fichiers de référence administratives. La fonction les sauvegarde ensuite dans une archive .Rdata si un répertoire de sauvegarde est fournit.
+#' @usage INSEEtoRDATA(rep)
+#' @param rep Répertoire de sortie de l'archive .Rdata. Si \code{NULL}, les données sont justes ajoutées à l'environnement.
+#' @details 
+#' La fonction produit une archive .Rdata nécessaire à la fonction [HTMLtoXLSX].
+#' @return
+#' \item{INSEE_POST}{Base officielle des codes postaux}
+#' \item{INSEE_REGS}{Liste des régions. Codes officiels géographiques au 1er janvier 2018.}
+#' \item{INSEE_DEPS}{Liste des départements. Codes officiels géographiques au 1er janvier 2018.}
+#' \item{INSEE_COMS}{Liste des communes. Codes officiels géographiques au 1er janvier 2018.}
+#' @references Les codes des champs de l'INSEE sont explicités sur le site de l'institut : \url{https://www.insee.fr/fr/information/3363504}
+#' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
+#' @examples 
+#' ### Fonctionnement :
+#'   INSEEtoRDATA(rep=NULL)
+#' @export
+#' 
+#' @import tcltk sf dplyr stringr 
+#' @importFrom foreign read.dbf
+
 # Lancement des library
-if (!require("foreign")) {install.packages("foreign")}
+# if (!require("foreign")) {install.packages("foreign")}
 
 INSEEtoRDATA <- function(rep=NULL){
 

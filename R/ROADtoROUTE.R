@@ -1,10 +1,31 @@
+#' @title ROADtoROUTE
+#' Conversion de ROAD vers ROUTE
+#' @encoding UTF-8
+#' @description 
+#' La fonction \code{ROADtoROUTE} génére les .shp (EPSG 2154) polygone et ligne à partir de ROAD_polygon (vides cadastraux) ou de ROAD_line (routes référencées dans l'OSM ou la BDTOPO)
+#' @usage ROADtoROUTE(road)
+#' @param road CHARACTER. Adresse du fichier \code{.shp} ROAD_polygon.shp ou ROAD_line.shp. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.
+#' @return
+#' Les fichiers .shp suivants sont produits :
+#' \item{ROUTE_polygon}{Fichier shapefile ; fonds routes}
+#' \item{ROUTE_line}{Fichier shapefile ; contours routes}
+#' @details Le shapefile road d'entrée doit disposer d'une table attributaire complétée. Le champ "TYPE" doit correspondre à la nomenclature suivante =
+#' TYPE='RN' : routes nationnales & autoroutes, TYPE='RD' : routes départementales,  TYPE='RC' : routes revêtues non départementales, TYPE='RF' : les routes empierrées/forestières, TYPE='PN' : les pistes en terrain naturel
+#' Dans ROAD_polygon.shp, les codes TYPE='CR' pour chemins ruraux et TYPE='CC' pour chemins privés cadastrés sont acceptés en plus des codes précédents.
+#' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
+#' @examples 
+#' ### Fonctionnement :
+#'   ROADtoROUTE(road = F)
+#' @export
+#' 
+#' @import tcltk dplyr stringr sf
+
 # Lancement des library
-if (!require("tcltk")) {install.packages("tcltk")}
-if (!require("sf")) {install.packages("sf")}
-if (!require("dplyr")) {install.packages("dplyr")}
-if (!require("units")) {install.packages("units")}
-if (!require("stringr")) {install.packages("stringr")}
-if (!require("lwgeom")) {install.packages("lwgeom")}
+# if (!require("tcltk")) {install.packages("tcltk")}
+# if (!require("sf")) {install.packages("sf")}
+# if (!require("dplyr")) {install.packages("dplyr")}
+# if (!require("stringr")) {install.packages("stringr")}
+# if (!require("lwgeom")) {install.packages("lwgeom")}
 
 ROADtoROUTE <- function(road=F){
   options(warn=-1) #désactivation des warnings
@@ -52,10 +73,10 @@ ROADtoROUTE <- function(road=F){
     ROUTE_line <- st_collection_extract(ROUTE_line,'LINESTRING')
 
     # Nettoyage de la table
-    ROUTE_line$LENGTH <- st_length(ROUTE_line) # Ajouter un champ longueur
+    ROUTE_line$LENGTH <- as.numeric(st_length(ROUTE_line)) # Ajouter un champ longueur
 
     d=0.1
-    units(d) = "m"
+    #units(d) = "m"
     ROUTE_line<- ROUTE_line%>%
       filter(!(ROUTE_line$LENGTH < d))
     cat('        lignes: découpe réalisée \n')
@@ -122,7 +143,7 @@ ROADtoROUTE <- function(road=F){
 
     # Création du buffer de découpe des extrémités
     BUFFER_line <- ROAD_line %>% filter(TYPE %in% c("RN", "RD", "RC", "RF"))
-    BUFFER_line <- BUFFER_line %>% mutate(id=1, length=st_length(BUFFER_line))
+    BUFFER_line <- BUFFER_line %>% mutate(id=1, length=as.numeric(st_length(BUFFER_line)))
     BUFFER_line <- aggregate(x = BUFFER_line[, "length"], by = list(BUFFER_line$id),
                              FUN = sum, na.rm = TRUE)
 
@@ -159,21 +180,36 @@ ROADtoROUTE <- function(road=F){
     cat('        lignes: buffers crées \n')
 
     PN_line <- st_difference(PN_line, st_buffer(st_union(ROUTE_buffer1), -0.01))
-    ROUTE_line <- st_difference(ROUTE_line, st_buffer(st_union(ROUTE_buffer1), -0.01))
+    ROUTE_line <- st_difference(ROUTE_line, st_buffer(st_union(ROUTE_buffer1), -0.001))
     cat('        lignes: débordements supprimés \n')
 
-    ROUTE_line <- st_intersection(ROUTE_line, st_buffer(st_union(ROUTE_polygon), 0.01))
+    ROUTE_line <- st_intersection(ROUTE_line, st_buffer(st_union(ROUTE_polygon), 0.001))
     ROUTE_line <- rbind(ROUTE_line, PN_line)
+    point   <- st_collection_extract(st_intersection(ROUTE_line, st_cast(ROUTE_line, "MULTILINESTRING", group_or_split = FALSE)), "POINT")
+    
+    ROUTE_line <- st_difference(ROUTE_line, st_union(st_buffer(point, 0.00001)))
     ROUTE_line <- st_cast(ROUTE_line, 'MULTILINESTRING') %>% st_cast('LINESTRING')
-    ROUTE_line <- ROUTE_line %>% mutate(length = st_length(ROUTE_line), DECA=as.character(NA)) %>%
-      filter(length>set_units(1,'m')) %>% dplyr::select(TYPE, NAME, DECA)
+  
+    ROUTE_line <- ROUTE_line %>% mutate(length = as.numeric(st_length(ROUTE_line)), DECA=as.character(NA)) %>%
+      filter(length>=0.05) 
+    
+    ROUTE_line <- st_snap(ROUTE_line, point, 0.0001)
+    
+    ROUTE_line <- ROUTE_line %>%
+      group_by(TYPE, NATURE, NAME) %>% 
+      summarise_each(funs(mean)) %>% 
+      dplyr::select(TYPE, NATURE, NAME, DECA)
+    
     cat('        lignes: découpe réalisée \n')
     cat('        ROUTE_line a été crée \n \n')
 
     # Sorties des fichiers
     message('        Export des fichiers')
+    SEQUOIA:::WRITE(point, repout2, paste(NAME,"ROUTE_point.shp",sep="_"))
     SEQUOIA:::WRITE(ROUTE_polygon, repout2, paste(NAME,"ROUTE_polygon.shp",sep="_"))
     SEQUOIA:::WRITE(ROUTE_line, repout2, paste(NAME,"ROUTE_line.shp",sep="_"))
+    SEQUOIA:::WRITE(test4, repout2, paste(NAME,"ROUTE-test_line.shp",sep="_"))
+    
   } # Fin Boucle 2. OSM
 
   # Suppression débordement INFRA_line

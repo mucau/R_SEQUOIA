@@ -1,8 +1,30 @@
+#' @title AURELHYonSHP
+#' Climatologie AURELHY sur une zone d'etude
+#' @encoding UTF-8
+#' @description 
+#' La fonction AURELHYonSHP renseigne des données climatologiques sur une zone détude
+#' Les données climatiques Aurelhy (© Météo-France, 2001) ont été obtenues à partir de jeux de données ponctuelles des stations Météo-France qui ont été spatialisées en utilisant des modèles statistiques élaborés à l’aide de variables topographiques.
+#' Les informations ci-dessous correspondantes aux normales déterminés par le modèle Aurelhy sur une étendue de 2,5 km autour de la forêt pour la période 1981-2010.
+#' @usage AURELHYonSHP(repshp, repRdata)
+#' @param repshp CHARACTER. Adresse du fichier .shp de la zone d'étude. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.
+#' @param repRdata CHARACTER. Répertoire du fichier .Rdata contenant les données AURELHY. Si FALSE, la fonction génère une boite de dialogue de sélection du dossier.
+#' @details La fonction réclame une archive INSEE.Rdata externe non fournie.
+#' @return 
+#' La fonction retourne un dataframe des données AURELHY: température (min, max, moy), précipitation et nombre de jours de gel. Ces renseignements sont fournies au mois et cumulés/moyennés à l'année.
+#' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
+#' @examples 
+#' ### Fonctionnement :
+#'   AURELHYonPARCA(repshp = F, repRdata = F)
+#' @export
+#' 
+#' @import tcltk sf dplyr
+#' @importFrom data.table transpose
+
 # Lancement des library
-if (!require("tcltk")) {install.packages("tcltk")}
-if (!require("sf")) {install.packages("sf")}
-if (!require("data.table")) {install.packages("data.table")}
-if (!require("dplyr")) {install.packages("dplyr")}
+# if (!require("tcltk")) {install.packages("tcltk")}
+# if (!require("sf")) {install.packages("sf")}
+# if (!require("data.table")) {install.packages("data.table")}
+# if (!require("dplyr")) {install.packages("dplyr")}
 
 AURELHYonSHP <- function(shp=F, Rdata=F){
   if(isFALSE(shp)) {shp <- tk_choose.files(caption = "Choisir le fichier .shp",
@@ -45,7 +67,7 @@ AURELHYonSHP <- function(shp=F, Rdata=F){
     AU_df <- as.data.frame(AU_df)[,-length(AU_df)]
 
     # création dataP
-    dataP <- transpose(AU_df[,3:14]); dataP$P <- as.numeric(1.1)
+    dataP <- data.table::transpose(AU_df[,3:14]); dataP$P <- as.numeric(1.1)
     for (a in 1:nrow(dataP)){
       dataP[a,ncol(dataP)] <- round(mean(unlist(dataP[a, 1:ncol(dataP)-1])),1)
     }
@@ -54,7 +76,7 @@ AURELHYonSHP <- function(shp=F, Rdata=F){
       select(month, P)
 
     # création dataTn
-    dataTn <- transpose(AU_df[,15:26]); dataTn$Tn <- as.numeric(1.1)
+    dataTn <- data.table::transpose(AU_df[,15:26]); dataTn$Tn <- as.numeric(1.1)
     for (a in 1:nrow(dataTn)){
       dataTn[a,ncol(dataTn)] <- round(mean(unlist(dataTn[a, 1:ncol(dataTn)-1])),1)
     }
@@ -63,7 +85,7 @@ AURELHYonSHP <- function(shp=F, Rdata=F){
       select(month, Tn)
 
     # création dataTx
-    dataTx <- transpose(AU_df[,27:38]); dataTx$Tx <- as.numeric(1.1)
+    dataTx <- data.table::transpose(AU_df[,27:38]); dataTx$Tx <- as.numeric(1.1)
     for (a in 1:nrow(dataTx)){
       dataTx[a,ncol(dataTx)] <- round(mean(unlist(dataTx[a, 1:ncol(dataTx)-1])),1)
     }
@@ -72,7 +94,7 @@ AURELHYonSHP <- function(shp=F, Rdata=F){
       select(month, Tx)
 
     # création dataNbjgel
-    dataNbjgel <- transpose(AU_df[,39:50]); dataNbjgel$Nbjgel <- as.numeric(1.1)
+    dataNbjgel <- data.table::transpose(AU_df[,39:50]); dataNbjgel$Nbjgel <- as.numeric(1.1)
     for (a in 1:nrow(dataNbjgel)){
       dataNbjgel[a,ncol(dataNbjgel)] <- round(mean(unlist(dataNbjgel[a, 1:ncol(dataNbjgel)-1])),1)
     }

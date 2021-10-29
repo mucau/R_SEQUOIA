@@ -1,8 +1,25 @@
+#' @title SSPFinUA
+#' Affectation arbitraire d'un code N_SSPARFOR dans UA_polygon
+#' @encoding UTF-8
+#' @description 
+#' La fonction \code{SSPFinUA} affecte arbitrairement un code N_SSPARFOR pour des entités de UA_polygon pour lesquels les champs PLT_TYPE, PLT_ESS, PLT_STR et PLT_TSE ont été complétés.
+#' @usage UAtoSSPF(rep)
+#' @param rep CHARACTER. Adresse du fichier \code{.shp} UA_polygon. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.
+#' @return
+#' \item{UA_polygon}{Fichier shapefile ; unité d'analyse corrigé}
+#' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
+#' @examples 
+#' ### Fonctionnement :
+#'     SSPFinUA(rep=F)
+#' @export
+#' 
+#' @import tcltk dplyr stringr sf
+
 # Lancement des library
-if (!require("tcltk")) {install.packages("tcltk")}
-if (!require("sf")) {install.packages("sf")}
-if (!require("stringr")) {install.packages("stringr")}
-if (!require("dplyr")) {install.packages("dplyr")}
+# if (!require("tcltk")) {install.packages("tcltk")}
+# if (!require("sf")) {install.packages("sf")}
+# if (!require("stringr")) {install.packages("stringr")}
+# if (!require("dplyr")) {install.packages("dplyr")}
 
 SSPFinUA <- function(rep=F){
   if(isFALSE(rep)) {

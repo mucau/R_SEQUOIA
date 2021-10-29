@@ -1,7 +1,28 @@
+#' @title INPNtoRDATA
+#' Creation d'une archive .Rdata des enjeux environnementaux
+#' @encoding UTF-8
+#' @description 
+#' La fonction \code{INPNtoRDATA} télécharge depuis le site de l'INPN l'ensemble des fichiers .shp des enjeux environnementaux et sauvegarde ces couches dans une archive .Rdata 
+#' @usage INPNtoRDATA(rep)
+#' @param rep Répertoire de sortie de l'archive .Rdata Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du dossier.
+#' @details 
+#' La fonction produit une archive .Rdata nécessaire à la fonction [INPNonSHP].
+#' @return
+#' \item{list_INPN}{Liste de fichiers cartographiques sf}
+#' \item{list_INPN_NOM}{Liste des noms des fichiers cartographiques sf de la liste précédente}
+#' @references Vous pouvez retrouvé les données environnementales sur le site de l'Institut national pour la protection de la nature (INPN) : \url{https://inpn.mnhn.fr/accueil/index}
+#' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
+#' @examples 
+#' ### Fonctionnement :
+#'   INPNtoRDATA(rep=F)
+#' @export
+#' 
+#' @import tcltk sf dplyr stringr
+
 # Lancement des library
-if (!require("sf")) {install.packages("sf")}
-if (!require("stringr")) {install.packages("stringr")}
-if (!require("tcltk")) {install.packages("tcltk")}
+# if (!require("sf")) {install.packages("sf")}
+# if (!require("stringr")) {install.packages("stringr")}
+# if (!require("tcltk")) {install.packages("tcltk")}
 
 INPNtoRDATA <- function(rep=F){
   if(isFALSE(rep)) {rep <- tk_choose.dir(default= getwd(), caption = "Choisir le répertoire de telechargement des archives .Rdata")}

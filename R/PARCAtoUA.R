@@ -1,8 +1,29 @@
+#' @title PARCAtoUA
+#' Creation d'un ensemble de .shp a partir d'un parcellaire cadastral .shp
+#' @encoding UTF-8
+#' @description 
+#' La fonction \code{PARCAtoUA} génère un ensemble de .shp (EPSG 2154) nécessaires à la réalisation d'une cartographie forestière ponctuelle à partir d'un parcellaire cadastral .shp formatée (EPSG 2154).
+#' @usage XLSXtoPARCA(rep)
+#' @param rep CHARACTER. Adresse du fichier \code{.shp}. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.
+#' Les fichiers .shp suivants sont produits :
+#' @return
+#' \item{UA_polygon}{Fichier shapefile ; Unités d'analyse}
+#' \item{PROP_polygon}{Fichier shapefile ; Propriété unifiée}
+#' \item{PROP_line}{Fichier shapefile ; Contours de la propriété unifiée}
+#' \item{PROP_point}{Fichier shapefile ; Centroide de la propriété unifiée}
+#' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
+#' @examples 
+#' ### Fonctionnement :
+#'   PARCAtoUA(rep=F)
+#' @export
+#' 
+#' @import tcltk dplyr stringr sf
+
 # Lancement des library
-if (!require("tcltk")) {install.packages("tcltk")}
-if (!require("sf")) {install.packages("sf")}
-if (!require("stringr")) {install.packages("stringr")}
-if (!require("dplyr")) {install.packages("dplyr")}
+# if (!require("tcltk")) {install.packages("tcltk")}
+# if (!require("sf")) {install.packages("sf")}
+# if (!require("stringr")) {install.packages("stringr")}
+# if (!require("dplyr")) {install.packages("dplyr")}
 
 PARCAtoUA <- function(rep=F) {
   message('- - - Création de UA_polygon à partir de PARCA_polygon - - -')

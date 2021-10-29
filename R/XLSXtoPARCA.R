@@ -1,15 +1,39 @@
+#' @title XLSXtoPARCA
+#' Creation d'un parcellaire cadastral .shp a partir d'une matrice cadastrale .xlsx
+#' @encoding UTF-8
+#' @description 
+#' La fonction \code{XLSXtoPARCA} génère deux parcellaires cadastrals au format .shp (EPSG 2154) à partir d'une matrice cadastral formatée au format .xlsx .
+#' @usage XLSXtoPARCA(rep)
+#' @param rep CHARACTER. Adresse du fichier \code{.xlsx}, tableur Excel contenant la matrice cadastrale Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.
+#' @return
+#' \item{PARCA_polygon}{Fichier shapefile ; Parcellaire cadastrale .shp EPSG 2154 pour post-traitement}
+#' \item{PARCA-ARCHIVE_polygon}{Fichier shapefile ; Parcellaire cadastrale .shp EPSG 2154 pour archivage}
+#' \item{PARCA_polygon}{Objet sf ; "PARCA_polygon" dans l'environnement de travail}
+#' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
+#' @examples
+#' ### Fonctionnement :
+#'    XLSXtoPARCA(rep=F)
+#' @export
+#' 
+#' @import tcltk sf dplyr stringr lwgeom
+#' @importFrom R.utils gunzip
+#' @importFrom rvest html_nodes
+#' @importFrom rvest html_attr
+#' @importFrom readxl read_excel
+#' @importFrom xml2 read_html
+
 # Lancement des library
-if (!require("tcltk")) {install.packages("tcltk")}
-if (!require("sf")) {install.packages("sf")}
-if (!require("dplyr")) {install.packages("dplyr")}
-if (!require("stringr")) {install.packages("stringr")}
-if (!require("lwgeom")) {install.packages("lwgeom")}
-if (!require("R.utils")) {install.packages("R.utils")}
-if (!require("rvest")) {install.packages("rvest")}
-if (!require("xml2")) {install.packages("xml2")}
-if (!require("readxl")) {install.packages("readxl")}
-if (!require("rlang")) {install.packages("rlang")}
-if (!require("smoothr")) {install.packages("smoothr")}
+# if (!require("tcltk")) {install.packages("tcltk")}
+# if (!require("sf")) {install.packages("sf")}
+# if (!require("dplyr")) {install.packages("dplyr")}
+# if (!require("stringr")) {install.packages("stringr")}
+# if (!require("lwgeom")) {install.packages("lwgeom")}
+# if (!require("R.utils")) {install.packages("R.utils")}
+# if (!require("rvest")) {install.packages("rvest")}
+# if (!require("xml2")) {install.packages("xml2")}
+# if (!require("readxl")) {install.packages("readxl")}
+# if (!require("rlang")) {install.packages("rlang")}
+# if (!require("smoothr")) {install.packages("smoothr")}
 
 XLSXtoPARCA <- function(rep=F){
   options(warn=-1) # Désactivation des warnings
@@ -22,7 +46,7 @@ XLSXtoPARCA <- function(rep=F){
 
   # Import des données .xlsx
   message('        Lecture des données')
-  XLSX <- read_excel(rep)
+  XLSX <- readxl::read_excel(rep)
   cat("        Le fichier .xlsx a été chargé avec succès \n")
 
   # Création des répertoires de sorties
@@ -69,7 +93,7 @@ XLSXtoPARCA <- function(rep=F){
       DEP <- str_sub(ID_CAD[a,1],1,2)
       COM <- ID_CAD[a,1]
       URL <- paste(COM_URL, DEP, sep="/")
-      LISTE_URL <- list(html_attr(html_nodes(read_html(URL), "a"), "href"))
+      LISTE_URL <- list(rvest::html_attr(rvest::html_nodes(xml2::read_html(URL), "a"), "href"))
 
       if(grepl(COM, LISTE_URL)!=F) {
         URL <- paste(COM_URL, DEP, COM, paste("cadastre-", COM, "-parcelles.json.gz", sep=""), sep="/")
@@ -137,7 +161,7 @@ XLSXtoPARCA <- function(rep=F){
     SHP <- SHP %>%
       mutate(IDU = paste(CODE_DEP, CODE_COM,COM_ABS,SECTION,NUMERO, sep=""))
     XLSX_PC <- XLSX %>%
-      mutate(IDU = paste(DEP_CODE, IDU, sep=""))
+      mutate(IDU = paste(str_pad(DEP_CODE,2,"left","0"), IDU, sep=""))
     cat("        L'IDU a été crée \n \n")
 
     message('        Sélection des parcelles')
@@ -252,7 +276,12 @@ XLSXtoPARCA <- function(rep=F){
     if ("3 cadastre.gouv.fr" %in% RES1) {
       cat("        cadastre.gouv.fr retenu \n") ;PARCA <- cadastre.Edigeo(XLSX, PARCA) ; CODE=3}
 
-    ERR <- NBR-nrow(PARCA)
+    if (length(PARCA)==0){
+      ERR <- NBR
+    } else {
+      ERR <- NBR-nrow(PARCA)
+    }
+    
 
     if(ERR>0){
       message("\n        Une ou plusieurs références sont manquantes")
@@ -265,6 +294,7 @@ XLSXtoPARCA <- function(rep=F){
   } # fin repeat
 
   # Exportation du fichier .shp "PARCA"
+  if (length(PARCA)==0){stop("Vérifier vos références")}
   if(nrow(PARCA)>0){ # Boucle création "PARCA"
     message("\n        Export des fichiers")
 
@@ -276,7 +306,7 @@ XLSXtoPARCA <- function(rep=F){
     assign("repout3", repout3, envir=globalenv())
     
     if (Sys.info()["sysname"]=="Windows"){
-      NAME <- winDialogString("Entrer le nom du fichier de sortie:", "")
+      NAME <- utils::winDialogString("Entrer le nom du fichier de sortie:", "")
     }else {
       NAME <- readline(prompt="Entrer le nom du fichier de sortie:")
     }

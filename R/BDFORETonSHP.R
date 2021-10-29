@@ -1,9 +1,27 @@
+#' @title BDFORETonSHP
+#' Intersection d'un shapefile avec la IGN (C) BD Foret V2 (r)
+#' @encoding UTF-8
+#' @description 
+#' La fonction \code{BDFORETonSHP} intersecte un shapefile avec la  IGN (C) BD Foret V2 (r).
+#' @usage BDFORETonSHP(shp, repBDFORET)
+#' @param shp CHARACTER. Adresse du fichier .shp de la zone d'étude. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.
+#' @param repBDFORET CHARACTER. Répertoire du dossier de la BD. Si FALSE, la fonction génère une boite de dialogue de sélection du dossier.
+#' @return 
+#' \item{BDFORET_polygon}{Shapefile de la BDFORET sur l'emprise. Généré dans le répertoire du fichier source.}
+#' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
+#' @examples 
+#' ### Fonctionnement :
+#'   BDFORETonSHP(shp = F, BDFORETonSHP = F)
+#' @export
+#' 
+#' @import tcltk sf
+
 # Lancement des library
-if (!require("tcltk")) {install.packages("tcltk")}
-if (!require("sf")) {install.packages("sf")}
+# if (!require("tcltk")) {install.packages("tcltk")}
+# if (!require("sf")) {install.packages("sf")}
 
 BDFORETonSHP <- function(shp = F, repBDFORET=F){
-  message('- - - Géologie sur emprise shapefile - - -')
+  message('- - - BD Foret V2 sur emprise shapefile - - -')
 
   if(isFALSE(shp)){
     shp_rep  <- tcltk::tk_choose.files(default = "~", caption = "Selectionner le fichier .shp",
@@ -40,7 +58,7 @@ BDFORETonSHP <- function(shp = F, repBDFORET=F){
   # Export des données
   message("        Export des données")
   if (Sys.info()["sysname"]=="Windows"){
-    NAME <- winDialogString("Entrer le nom du fichier de sortie:", "")
+    NAME <- utils::winDialogString("Entrer le nom du fichier de sortie:", "")
   }else {
     NAME <- readline(prompt="Entrer le nom du fichier de sortie:")
   }

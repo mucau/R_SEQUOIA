@@ -1,14 +1,40 @@
+#' @title HTMLtoXLSX
+#' Creation d'un .xlsx a partir de matrices cadastrales .html
+#' @encoding UTF-8
+#' @description 
+#' La fonction \code{HTMLtoXLSX} parcourt un dossier contenant des matrices cadastrales au format .html et génère un fichier .xlsx compilant l'ensemble des matrices.
+#' @usage HTMLtoXLSX(rephtml, repRdata)
+#' @param rephtml Répertoire du dossier contenant les matrices cadastrales .html  Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du dossier.
+#' @param repRdata Répertoire du fichier .Rdata contenant les données administratives Si \code{FALSE}, la fonction [INSEEtoRDATA] est lancée.
+#' @return 
+#' \item{_matrice.xlsx}{Tableur Excel. Matrice cadastrale}
+#' \item{_subdi.xlsx}{Tableur Excel. Matrice cadastrale avec subdivision}
+#' \item{XLSX}{Objet dataframe. Matrice cadastrale}
+#' \item{rep.xlsx}{Character. Répertoire de sortie}
+#' @seealso
+#' L'archive .Rdata contenant les données administratives est produite par la fonction [INSEEtoRDATA].
+#' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
+#' @examples 
+#' ### Fonctionnement :
+#'   HTMLtoXLSX(rephtml=F, repRdata=F)
+#' @export
+#' 
+#' @import tcltk dplyr stringr
+#' @importFrom XML readHTMLTable
+#' @importFrom RCurl getURL
+#' @importFrom openxlsx write.xlsx 
+#' @importFrom rlist list.clean
+
 # Lancement des library
-if (!require("tcltk")) {install.packages("tcltk")}
-if (!require("sf")) {install.packages("sf")}
-if (!require("dplyr")) {install.packages("dplyr")}
-if (!require("svDialogs")) {install.packages("svDialogs")}
-if (!require("stringr")) {install.packages("stringr")}
-if (!require("XML")) {install.packages("XML")}
-if (!require("tidyverse")) {install.packages("tidyverse")}
-if (!require("RCurl")) {install.packages("RCurl")}
-if (!require("rlist")) {install.packages("rlist")}
-if (!require("openxlsx")) {install.packages("openxlsx")}
+# if (!require("tcltk")) {install.packages("tcltk")}
+# if (!require("sf")) {install.packages("sf")}
+# if (!require("dplyr")) {install.packages("dplyr")}
+# if (!require("stringr")) {install.packages("stringr")}
+# if (!require("XML")) {install.packages("XML")}
+# if (!require("tidyverse")) {install.packages("tidyverse")}
+# if (!require("RCurl")) {install.packages("RCurl")}
+# if (!require("rlist")) {install.packages("rlist")}
+# if (!require("openxlsx")) {install.packages("openxlsx")}
 
 HTMLtoXLSX <- function(rephtml=F,repRdata=F) {
 
@@ -40,7 +66,7 @@ HTMLtoXLSX <- function(rephtml=F,repRdata=F) {
       ## Récupération des données générales
       ### Lecture des listes d'en-tête
       data <- XML::readHTMLTable(urldata, header=F, stringsAsFactors = F) # Chargement des listes d'en-têtes
-      data <- list.clean(data, fun = is.null, recursive = F)         # Suppression des listes vides
+      data <- rlist::list.clean(data, fun = is.null, recursive = F)         # Suppression des listes vides
 
       ### Traitement sur la commune
       Dep_Code   <- str_sub(data[[1]][1, 4],1,2)
@@ -50,7 +76,7 @@ HTMLtoXLSX <- function(rephtml=F,repRdata=F) {
       Com_Code <- str_pad(Com_Code, 3, "left", pad = "0")
 
       ### Récupération des adresses et statuts du/des propriétaires
-      COORD_list <- list.clean(data[[2]][, 1], fun = is.na, recursive = T) # Sélection de la liste contenant les adresses + statuts propriétaires
+      COORD_list <- rlist::list.clean(data[[2]][, 1], fun = is.na, recursive = T) # Sélection de la liste contenant les adresses + statuts propriétaires
 
       ### Traitement sur l'adresse du/des propriétaires
       ADRESSE_list <- COORD_list
@@ -77,7 +103,7 @@ HTMLtoXLSX <- function(rephtml=F,repRdata=F) {
       }
 
       ### Traitement sur l'adresse du/des propriétaires
-      PROP_list <- list.clean(data[[2]][, 3], fun = is.na, recursive = T)  # Sélection de la liste contenant les propriétaires
+      PROP_list <- rlist::list.clean(data[[2]][, 3], fun = is.na, recursive = T)  # Sélection de la liste contenant les propriétaires
 
       if(length(ADRESSE_list)>1){ # Quand la liste contient plusieurs noms
         n <- 1 # Ligne de traitement dans la liste
@@ -100,8 +126,8 @@ HTMLtoXLSX <- function(rephtml=F,repRdata=F) {
 
       ## Récupération des données cadastrales
       ### Lecture des listes du corps
-      data <- readHTMLTable(urldata, stringsAsFactors = F)   # Chargement des listes concernées
-      data <- list.clean(data, fun = is.null, recursive = F) # Suppression des listes vides
+      data <- XML::readHTMLTable(urldata, stringsAsFactors = F)   # Chargement des listes concernées
+      data <- rlist::list.clean(data, fun = is.null, recursive = F) # Suppression des listes vides
 
       df <- data.frame() # Création d'un tableau de données
 
@@ -237,7 +263,7 @@ HTMLtoXLSX <- function(rephtml=F,repRdata=F) {
 
     ## Sortie définitive d'un .xlsx
     if (Sys.info()["sysname"]=="Windows"){
-      NAME <- winDialogString("Entrer le nom du fichier de sortie:", "")
+      NAME <- utils::winDialogString("Entrer le nom du fichier de sortie:", "")
     }else {
       NAME <- readline(prompt="Entrer le nom du fichier de sortie:")
     }

@@ -1,22 +1,36 @@
+#' @title SEQUOIA
+#' Appel rapide des fonctions SEQUOIA
+#' @encoding UTF-8
+#' @description La fonction \code{SEQUOIA} génère une interface utilisateur permettant de faire appel aux fonctions du package.
+#' @usage SEQUOIA(enrg)
+#' @param enrg LOGICAL. Si \code{FALSE}, la fonction lance l'interface utilisateur.
+#' @details La fonction ajoute les champs suivants : \code{SURF_SIG} (Surface cartographique selon R), \code{SURF_COEFF} (coefficient de correction) et \code{SURF_COR} (Surface cadastrale corrigée)
+#' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
+#' @examples
+#' ### Fonctionnement :
+#'     SEQUOIA(F)
+#' @export
+#' 
+#' @import tcltk stringr 
+
 SEQUOIA <- function(enrg=FALSE) {
   # Lancement des library
-  packages <- c("devtools", "prettydoc",
-           "data.table", "dplyr", "plyr", "foreign",
-           "gdalUtils", "lwgeom", "osmdata", "R.utils",
-           "raster", "RCurl", "readxl", "rlang", "rlist",
-           "rvest", "sf", "smoothr", "stringr", "tcltk",
-           "tidyverse", "openxlsx", "XML", "xml2", "units",
-           "measurements", "nngeo", "sp", "elevatr", "svGUI", "installr",
-           "ClimClass", "geosphere", "plotly", "stars")
-  package.check <- lapply(
-    packages,
-    FUN = function(x) {
-      if (!require(x, character.only = TRUE)) {
-        install.packages(x, dependencies = TRUE)
-        library(x, character.only = TRUE)
-      }
-    }
-  )
+  #packages <- c("devtools", "prettydoc",
+  #         "data.table", "dplyr", "plyr", "foreign",
+  #         "gdalUtils", "lwgeom", "osmdata", "R.utils",
+  #         "raster", "RCurl", "readxl", "rlang", "rlist",
+  #        "rvest", "sf", "smoothr", "stringr", "tcltk",
+  #         "tidyverse", "openxlsx", "XML", "xml2",
+  #         "measurements", "nngeo", "sp", "elevatr", "svGUI", "installr",
+  #         "ClimClass", "geosphere", "plotly", "stars")
+  #package.check <- lapply(
+  #  packages,
+  #  FUN = function(x) {
+  #    if (!require(x, character.only = TRUE)) {
+  #      install.packages(x, dependencies = TRUE)
+  #      library(x, character.only = TRUE)
+  #    }
+  #  })
 
   vers <- packageVersion("SEQUOIA")
   message("\n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n ")
@@ -65,10 +79,10 @@ SEQUOIA <- function(enrg=FALSE) {
 
       form <- c("1 Conversion .html vers .xlsx",
                 "2 Création PARCA",
-                "3 Création du fond vectoriel",
-                "4 Création UA",
-                "5 Conversion ROAD vers ROUTE",
-                "6 Finalisation UA")
+                "3 Création UA",
+                "4 Finalisation UA",
+                "Op1 Création du fond vectoriel",
+                "Op2 Conversion ROAD vers ROUTE")
 
       RES2 <- select.list(form,
                           multiple = T,
@@ -84,20 +98,20 @@ SEQUOIA <- function(enrg=FALSE) {
           message("2 Création PARCA")
           SEQUOIA:::XLSXtoPARCA(F)
         }
-        if ("3 Création du fond vectoriel" %in% RES2) {
+        if ("Op1 Création du fond vectoriel" %in% RES2) {
           message("3 Création du fond vectoriel")
           SEQUOIA:::CAGEF(if(exists("repPARCA")){repPARCA}else{FALSE},
                           if(exists("CODE")){CODE}else{1})
         }
-        if ("4 Création UA" %in% RES2) {
+        if ("3 Création UA" %in% RES2) {
           message("4 Création UA")
           SEQUOIA:::PARCAtoUA(F)
         }
-        if ("5 Conversion ROAD vers ROUTE" %in% RES2) {
+        if ("Op2 Conversion ROAD vers ROUTE" %in% RES2) {
           message("5 Conversion ROAD vers ROUTE")
           SEQUOIA:::ROADtoROUTE(F)
         }
-        if ("6 Finalisation UA" %in% RES2) {
+        if ("4 Finalisation UA" %in% RES2) {
           message("6 Finalisation UA")
           Filters <- matrix(c("Shapefile", "*.shp"),1, 2, byrow = TRUE)
           repUA <- tk_choose.files(caption = "Choisir le fichier .shp des unités d'analyses (UA)",

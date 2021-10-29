@@ -1,11 +1,35 @@
+#' @title MNTonSHP
+#' Recuperation d'un modele numerique de terrain et creation des contours d'elevation
+#' @encoding UTF-8
+#' @description 
+#' Recuperation d'un modele numerique de terrain et creation des contours d'elevation
+#' La fonction \code{MNTonSHP} récupère ou télécharge un modèle numérique de terrain pour une zone d'étude et génère des contours d'élévation topographiques (équidistances à 5 ou 10 mètres) enregistrés au format \code{.shp}.
+#' Le MNT récupérée peut correspondre à celui proposer sur l'Amazon Web Service, à celui de l'IGN© BD Alti® ou à celui de l'IGN© RGE Alti 5m
+#' @usage MNTonSHP(REP_SHP)
+#' @param REP_SHP CHARACTER. Adresse du fichier \code{.shp}. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.
+#' @param NAME CHARACTER. Nom du fichier de sortie sans l'extension.Défault = \code{"TOPO_line"}
+#' @param TEMP NUMERIC. Valeur du tempon (buffer) pour l'emprise de travail. Défault = \code{200}
+#' @return
+#' \item{MNT.tif}{Fichier raster .tiff ;  MNT enregistré dans le répertoire du fichier}
+#' \item{TOPO_line}{Objet sf ; contours enregistré dans le répertoire du fichier}
+#' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
+#' @examples 
+#' ### Fonctionnement :
+#'   TOPO_line <- MNTonSHP(REP_SHP = F, NAME = NULL, TEMP = 50)
+#' @export
+#' 
+#' @import tcltk dplyr stringr sf elevatr smoothr stars
+#' @importFrom raster raster
+#' @importFrom raster extent
+
 # Lancement des library
-if (!require("tcltk")) {install.packages("tcltk")}
-if (!require("sf")) {install.packages("sf")}
-if (!require("elevatr")) {install.packages("elevatr")}
-if (!require("raster")) {install.packages("raster")}
-if (!require("smoothr")) {install.packages("smoothr")}
-if (!require("stringr")) {install.packages("stringr")}
-if (!require("stars")) {install.packages("stars")}
+# if (!require("tcltk")) {install.packages("tcltk")}
+# if (!require("sf")) {install.packages("sf")}
+# if (!require("elevatr")) {install.packages("elevatr")}
+# if (!require("raster")) {install.packages("raster")}
+# if (!require("smoothr")) {install.packages("smoothr")}
+# if (!require("stringr")) {install.packages("stringr")}
+# if (!require("stars")) {install.packages("stars")}
 
 MNTonSHP <- function(REP_SHP=F, NAME=NULL, TEMP=NULL){ # Function
   options(warn=-1) # Déctivation des warnings

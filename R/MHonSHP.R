@@ -1,8 +1,31 @@
-if (!require("cadastreAnalysis")) {devtools::install_github("paul-carteron/cadastreAnalysis")}
-library(cadastreAnalysis)
-if (!require("tcltk")) {install.packages("tcltk")}
-if (!require("sf")) {install.packages("sf")}
-if (!require("stringr")) {install.packages("stringr")}
+#' @title MHonSHP
+#' Detection des monuments historiques
+#' @encoding UTF-8
+#' @description 
+#' La fonction \code{MHonSHP} détecte la présence d'un monument historique dans l'environnement immédiat d'un shapefile.
+#' @usage MHonSHP(rep)
+#' @param rep CHARACTER. Adresse du fichier \code{.shp}. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.
+#' @details
+#' La fonction réclame le package \code{cadastreAnalysis}.
+#' @return
+#' La fonction renvoit un affichage des éléments.
+#' La fonction retourne un dataframe des données METEOFRANCE. Ces renseignements sont fournies au mois et cumulés/moyennés à l'année.
+#' @author 
+#' Paul CARTERON <\email{carteronpaul@gmail.com}>
+#' Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
+#' @examples 
+#' ### Fonctionnement :
+#'   MHonSHP(rep=F)
+#' @export
+#' 
+#' @import tcltk dplyr stringr sf cadastreAnalysis
+
+# Lancement des library
+# if (!require("cadastreAnalysis")) {devtools::install_github("paul-carteron/cadastreAnalysis")}
+# library(cadastreAnalysis)
+# if (!require("tcltk")) {install.packages("tcltk")}
+# if (!require("sf")) {install.packages("sf")}
+# if (!require("stringr")) {install.packages("stringr")}
 
 MHonSHP <- function(rep=F){
   message('- - - Détection MH - - -')

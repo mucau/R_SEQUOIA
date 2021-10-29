@@ -1,10 +1,34 @@
+#' @title BDTOPOonPARCA
+#' Telechargement de données depuis IGN(c) BD TOPO(r))
+#' @encoding UTF-8
+#' @description 
+#'La fonction \code{BDTOPOonPARCA} télécharge des données issues d'une IGN(c) BD TOPO(r)) autour d'un parcellaire cadastral (sf) et génère un ensemble de .shp (EPSG 2154) et d'objet sf nécessaires à la réalisation d'une cartographie forestière ponctuelle.
+#' @usage BDTOPOonPARCA(rep, repBDTOPO)
+#' @param rep CHARACTER. Adresse du parcellaire cadastral _PARCA_polygon.shp. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du shapefile.
+#' @param repBDTOPO Répertoire de la IGN© BD TOPO® Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du dossier
+#' @return
+#' \item{COMS_polygon}{Fichier shapefile ; Communes environnantes ; Tempon de 2000m autour du PARCA_polygon}
+#' \item{COMS_line}{Fichier shapefile ; Contours des communes environnantes ; Tempon de 2000m autour du PARCA_polygon}
+#' \item{COM_line}{Fichier shapefile ; Contours des communes environnantes ; Tempon de 500m autour du PARCA_polygon}
+#' \item{COMS_point}{Fichier shapefile ; Centroid des communes environnantes ; Tempon de 2000m autour du PARCA_polygon}
+#' \item{COM_point}{Fichier shapefile ; Centroid des communes environnantes ; Tempon de 500m autour du PARCA_polygon}
+#' \item{INFRA_polygon}{Objet sf ; Infrastructures environnantes ; Y sont intégrés TYPE='BT': les batis, TYPE='CIM' : les cimetières, TYPE='SP' : les terrains de sports, TYPE='CSTsurf' : les constructions surfaciques}
+#' \item{INFRA_line}{Objet sf ; sf Infrastructures environnantes ; Y sont intégrés TYPE='CSTline' : les constructions linéaires, TYPE='ORO': les lignes orographiques, TYPE='LE' : les lignes électriques, TYPE='VF' : les voies ferrées}
+#' \item{ROAD_line}{Fichier shapefile ; Routes environnantes. Y sont intégrés TYPE='RN' : routes nationnales & autoroutes, TYPE='RD' : routes départementales, TYPE='RC' : routes communales, TYPE='RF' : routes empierrées/forestières, TYPE='PN' : les pistes en terrain naturel}
+#' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
+#' @examples 
+#' ### Fonctionnement :
+#'   BDTOPOonPARCA(rep=F, repBDTOPO=F))
+#' @export
+#' 
+#' @import tcltk sf dplyr stringr lwgeom
+
 # Lancement des library
-if (!require("sf")) {install.packages("sf")}
-if (!require("dplyr")) {install.packages("dplyr")}
-if (!require("osmdata")) {install.packages("osmdata")}
-if (!require("stringr")) {install.packages("stringr")}
-if (!require("tcltk")) {install.packages("tcltk")}
-if (!require("lwgeom")) {install.packages("lwgeom")}
+# if (!require("sf")) {install.packages("sf")}
+# if (!require("dplyr")) {install.packages("dplyr")}
+# if (!require("stringr")) {install.packages("stringr")}
+# if (!require("tcltk")) {install.packages("tcltk")}
+# if (!require("lwgeom")) {install.packages("lwgeom")}
 
 BDTOPOonPARCA <- function(rep=F, repBDTOPO=F){
   options(warn=-1) # Désactivation des warnings
@@ -143,7 +167,7 @@ BDTOPOonPARCA <- function(rep=F, repBDTOPO=F){
     cat("        L'object sf INFRA_polygon a été ajouté à l'environnement \n")
   } else {
     assign("INFRA_polygon", INFRA_polygon, envir=globalenv())
-    message("        OSM : Pas de polygones détectés sur l'emprise \n")
+    message("        BDTOPO : Pas de polygones détectés sur l'emprise \n")
   }
 
 
@@ -200,7 +224,7 @@ BDTOPOonPARCA <- function(rep=F, repBDTOPO=F){
     cat("        L'object sf INFRA_line a été ajouté à l'environnement \n")
   } else {
     assign("INFRA_line", INFRA_line, envir=globalenv())
-    message("        OSM : Pas de lignes détectés sur l'emprise \n")
+    message("        BDTOPO : Pas de lignes détectés sur l'emprise \n")
   }
 
   # Création de INFRA_point
@@ -251,16 +275,6 @@ BDTOPOonPARCA <- function(rep=F, repBDTOPO=F){
       select(TYPE, NATURE, NOM, ROT)
     INFRA_point <- rbind(INFRA_point, TOPOLD)}
 
-  TOPOLD <-load("TOPONYMIE_LIEUX_NOMMES.shp", repBDTOPO)
-  TOPOLD <- st_intersection(TOPOLD, TEMPON4)
-  if(nrow(TOPOLD)>0){
-    TOPOLD <- TOPOLD %>%
-      mutate(TYPE = as.character('NOM'),
-             NOM = GRAPHIE,
-             ROT = as.character(NA)) %>%
-      select(TYPE, NATURE, NOM, ROT)
-    INFRA_point <- rbind(INFRA_point, TOPOLD)}
-
   TOPOTR <-load("TOPONYMIE_TRANSPORT.shp", repBDTOPO)
   TOPOTR <- st_intersection(TOPOTR, TEMPON4)
   if(nrow(TOPOTR)>0){
@@ -272,11 +286,11 @@ BDTOPOonPARCA <- function(rep=F, repBDTOPO=F){
     INFRA_point <- rbind(INFRA_point, TOPOTR)}
 
   if(nrow(INFRA_point)>0){
-    assign("INFRA_point", INFRA_point, envir=globalenv())
+    assign("INFRA_point", unique(INFRA_point), envir=globalenv())
     cat("        L'object sf INFRA_point a été ajouté à l'environnement \n")
   } else {
     assign("INFRA_point", INFRA_point, envir=globalenv())
-    message("        OSM : Pas de points détectés sur l'emprise \n")
+    message("        BDTOPO : Pas de points détectés sur l'emprise \n")
   }
 
   # Création de ROAD_line

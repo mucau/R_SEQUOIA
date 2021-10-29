@@ -1,10 +1,26 @@
+#' @title UAtoUA
+#' Actualisation du .shp des unites d'analyse
+#' @encoding UTF-8
+#' @description La fonction \code{UAtoUA} calcule la surface cadastrale des unités d'analyse.
+#' @usage UAtoUA(rep)
+#' @param rep CHARACTER. Adresse du fichier \code{.shp} UA_polygon. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.
+#' @return
+#' \item{UA_polygon}{Fichier shapefile ; unité d'analyse complété}
+#' @details La fonction ajoute les champs suivants : \code{SURF_SIG} Surface cartographique selon R, \code{SURF_COEFF} coefficient de correction et \code{SURF_COR} Surface cadastrale corrigée
+#' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
+#' @examples
+#' ### Fonctionnement :
+#'     UAtoUA(rep=F)
+#' @export
+#' 
+#' @import tcltk stringr sf dplyr stringr
+
 # Lancement des library
-if (!require("tcltk")) {install.packages("tcltk")}
-if (!require("sf")) {install.packages("sf")}
-if (!require("dplyr")) {install.packages("dplyr")}
-if (!require("stringr")) {install.packages("stringr")}
-if (!require("units")) {install.packages("units")}
-if (!require("data.table")) {install.packages("data.table")}
+# if (!require("tcltk")) {install.packages("tcltk")}
+# if (!require("sf")) {install.packages("sf")}
+# if (!require("dplyr")) {install.packages("dplyr")}
+# if (!require("stringr")) {install.packages("stringr")}
+# if (!require("data.table")) {install.packages("data.table")}
 
 UAtoUA <- function(rep=F) {
   message('- - - Actualisation de UA_polygon - - -')
@@ -149,7 +165,7 @@ UAtoUA <- function(rep=F) {
     UA_TAB$SURF_CA <- UA_TAB$SURF_CA*10000 # Calcul de la surface cadastrale
 
     # Calcul des SURF_SIG
-    UA_TAB$SURF_SIG <- round(st_area(UA_TAB)) # Calcul de la surface cartographique
+    UA_TAB$SURF_SIG <- round(as.numeric(st_area(UA_TAB))) # Calcul de la surface cartographique
 
     # Détermination du coeff de correction
     TAB <- as.data.frame(UA_TAB) %>%
@@ -164,13 +180,14 @@ UAtoUA <- function(rep=F) {
       mutate(SURF_COEFF = as.numeric(SURF_COEFF),
              SURF_COR = round(SURF_SIG*SURF_COEFF,0),
              SURF_COR = round(SURF_COR,0))
-
+    ecart = (UA_TAB$SURF_COR-UA_TAB$SURF_SIG)/UA_TAB$SURF_COR*100
+    
     # Détermination de la difference restante
-    SURF_CA <- set_units(IDU[a,2]*10000,m^2)
+    SURF_CA <- IDU[a,2]*10000
     DIFFERENCE <- SURF_CA-sum(UA_TAB$SURF_COR)
 
     # Correction de la surface
-    if(abs(DIFFERENCE)>set_units(0,m^2)){
+    if(abs(DIFFERENCE)>0){
       MAX <- max(UA_TAB$SURF_COR)
       ROW <- grep(MAX, UA_TAB$SURF_COR)
       VALUE = as.data.frame(UA_TAB[ROW, "SURF_COR"])[1,1]
@@ -185,7 +202,7 @@ UAtoUA <- function(rep=F) {
     st_crs(UA_COR) <- st_crs(UA_TAB)
     UA_COR <- rbind(UA_COR, UA_TAB)
 
-    if(abs(as.integer(DIFFERENCE))>=5){
+    if(abs(as.integer(DIFFERENCE))>=5 || ecart>15){
       message("        ",
               "SURF_CA: ", unique(UA_TAB$SURF_CA),"m²",
               "SURF_SIG: ", sum(UA_TAB$SURF_SIG),"m²",

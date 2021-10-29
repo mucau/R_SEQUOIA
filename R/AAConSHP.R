@@ -1,10 +1,27 @@
-if (!require("cadastreAnalysis")) {devtools::install_github("paul-carteron/cadastreAnalysis")}
-library(cadastreAnalysis)
-if (!require("tcltk")) {install.packages("tcltk")}
-if (!require("sf")) {install.packages("sf")}
-if (!require("stringr")) {install.packages("stringr")}
-if (!require("leaflet")) {install.packages("leaflet")}
-library(leaflet)
+#' @title AAConSHP
+#' @encoding UTF-8
+#' @description La fonction \code{AAConSHP} détecte la présence d'aires d'alimentation de captage dans l'environnement immédiat d'un shapefile.
+#' @usage AAConSHP(rep)
+#' @param rep CHARACTER. Adresse du fichier .shp de la zone d'étude. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.
+#' @details La fonction s'inspire du package \code{cadastreAnalysis}
+#' @return La fonction renvoit un affichage des éléments.
+#' @author 
+#' Paul CARTERON <\email{carteronpaul@gmail.com}>
+#' Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
+#' @examples 
+#' ### Fonctionnement :
+#'   AAConSHP(rep=F)
+#' @export
+#' 
+#' @import tcltk sf stringr leaflet cadastreAnalysis
+
+
+# Lancement des library
+# if (!require("cadastreAnalysis")) {devtools::install_github("paul-carteron/cadastreAnalysis")}
+# if (!require("tcltk")) {install.packages("tcltk")}
+# if (!require("sf")) {install.packages("sf")}
+# if (!require("stringr")) {install.packages("stringr")}
+# if (!require("leaflet")) {install.packages("leaflet")}
 
 AAConSHP <- function(rep=F){
   message("- - - Détection des aires d'alimentation de captages - - -")
@@ -31,7 +48,7 @@ AAConSHP <- function(rep=F){
   temp <- tempfile()
   curl::curl_download(adress, temp, quiet = T)
   temp2 <- tempfile()
-  unzip(zipfile = temp, exdir = temp2)
+  utils::unzip(zipfile = temp, exdir = temp2)
   zoneCaptageData  <- st_read(temp2, quiet = T) %>% st_transform(2154)
   cat("        Téléchargement terminé \n \n")
 

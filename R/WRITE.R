@@ -1,6 +1,23 @@
+#' @title WRITE
+#' Export d'un .shp EPSG: 2154 ~ UTF-8
+#' @encoding UTF-8
+#' @description 
+#' La fonction \code{WRITE} exporte un sf vers un répertoire de choix avec le nom choisit par l'utilisateur avec toutes les configurations voulues.
+#' @usage WRITE(sf, repout, nom)
+#' @param sf Couche sf à exporter
+#' @param repout Répertoire d'export
+#' @param nom Nom de la couche
+#' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
+#' @examples
+#' ### Fonctionnement :
+#'    WRITE(PARCA, repout2, paste(NAME,"PARCA.shp",sep="_"))
+#' @export
+#' 
+#' @import sf stringr 
+
 # Lancement des library
-if (!require("sf")) {install.packages("sf")}
-if (!require("stringr")) {install.packages("stringr")}
+# if (!require("sf")) {install.packages("sf")}
+# if (!require("stringr")) {install.packages("stringr")}
 
 WRITE <- function(sf, repout, nom){
   # Export du shapefile

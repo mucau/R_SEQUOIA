@@ -1,9 +1,31 @@
+#' @title UAtoSSPF
+#' Creation d'un ensemble de .shp a partir du .shp des unites d'analyse
+#' @encoding UTF-8
+#' @description 
+#' La fonction \code{UAtoSSPF} génère un ensemble de .shp (EPSG 2154) nécessaires à la réalisation d'une cartographie forestière ponctuelle à partir du .shp des unités d'analyse complété (EPSG 2154).
+#' La fonction peut également actualiser l'étiquetage du parcellaire de gestion.
+#' @usage UAtoSSPF(rep)
+#' @param rep CHARACTER. Adresse du fichier \code{.shp} UA_polygon. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.
+#' @return
+#' \item{PF_polygon}{Fichier shapefile ; Parcellaire forestier}
+#' \item{PF_line}{Fichier shapefile ; Contour du parcellaire forestier}
+#' \item{SSPF_polygon}{Fichier shapefile ; Sous-parcellaire forestier cad parcellaire des unités de gestion}
+#' \item{SSPF_line}{Fichier shapefile ; Etiquette du sous-parcellaire actualisé}
+#' \item{AME_polygon}{Fichier shapefile ; OPTIONEL. Traitements forestiers cad aménagements}
+#' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
+#' @examples 
+#' ### Fonctionnement :
+#'     UAtoSSPF(rep=F)
+#' @export
+#' 
+#' @import tcltk dplyr stringr sf lwgeom
+
 # Lancement des library
-if (!require("tcltk")) {install.packages("tcltk")}
-if (!require("sf")) {install.packages("sf")}
-if (!require("dplyr")) {install.packages("dplyr")}
-if (!require("stringr")) {install.packages("stringr")}
-if (!require("lwgeom")) {install.packages("lwgeom")}
+# if (!require("tcltk")) {install.packages("tcltk")}
+# if (!require("sf")) {install.packages("sf")}
+# if (!require("dplyr")) {install.packages("dplyr")}
+# if (!require("stringr")) {install.packages("stringr")}
+# if (!require("lwgeom")) {install.packages("lwgeom")}
 
 UAtoSSPF <- function(rep=F) {
   options(warn=-1) # Désactivation des warnings

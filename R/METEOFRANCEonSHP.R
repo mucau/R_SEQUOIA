@@ -1,9 +1,27 @@
+#' @title METEOFRANCEonSHP
+#' Climatologie METEOFRANCE sur une zone d'etude
+#' @encoding UTF-8
+#' @description 
+#' La fonction \code{METEOFRANCEonSHP} télécharge les données climatologiques de la station Météo-France la plus proche du centroide de la zone détude
+#' Les informations récupérées correspondantes aux normales et records disponibles pour cette station.
+#' @usage METEOFRANCEonSHP(repshp)
+#' @param repshp CHARACTER. Adresse du fichier \code{.shp} de la zone d'étude. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.
+#' @details 
+#' La fonction retourne un dataframe des données METEOFRANCE. Ces renseignements sont fournies au mois et cumulés/moyennés à l'année.
+#' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
+#' @examples 
+#' ### Fonctionnement :
+#'   METEOFRANCEonSHP(repshp = F)
+#' @export
+#' 
+#' @import tcltk dplyr stringr sf nngeo
+
 # Lancement des library
-if (!require("tcltk")) {install.packages("tcltk")}
-if (!require("sf")) {install.packages("sf")}
-if (!require("nngeo")) {install.packages("nngeo")}
-if (!require("stringr")) {install.packages("stringr")}
-if (!require("dplyr")) {install.packages("dplyr")}
+# if (!require("tcltk")) {install.packages("tcltk")}
+# if (!require("sf")) {install.packages("sf")}
+# if (!require("nngeo")) {install.packages("nngeo")}
+# if (!require("stringr")) {install.packages("stringr")}
+# if (!require("dplyr")) {install.packages("dplyr")}
 
 METEOFRANCEonSHP <- function(repshp = F){
   if(isFALSE(repshp)) {repshp <- tk_choose.files(caption = "Choisir le fichier .shp",

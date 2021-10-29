@@ -1,9 +1,28 @@
+#' @title CAGEF
+#' Creation de données pour la réalisation d'un fond vectoriel
+#' @encoding UTF-8
+#' @description 
+#' La fonction \code{CAGEF} utilise les fonctions \code{OSMonPARCA}, \code{BDTOPOonPARCA}, \code{BDTOPO_HYDRO}, \code{BDTOPO_VEG} et \code{ETALAB}/\code{BD_PARCA}/\code{EDIGEO} pour générer un ensemble de .shp (EPSG 2154) et d'objet sf nécessaires à la réalisation d'une cartographie forestière ponctuelle.
+#' @usage CAGEF(rep, CODECA)
+#' @param rep adresse du parcellaire cadastral PARCA_polygon. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du shapefile
+#' @param CODECA Code de référence des données cadastrales à utiliser 1: Etalab, 2: IGN© BD Parcellaire®, 3: Edigeo
+#' @seealso
+#' Les fonctions utilisées:
+#' [OSMonPARCA],[BDTOPOonPARCA],[BDTOPO_HYDRO],[BDTOPO_VEG],[ETALAB],[BD_PARCA],[EDIGEO]
+#' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
+#' @examples 
+#' ### Fonctionnement :
+#'   CAGEF(rep=F, CODECA=1)
+#' @export
+#' 
+#' @import tcltk sf dplyr stringr lwgeom
+
 # Lancement des library
-if (!require("sf")) {install.packages("sf")}
-if (!require("tcltk")) {install.packages("tcltk")}
-if (!require("dplyr")) {install.packages("dplyr")}
-if (!require("stringr")) {install.packages("stringr")}
-if (!require("lwgeom")) {install.packages("lwgeom")}
+# if (!require("sf")) {install.packages("sf")}
+# if (!require("tcltk")) {install.packages("tcltk")}
+# if (!require("dplyr")) {install.packages("dplyr")}
+# if (!require("stringr")) {install.packages("stringr")}
+# if (!require("lwgeom")) {install.packages("lwgeom")}
 
 CAGEF <- function(rep=F, CODECA=1){
   message('- - - Création du fond vectoriel - - -')

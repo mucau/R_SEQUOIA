@@ -1,8 +1,40 @@
+#' @title CLIMonSHP
+#' Recuperation des donnees climatiques sur l'emprise d'un .shp
+#' @encoding UTF-8
+#' @description 
+#' La fonction \code{CLIMonSHP} fournit les données nécéssaire à la production d'une fiche \code{.html} via le Rmakdown \code{CLIM.Rmd}. La fiche fait synthèse des données climatologiques sur une zone détude (\code{.shp} quelconque).
+#' La synthèse fournit:
+#'   \tabular{ll}{
+#'     \tab >>  Les normales en se basant sur les données issues des stations METEO-FRANCE (ou des données AURELHY) \cr
+#'     \tab >>  Les prévisions attendues en se basant sur les données Drias. \cr
+#'   }
+#' @usage CLIMonSHP(repshp, repRdata)
+#' @param repshp Adresse du fichier \code{.shp} de la zone d'étude. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.
+#' @param repRdata Répertoire des données \code{.Rdata}. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du dossier.
+#' @return
+#' \item{METEOFRANCE_df}{Dataframe des données METEO-FRANCE}
+#' \item{AURELHY_df}{Dataframe des données AURELHY}
+#' \item{DRIAS_df}{Dataframe des données DRIAS}
+#' \item{RFN_sf_polygon}{Objet sf ; polygones des régions forestières nationales identifiées sur la zone}
+#' \item{SER_sf_polygon}{Objet sf ; polygones des sylvoécorégions identifiées sur la zone}
+#' @details
+#' La fonction seule produit une multitude d'objet dans l'environnement nécessaire à la fonction \code{CLIM.Rmd}.
+#' @seealso
+#' Pour mieux comprendre, voir les notices des fonctions suivantes:
+#' [METEOFRANCEonSHP],[AURELHYonSHP],[BHbyDRIAS]
+#' @examples 
+#' #' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
+#' ### Fonctionnement :
+#'   CLIMonSHP(repshp = F, repRdata = F)
+#' @export
+#' 
+#' @import tcltk sf dplyr stringr prettydoc plotly
+
 # Lancement des library
-if (!require("tcltk")) {install.packages("tcltk")}
-if (!require("sf")) {install.packages("sf")}
-if (!require("stringr")) {install.packages("stringr")}
-if (!require("dplyr")) {install.packages("dplyr")}
+# if (!require("tcltk")) {install.packages("tcltk")}
+# if (!require("sf")) {install.packages("sf")}
+# if (!require("stringr")) {install.packages("stringr")}
+# if (!require("dplyr")) {install.packages("dplyr")}
 
 CLIMonSHP <- function(shp = F){
   message("- - - Création d'une fiche Climatologique - - -")

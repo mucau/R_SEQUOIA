@@ -1,6 +1,23 @@
+#' @title UAtoTOPO
+#' Recuperation d'un modele numerique de terrain et creation des contours d'elevation pour PARCA_polygon
+#' @encoding UTF-8
+#' @description 
+#' La fonction \code{UAtoTOPO} lance la fonction [MNTonSHP] sur PARCA_polygon
+#' @usage UAtoTOPO(rep)
+#' @param rep CHARACTER. Adresse du fichier \code{.shp} UA_polygon. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.
+#' @seealso 
+#' Voir la notice de 
+#' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
+#' @examples
+#' ### Fonctionnement :
+#'     UAtoTOPO(rep=F)
+#' @export
+#' 
+#' @import tcltk stringr
+
 # Lancement des library
-if (!require("tcltk")) {install.packages("tcltk")}
-if (!require("stringr")) {install.packages("stringr")}
+# if (!require("tcltk")) {install.packages("tcltk")}
+# if (!require("stringr")) {install.packages("stringr")}
 
 UAtoTOPO <- function(rep=F) {
   message('- - - Création de TOPO_line - - -')

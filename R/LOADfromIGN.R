@@ -1,6 +1,32 @@
-library(stringr)
-library(dplyr)
-library(tcltk)
+#' @title LOADfromIGN
+#' Recuperation des donnees administratives et creation d'une archive R.data
+#' @encoding UTF-8
+#' @description 
+#' La fonction \code{LOADfromIGN} permet de télécharger rapidement les données de l'IGN (C).
+#' \tabular{ll}{
+#'   \tab >>  BD Parcellaire® \cr
+#'   \tab >>  BD TOPO® \cr
+#'   \tab >>  BD FORET® V2 \cr
+#'   \tab >>  RGE ALTI 5m \cr
+#'   \tab >>  BD ALTI® V2 25M \cr
+#' }
+#' La fonction demande le département consernée.
+#' @usage LOADfromIGN(rep)
+#' @param rep CHARACTER. Répertoire du dossier de téléchargement. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du dossier.
+#' @details 
+#' La fonction télécharge les données depuis le serveur \url{http://files.opendatarchives.fr/professionnels.ign.fr/}
+#' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
+#' @examples 
+#' ### Fonctionnement :
+#'   LOADfromIGN(rep = F)
+#' @export
+#' 
+#' @import tcltk dplyr stringr
+
+# Lancement des library
+# library(stringr)
+# library(dplyr)
+# library(tcltk)
 
 LOADfromIGN <- function(rep=F){
   if(isFALSE(rep)) {
@@ -27,8 +53,8 @@ LOADfromIGN <- function(rep=F){
     BD <- "BDPARCELLAIRE_1-2_VECTEUR"}
   
   if ("BD TOPO®" %in% Res) {
-    url <- "http://files.opendatarchives.fr/professionnels.ign.fr/bdtopo/latest/"
-    BD <- "BDTOPO_3-0"}
+    url <- "http://files.opendatarchives.fr/professionnels.ign.fr/bdtopo/"
+    BD <- "BDTOPO_3-0_"}
   
   if ("BD FORET® V2" %in% Res) {
     url <- "http://files.opendatarchives.fr/professionnels.ign.fr/bdforet/BDFORET_V2/"
@@ -63,21 +89,59 @@ LOADfromIGN <- function(rep=F){
   Dep <- str_pad(str_pad(Dep, 3, "left", '0'), 4, "left", 'D')
   
   #Filtre sur la donnée
-  urls <- urlss%>%
-    filter(grepl(Dep,urls))
-  
-  form <- unlist(urls)
-  
-  Res <- select.list(form,
-                     multiple = F,
-                     title = "Que voulez-vous télécharger ?",
-                     graphics = T)
-  if (!length(Res)){stop("Aucune sélection effectuée > Traitement annulé \n")}
+  if ("BD TOPO®" %in% Res) {
+    topo_df <- data.frame()%>% mutate(date=character(), fichier=character())
+    n=1
+    for (a in 1:nrow(urlss)){
+      date <- urlss[a,]
+      html <- paste(readLines(paste0(url, date)), collapse="\n")
+      matched <- str_match_all(html, "<a href=\"(.*?)\"")
+      links <- as.data.frame(matched[[1]][, 2])
+      colnames(links)<-"urls"
+      
+      topo_urlss <- links%>%
+        filter(grepl("TOUSTHEMES_SHP",urls))%>%
+        filter(grepl(Dep,urls))
+      
+      if (nrow(topo_urlss)>0) {
+        for (b in 1:nrow(topo_urlss)){
+          topo_df[n,1] <- date
+          topo_df[n,2] <- topo_urlss[b,]
+          n<-n+1 
+        }
+      }
+    }
+    
+    form <- unlist(topo_df[,2])
+    
+    Res <- select.list(form,
+                       multiple = F,
+                       title = "Que voulez-vous télécharger ?",
+                       graphics = T)
+    if (!length(Res)){stop("Aucune sélection effectuée > Traitement annulé \n")}
+    
+    choix <- topo_df %>%
+      filter(fichier %in% Res)
+    
+    lien <- paste0(url, choix[1], choix[2])
+    
+  } else {
+    urls <- urlss%>%
+      filter(grepl(Dep,urls))
+    
+    form <- unlist(urls)
+    
+    Res <- select.list(form,
+                       multiple = F,
+                       title = "Que voulez-vous télécharger ?",
+                       graphics = T)
+    if (!length(Res)){stop("Aucune sélection effectuée > Traitement annulé \n")}
+    
+    lien <- paste0(url, Res)
+  }
   
   #Téléchargement de la donnée
-  #nom <- str_sub(Res, str_locate_all(Res,'/')[[1]][nrow(str_locate_all(Res,'/')[[1]]),1]+1, -1)
   destfile <- paste(rep, Res, sep="/")
-  lien <- str_replace(paste(url, Res), " ", "")
   download.file(lien, destfile, mode = "wb", quiet=F)
   message("\n        Fin de téléchargement")
 }

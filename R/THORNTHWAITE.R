@@ -1,6 +1,30 @@
+#' @title THORNTHWAITE
+#' Calcul des ETP selon la formule de THORNTHWAITE
+#' @encoding UTF-8
+#' @description 
+#' La fonction \code{THORNTHWAITE} calcule des ETP à partir des données climatologiques et de la localisation.
+#' @usage THORNTHWAITE(rep)
+#' @param series tableau des données météo
+#' @param latitude latitude en WGS84
+#' @param ru réserve utile
+#' @param snow.init réservoir de neige au 1er janvier
+#' @param Tsnow mois de neiges
+#' @param fr.sn.acc ?
+#' @param snow_melt_coeff ?
+#' @return tab Tableau récap des données climatologique
+#' @author inconnu
+#' @examples 
+#' ### Fonctionnement :
+#'     THORNTHWAITE <- function(series,  latitude, ru=80, 
+#'                              snow.init=0, Tsnow=2, fr.sn.acc=0.95,  
+#'                              snow_melt_coeff=1)
+#' @export
+#' 
+#' @import ClimClass geosphere
+
 # Lancement des library
-if (!require("ClimClass")) {install.packages("ClimClass")}
-if (!require("geosphere")) {install.packages("geosphere")}
+# if (!require("ClimClass")) {install.packages("ClimClass")}
+# if (!require("geosphere")) {install.packages("geosphere")}
 
 THORNTHWAITE <- function(series,  latitude, ru=80,
          snow.init=0, Tsnow=2, fr.sn.acc=0.95,  snow_melt_coeff=1) {

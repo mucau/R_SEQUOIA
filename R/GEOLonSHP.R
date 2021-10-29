@@ -1,10 +1,27 @@
+#' @title GEOLonSHP
+#' Import de la BRGM (C) BD_Charm50 (r) sur une emprise shapefile
+#' @encoding UTF-8
+#' @description 
+#' La fonction \code{GEOLonSHP} téléchargement la BRGM (C) BD_Charm50 (r) départementale détecté sur l'emprise du shapefile d'entrée, réalise une intersection des couches et calcul la surface SIG par entité géologique.
+#' @usage GEOLonSHP(shp)
+#' @param shp Adresse du \code{.shp} de la zone d'étude. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.
+#' @return
+#' \item{geol_polygon}{Shapefile de la géologie sur l'emprise. Généré dans le répertoire du fichier source.}
+#' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
+#' @examples 
+#' ### Fonctionnement :
+#'   GEOLonSHP(shp = F)
+#' @export
+#' 
+#' @import tcltk sf dplyr osmdata stringr lwgeom
+
 # Lancement des library
-if (!require("tcltk")) {install.packages("tcltk")}
-if (!require("sf")) {install.packages("sf")}
-if (!require("dplyr")) {install.packages("dplyr")}
-if (!require("osmdata")) {install.packages("osmdata")}
-if (!require("stringr")) {install.packages("stringr")}
-if (!require("lwgeom")) {install.packages("lwgeom")}
+# if (!require("tcltk")) {install.packages("tcltk")}
+# if (!require("sf")) {install.packages("sf")}
+# if (!require("dplyr")) {install.packages("dplyr")}
+# if (!require("osmdata")) {install.packages("osmdata")}
+# if (!require("stringr")) {install.packages("stringr")}
+# if (!require("lwgeom")) {install.packages("lwgeom")}
 
 GEOLonSHP <- function(shp = F, NAME=NULL){
   message('- - - Géologie sur emprise shapefile - - -')

@@ -1,6 +1,35 @@
+#' @title BHbyDRIAS
+#' Traitement des donnees DRIAS
+#' @encoding UTF-8
+#' @description 
+#' La fonction \code{BHbyDRIAS} traite les données récupérée sur le serveur DRIAS.
+#' Procédure:
+#' \tabular{ll}{
+#' 1) \tab Aller sur https://drias-prod.meteo.fr/okapi/accueil/okapiWebDrias/index.jsp \cr
+#' 2) \tab Cliquer sur \emph{Simulations climatiques atmosphériques} / \emph{Métropole} / \emph{INDICATEUR DRIAS 2020} \cr
+#' 3) \tab Sélectioner \emph{Indicateurs mensuels 'DRIAS-2020' par horizon} \cr
+#' 4) \tab Dans \emph{Sélection du jeu de données }, sélectioner votre modèle. Je conseille \emph{ALADIN63_CNRM-CM5} / \emph{RCP8.5} \cr
+#' 5) \tab Dans \emph{Référence temporelle}, cocher toutes les cases \cr
+#' 6) \tab Dans \emph{Référence géographique}, chercher votre secteur \cr
+#' 7) \tab Dans \emph{Indicateurs météorologiques}, cliquer sur "tous" \cr}
+#' @usage BHbyDRIAS(txt)
+#' @param txt Répertoire du fichier \code{.txt} issu de DRIAS. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.
+#' @return Les fichiers sf suivant sont généré dans l'environnement
+#' \item{DRIAS_df}{Dataframe des données brut DRIAS} 
+#' \item{DRIAS_serie}{Dataframe des données pour création de diagramme ombrothermique}
+#' \item{RIAS_bh}{Dataframe des données pour création de diagramme ETP}
+#' \item{Periode}{Horizon retenu dans le code}
+#' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
+#' @examples 
+#' ### Fonctionnement :
+#'    BHbyDRIAS(txt = F)
+#' @export
+#' 
+#' @import tcltk sf dplyr stringr
+
 # Lancement des library
-if (!require("dplyr")) {install.packages("dplyr")}
-if (!require("stringr")) {install.packages("stringr")}
+# if (!require("dplyr")) {install.packages("dplyr")}
+# if (!require("stringr")) {install.packages("stringr")}
 
 BHbyDRIAS <- function(txt=F) {
   if(isFALSE(txt)){

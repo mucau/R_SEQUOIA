@@ -1,43 +1,43 @@
 Package: SEQUOIA
 Type: Package
 Title: SEQUOIA : Boite a outils a destination des forestiers
-Version: 0.3.02
+Version: 0.3.05
 Author: Matthieu CHEVEREAU, Paul CARTERON
 Maintainer: Matthieu CHEVEREAU <matthieuchevereau@yahoo.fr>
-Description: Boite a outils a destination des forestiers
+Description: Boite a outils a destination des forestiers.
 License: GPL-2
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Imports: 
-    data.table, 
-    dplyr, 
-    plyr, 
-    foreign, 
-    gdalUtils, 
-    osmdata, 
-    R.utils, 
-    raster, 
-    RCurl, 
-    readxl, 
-    rlist, 
-    rvest, 
-    sf, 
+    ClimClass,
+    R.utils,
+    RCurl,
+    XML,
+    cadastreAnalysis,
+    data.table,
+    dplyr,
+    elevatr,
+    foreign,
+    geosphere,
+    leaflet,
+    lwgeom,
+    nngeo,
+    openxlsx,
+    osmdata,
+    plotly,
+    prettydoc,
+    readxl,
+    rlang,
+    rlist,
+    rvest,
+    sf,
     smoothr,
-    stringr, 
-    tcltk, 
-    openxlsx, 
-    XML, 
-    xml2, 
-    units, 
-    nngeo, 
-    sp, 
-    ClimClass, 
-    geosphere, 
-    plotly, 
-    lwgeom, 
-    stars, 
-    leaflet
+    stars,
+    stringr,
+    tcltk,
+    tidyverse,
+    xml2
 Remotes:
     github::paul-carteron/cadastreAnalysis
 URL: https://github.com/mucau/R_SEQUOIA
@@ -45,4 +45,3 @@ BugReports: https://github.com/mucau/R_SEQUOIA/issues
 Depends: R (>= 4.0.0)
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
-
