@@ -236,7 +236,7 @@ UAtoUA <- function(rep=F) {
 
   sortie <- as.data.frame(UA_COR)[,1:27]
   repOut <- paste(dirname(dirname(dirname(rep))), paste0(NAME, "_PSG",".xlsx"), sep="/")
-  openxlsx::write.xlsx(sortie, repOut)
+  openxlsx::write.xlsx(sortie, repOut, overwrite = T)
   cat(paste("        Le tableur UA a été enregistré dans le repertoire : ", repOut),"\n \n")
 
   options(warn=1)

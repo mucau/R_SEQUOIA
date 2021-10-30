@@ -145,21 +145,28 @@ HTMLtoXLSX <- function(rephtml=F,repRdata=F) {
 
           t1 <- t1 %>% # Suppression des lignes dont la contenance contient des tags .html
             filter(!is.na(SURFACE)) %>%
-            filter(SECTION != "SECTION") %>%
-            filter(SURFACE !="Â")
+            filter(SECTION != "SECTION")
 
           df <- rbind(df, t1) # Mise du dataframe dans le précédent
         }
       }
-      df <- unique (df)
-
+      df <- unique (df)%>%
+        filter(!str_detect(SURFACE, "Â"))
+      
       ### Inscription des données de la parcelle à ses subdivisions
-      for (k in which(df[,1] == "Â")){
-        df[k, 1:3] <- df[k-1, 1:3]
+      for (k in 1:nrow(df)){
+        if (is.na(as.numeric(df[k,2]))){
+          df[k, 1:3] <- df[k-1, 1:3]
+          df[k, 7] <-str_replace(df[k, 7],",",".")
+        } else {
+          df[k, 4] <-str_replace(df[k, 4],"Â","")
+          df[k, 7] <-str_replace(df[k, 7],"Â","")
+        }
       }
 
       ### Inscription des données générales
-      df <- df %>% filter(NATURE !="Â") %>% # Conservation des seules subdivisions fiscales
+      df <- df %>%
+        filter(!str_detect(NATURE, "Â")) %>% # Conservation des seules subdivisions fiscales
         mutate(DEP_CODE = Dep_Code,         # Création du champs DEP_CODE
                COM_CODE = Com_Code,         # Création du champs COM_CODE
                COM_NOM  = Com_Nom,          # Création du champs COM_NOM
@@ -273,9 +280,9 @@ HTMLtoXLSX <- function(rephtml=F,repRdata=F) {
     repOut <- paste(rephtml, paste0(NAME,"_matrice.xlsx"), sep="/")
     cat(paste("Liste parcelles cadastrales enregistree dans le repertoire : ", repOut),"\n")
     #Encoding(sortie) <- "latin1"
-    openxlsx::write.xlsx(sortie, repOut)
+    openxlsx::write.xlsx(sortie, repOut, overwrite = T)
     repOut <- paste(rephtml, paste0(NAME,"_subdi.xlsx"), sep="/")
-    openxlsx::write.xlsx(sortie2, repOut)
+    openxlsx::write.xlsx(sortie2, repOut, overwrite = T)
     cat(paste("Liste parcelles cadastrales enregistree dans le repertoire : ", repOut),"\n")
 
     assign("XLSX",sortie,envir=globalenv())
