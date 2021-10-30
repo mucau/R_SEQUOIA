@@ -14,7 +14,7 @@
 #'   METEOFRANCEonSHP(repshp = F)
 #' @export
 #' 
-#' @import tcltk dplyr stringr sf nngeo
+#' @import tcltk dplyr stringr sf nngeo utils
 
 # Lancement des library
 # if (!require("tcltk")) {install.packages("tcltk")}

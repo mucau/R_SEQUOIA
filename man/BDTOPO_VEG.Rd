@@ -23,7 +23,7 @@ La fonction \code{BDTOPO_VEG} charge les données de végétations depuis IGN© 
 }
 \examples{
 ### Fonctionnement :
- BDTOPO_VEG(PARCA=F, repBDTOPO=F))
+    BDTOPO_VEG(PARCA=F, repBDTOPO=F)
 }
 \author{
 Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>

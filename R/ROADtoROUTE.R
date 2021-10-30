@@ -18,7 +18,7 @@
 #'   ROADtoROUTE(road = F)
 #' @export
 #' 
-#' @import tcltk dplyr stringr sf
+#' @import tcltk dplyr stringr sf utils
 
 # Lancement des library
 # if (!require("tcltk")) {install.packages("tcltk")}

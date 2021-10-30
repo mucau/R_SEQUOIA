@@ -17,7 +17,7 @@
 #'   ETALAB(PARCA)
 #' @export
 #' 
-#' @import tcltk sf dplyr stringr
+#' @import tcltk sf dplyr stringr utils
 
 # Lancement des library
 # if (!require("sf")) {install.packages("sf")}
@@ -79,7 +79,7 @@ ETALAB <- function(PARCA=F){
 
     TD = tempdir() # répertoire temporaire
     TF = tempfile(tmpdir=TD, fileext=".gz") # fichier temporaire
-    download.file(URL, TF, method="libcurl", quiet=T) # Téléchargement du fichier URL sous le nom TF dans TD
+    utils::download.file(URL, TF, method="libcurl", quiet=T) # Téléchargement du fichier URL sous le nom TF dans TD
     R.utils::gunzip(TF, remove=F) # Extraction de TF dans TD
 
     COM_SF <- st_read(str_replace(TF, ".gz", ""), quiet=T) # Lecture du fichier sf
@@ -183,8 +183,8 @@ ETALAB <- function(PARCA=F){
     download.file(ZIP_URL, TF, method="libcurl", quiet=T) # Téléchargement du fichier URL sous le nom TF dans TD
 
     setwd(TD)
-    bunzip2(TF)
-    untar(str_replace(TF,".bz2",""))
+    R.utils::bunzip2(TF)
+    utils::untar(str_replace(TF,".bz2",""))
     cat(paste0("        La feuille ", FEUILLE[b,1], "a été téléchargée \n"))
   }
 

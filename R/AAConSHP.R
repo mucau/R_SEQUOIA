@@ -23,7 +23,7 @@
 # if (!require("stringr")) {install.packages("stringr")}
 # if (!require("leaflet")) {install.packages("leaflet")}
 
-AAConSHP <- function(rep=F){
+AAConSHP <- function(rep=FALSE){
   message("- - - Détection des aires d'alimentation de captages - - -")
   options(warn=-1) # Désactivation des warnings
   if(isFALSE(rep)) {

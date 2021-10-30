@@ -5,11 +5,15 @@
 #' La fonction \code{IGNtoSHP} permet de télécharger les fichiers shapefiles disponibles depuis le serveur de l'IFN.
 #' @usage IFNtoSHP(code)
 #' @param code CHARACTER. Code du fichier à télécharger depuis le serveur IFN
-#' Les codes sont les suivants:
-#' @param 'RFN' Régions forestières nationales
-#' @param 'RFD' Régions forestières départementales
-#' @param 'SER' Sylvoécorégions
-#' @param 'SERAR' Sylvoécorégions d'alluvions récentes
+#' 
+#' @details 
+#' Les codes sont les suivants: 
+#' #' \itemize{
+#'   \item 'RFN' Régions forestières nationales
+#'   \item 'RFD' Régions forestières départementales
+#'   \item 'SER' Sylvoécorégions
+#'   \item 'SERAR' Sylvoécorégions d'alluvions récentes
+#' }
 #' @references 
 #' Les données sont explicitées sur le portail de l'IFN: \url{http://inventaire-forestier.ign.fr/carto/carto/afficherCarto/}
 #' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
@@ -18,7 +22,8 @@
 #'   SER_polygon <- IFNtoSHP(code = 'SER')
 #' @export
 #' 
-#' @import tcltk sf
+#' @import tcltk sf utils
+#' @importFrom rlang is_empty
 
 # Lancement des library
 # if (!require("tcltk")) {install.packages("tcltk")}

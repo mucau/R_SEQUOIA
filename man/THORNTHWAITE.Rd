@@ -6,7 +6,7 @@
 \title{THORNTHWAITE
 Calcul des ETP selon la formule de THORNTHWAITE}
 \usage{
-THORNTHWAITE(rep)
+THORNTHWAITE(series, latitude, ru, snow.init, Tsnow, fr.sn.acc, snow_melt_coeff)
 }
 \arguments{
 \item{series}{tableau des données météo}

@@ -6,12 +6,12 @@
 \title{BDTOPO_HYDRO
 Telechargement des donnees IGN(c) BD TOPO(r) HYDROGRAPHIE}
 \usage{
-BDTOPO_HYDRO(PARCA, repBDTOPO)
+BDTOPO_HYDRO(PARCA, source)
 }
 \arguments{
-\item{PARCA}{sf du parcellaire cadastral Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du shapefile}
+\item{PARCA}{Objet sf du parcellaire cadastral. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.}
 
-\item{repBDTOPO}{Répertoire de la IGN© BD TOPO® HYDROGRAPHIE. Deux choix possibles: départementale ou métropolitaine.}
+\item{source}{CHARACTER. Source de la IGN© BD TOPO® HYDROGRAPHIE utilisée. Deux choix possibles: "IGN© BD TOPO® Hydrographie Départementale" ou "IGN© BD TOPO® Hydrographie Métropole". Si \code{FALSE}, la fonction génère une boite de dialogue de sélection.}
 }
 \value{
 \item{HYDRO_polygon}{Objet sf ; SURFO: polygones hydrologique des surfaces hydrographiques permanentes, SURFOi: intermittentes, RESO: réservoirs d'eau}
@@ -23,7 +23,7 @@ La fonction \code{BDTOPO_HYDRO} charge et exporte les données IGN© BD TOPO® H
 }
 \examples{
 ### Fonctionnement :
-  BDTOPO_HYDRO(PARCA, repBDTOPO)
+  BDTOPO_HYDRO(PARCA=F, source=F)
 }
 \author{
 Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>

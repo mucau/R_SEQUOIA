@@ -9,19 +9,19 @@ Recuperation des donnees .shp de l'IFN}
 IFNtoSHP(code)
 }
 \arguments{
-\item{code}{CHARACTER. Code du fichier à télécharger depuis le serveur IFN
-Les codes sont les suivants:}
-
-\item{'RFN'}{Régions forestières nationales}
-
-\item{'RFD'}{Régions forestières départementales}
-
-\item{'SER'}{Sylvoécorégions}
-
-\item{'SERAR'}{Sylvoécorégions d'alluvions récentes}
+\item{code}{CHARACTER. Code du fichier à télécharger depuis le serveur IFN}
 }
 \description{
 La fonction \code{IGNtoSHP} permet de télécharger les fichiers shapefiles disponibles depuis le serveur de l'IFN.
+}
+\details{
+Les codes sont les suivants: 
+#' \itemize{
+  \item 'RFN' Régions forestières nationales
+  \item 'RFD' Régions forestières départementales
+  \item 'SER' Sylvoécorégions
+  \item 'SERAR' Sylvoécorégions d'alluvions récentes
+}
 }
 \examples{
 ### Fonctionnement :

@@ -27,6 +27,7 @@ Imports:
     osmdata,
     plotly,
     prettydoc,
+    raster,
     readxl,
     rlang,
     rlist,
@@ -37,6 +38,7 @@ Imports:
     stringr,
     tcltk,
     tidyverse,
+    utils,
     xml2
 Remotes:
     github::paul-carteron/cadastreAnalysis

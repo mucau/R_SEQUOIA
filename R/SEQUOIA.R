@@ -11,7 +11,7 @@
 #'     SEQUOIA(F)
 #' @export
 #' 
-#' @import tcltk stringr 
+#' @import tcltk stringr utils
 
 SEQUOIA <- function(enrg=FALSE) {
   # Lancement des library

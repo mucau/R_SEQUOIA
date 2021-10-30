@@ -5,16 +5,16 @@
 #' La fonction AURELHYonSHP renseigne des données climatologiques sur une zone détude
 #' Les données climatiques Aurelhy (© Météo-France, 2001) ont été obtenues à partir de jeux de données ponctuelles des stations Météo-France qui ont été spatialisées en utilisant des modèles statistiques élaborés à l’aide de variables topographiques.
 #' Les informations ci-dessous correspondantes aux normales déterminés par le modèle Aurelhy sur une étendue de 2,5 km autour de la forêt pour la période 1981-2010.
-#' @usage AURELHYonSHP(repshp, repRdata)
-#' @param repshp CHARACTER. Adresse du fichier .shp de la zone d'étude. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.
-#' @param repRdata CHARACTER. Répertoire du fichier .Rdata contenant les données AURELHY. Si FALSE, la fonction génère une boite de dialogue de sélection du dossier.
+#' @usage AURELHYonSHP(shp, Rdata)
+#' @param shp CHARACTER. Adresse du fichier .shp de la zone d'étude. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.
+#' @param Rdata CHARACTER. Répertoire du fichier .Rdata contenant les données AURELHY. Si FALSE, la fonction génère une boite de dialogue de sélection du dossier.
 #' @details La fonction réclame une archive INSEE.Rdata externe non fournie.
 #' @return 
 #' La fonction retourne un dataframe des données AURELHY: température (min, max, moy), précipitation et nombre de jours de gel. Ces renseignements sont fournies au mois et cumulés/moyennés à l'année.
 #' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
 #' @examples 
 #' ### Fonctionnement :
-#'   AURELHYonPARCA(repshp = F, repRdata = F)
+#'   AURELHYonSHP(shp = F, Rdata = F)
 #' @export
 #' 
 #' @import tcltk sf dplyr

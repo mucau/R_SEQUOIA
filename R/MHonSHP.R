@@ -18,7 +18,7 @@
 #'   MHonSHP(rep=F)
 #' @export
 #' 
-#' @import tcltk dplyr stringr sf cadastreAnalysis
+#' @import tcltk dplyr stringr sf cadastreAnalysis utils
 
 # Lancement des library
 # if (!require("cadastreAnalysis")) {devtools::install_github("paul-carteron/cadastreAnalysis")}

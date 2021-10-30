@@ -19,11 +19,13 @@
 #'   HTMLtoXLSX(rephtml=F, repRdata=F)
 #' @export
 #' 
-#' @import tcltk dplyr stringr
+#' @import tcltk dplyr stringr utils
 #' @importFrom XML readHTMLTable
 #' @importFrom RCurl getURL
 #' @importFrom openxlsx write.xlsx 
 #' @importFrom rlist list.clean
+#' @importFrom stats xtabs 
+#' @importFrom stats aggregate 
 
 # Lancement des library
 # if (!require("tcltk")) {install.packages("tcltk")}
@@ -205,7 +207,7 @@ HTMLtoXLSX <- function(rephtml=F,repRdata=F) {
 
       ## Création de la matrice finale (sans subdivisions)
       ### Création d'un tableau récapitualtif des SURFACE par GROUPE par IDU
-      tab2 <- as.data.frame.matrix(xtabs(SURFACE ~ IDU + GROUPE, tab)) # dataframe SURFACE par GROUPE par IDU
+      tab2 <- as.data.frame.matrix(stats::xtabs(SURFACE ~ IDU + GROUPE, tab)) # dataframe SURFACE par GROUPE par IDU
 
       ### Ajout de la colonne manquante en cas d'absence de données
       if(ncol(tab2)<2){
@@ -233,7 +235,7 @@ HTMLtoXLSX <- function(rephtml=F,repRdata=F) {
       tab2 <- tab2[,-c(1:2)] # Suppression des champs GROUPE
 
       ### Création d'un tableau récapitualtif du REV_CAD par IDU
-      tab3 <- aggregate(data=tab[,c("IDU","REV_CAD")], .~IDU, FUN=sum)
+      tab3 <- stats::aggregate(data=tab[,c("IDU","REV_CAD")], .~IDU, FUN=sum)
       names(tab3) <- c("IDU","REV_CA")
 
       ### Création du tableur de sortie

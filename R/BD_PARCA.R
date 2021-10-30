@@ -3,9 +3,9 @@
 #' @encoding UTF-8
 #' @description 
 #' La fonction BD_PARCA charge les données de la IGN (c) BD_PARCELLAIRE (r) autour d'un parcellaire cadastral (sf) et génère un ensemble de .shp (EPSG 2154) nécessaires ou utiles à la réalisation d'une cartographie forestière ponctuelle.
-#' @usage BD_PARCA(PARCA, rep_BDPARCA)
-#' @param PARCA sf du parcellaire cadastral. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.
-#' @param rep_BDPARCA CHARACTER. Répertoire de la BD_PARCELLAIRE utilisée
+#' @usage BD_PARCA(PARCA, repBDPARCA)
+#' @param PARCA Objet sf du parcellaire cadastral. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.
+#' @param repBDPARCA CHARACTER. Répertoire de la BD_PARCELLAIRE utilisée
 #' @return 
 #' \item{ROAD_polygon}{Shapefile Vides cadatrés environnants la propriété: routes+tronçons fluviaux}  
 #' \item{PARCELLES_polygon}{Shapefile du parcellaire cadastral global des communes} 
@@ -13,7 +13,7 @@
 #' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
 #' @examples 
 #' ### Fonctionnement :
-#'   BD_PARCA(PARCA)
+#'   BD_PARCA(PARCA=F, repBDPARCA=F)
 #' @export
 #' 
 #' @import tcltk sf lwgeom stringr

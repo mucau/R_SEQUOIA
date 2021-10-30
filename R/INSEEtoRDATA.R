@@ -19,7 +19,7 @@
 #'   INSEEtoRDATA(rep=NULL)
 #' @export
 #' 
-#' @import tcltk sf dplyr stringr 
+#' @import tcltk sf dplyr stringr utils 
 #' @importFrom foreign read.dbf
 
 # Lancement des library

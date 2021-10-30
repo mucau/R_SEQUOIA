@@ -6,7 +6,7 @@
 \title{SSPFinUA
 Affectation arbitraire d'un code N_SSPARFOR dans UA_polygon}
 \usage{
-UAtoSSPF(rep)
+SSPFinUA(rep)
 }
 \arguments{
 \item{rep}{CHARACTER. Adresse du fichier \code{.shp} UA_polygon. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.}

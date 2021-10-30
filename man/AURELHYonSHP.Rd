@@ -6,12 +6,12 @@
 \title{AURELHYonSHP
 Climatologie AURELHY sur une zone d'etude}
 \usage{
-AURELHYonSHP(repshp, repRdata)
+AURELHYonSHP(shp, Rdata)
 }
 \arguments{
-\item{repshp}{CHARACTER. Adresse du fichier .shp de la zone d'étude. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.}
+\item{shp}{CHARACTER. Adresse du fichier .shp de la zone d'étude. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.}
 
-\item{repRdata}{CHARACTER. Répertoire du fichier .Rdata contenant les données AURELHY. Si FALSE, la fonction génère une boite de dialogue de sélection du dossier.}
+\item{Rdata}{CHARACTER. Répertoire du fichier .Rdata contenant les données AURELHY. Si FALSE, la fonction génère une boite de dialogue de sélection du dossier.}
 }
 \value{
 La fonction retourne un dataframe des données AURELHY: température (min, max, moy), précipitation et nombre de jours de gel. Ces renseignements sont fournies au mois et cumulés/moyennés à l'année.
@@ -26,7 +26,7 @@ La fonction réclame une archive INSEE.Rdata externe non fournie.
 }
 \examples{
 ### Fonctionnement :
-  AURELHYonPARCA(repshp = F, repRdata = F)
+  AURELHYonSHP(shp = F, Rdata = F)
 }
 \author{
 Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>

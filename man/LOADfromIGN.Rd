@@ -13,12 +13,12 @@ LOADfromIGN(rep)
 }
 \description{
 La fonction \code{LOADfromIGN} permet de télécharger rapidement les données de l'IGN (C).
-\tabular{ll}{
-  \tab >>  BD Parcellaire® \cr
-  \tab >>  BD TOPO® \cr
-  \tab >>  BD FORET® V2 \cr
-  \tab >>  RGE ALTI 5m \cr
-  \tab >>  BD ALTI® V2 25M \cr
+\itemize{
+  \item BD Parcellaire®
+  \item BD TOPO®
+  \item BD FORET® V2
+  \item RGE ALTI 5m
+  \item BD ALTI® V2 25M
 }
 La fonction demande le département consernée.
 }
@@ -27,7 +27,7 @@ La fonction télécharge les données depuis le serveur \url{http://files.openda
 }
 \examples{
 ### Fonctionnement :
-  LOADfromIGN(rep = F)
+    LOADfromIGN(rep = F)
 }
 \author{
 Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>

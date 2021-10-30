@@ -6,10 +6,10 @@
 \title{INPNonSHP
 Detection des enjeux environnementaux sur une zone d'etude}
 \usage{
-INPNonPARCA(repshp, repRdata)
+INPNonSHP(rep, repRdata)
 }
 \arguments{
-\item{shp}{Adresse du \code{.shp} de la zone d'étude. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.}
+\item{rep}{Adresse du \code{.shp} de la zone d'étude. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.}
 
 \item{repRdata}{Répertoire du fichier .Rdata contenant les données INPN. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du dossier.}
 
@@ -27,7 +27,7 @@ La fonction réclame une archive .Rdata externe produite par la fonction [INPNto
 }
 \examples{
 ### Fonctionnement :
-  INPNonPARCA(shp=F, repRdata=F, NAME=NULL)
+  INPNonSHP(rep=F, repRdata=F, NAME=NULL)
 }
 \references{
 Vous pouvez retrouvé les données environnementales sur le site de l'Institut national pour la protection de la nature (INPN) : \url{https://inpn.mnhn.fr/accueil/index}

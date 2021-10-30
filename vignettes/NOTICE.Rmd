@@ -36,15 +36,15 @@ La fonction `SEQUOIA::SEQUOIA(T)` appelle les autres fonctions.
     - `HTMLtoXLSX`
   - 2 Création du PARCA
     - `XLSXtoPARCA`
-  - 3 Création du fond vectoriel
-    - `CAGEF` lance `OSMonPARCA`, `BDTOPOonPARCA`, `BDTOPO_HYDRO`, `BDTOPO_VEG`, `ETALAB`, `BD_PARCA`, `EDIGEO`
-  - 4 Création UA
+  - 3 Création UA
     - `PARCAtoUA`
-  - 5 Conversion ROAD vers ROUTE
-    - `ROADtoROUTE`
-  - 6 Finalisation UA
+  - 4 Finalisation UA
     - `UAtoUA`
     - `UAtoSSPF`
+  - Op1 Création du fond vectoriel
+    - `CAGEF` lance `OSMonPARCA`, `BDTOPOonPARCA`, `BDTOPO_HYDRO`, `BDTOPO_VEG`, `ETALAB`, `BD_PARCA`, `EDIGEO`
+  - Op1 Conversion ROAD vers ROUTE
+    - `ROADtoROUTE`
     
 ***
 - Outils cartographiques

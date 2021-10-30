@@ -6,12 +6,12 @@
 \title{BD_PARCA
 Chargement et export des donnees de la IGN (c) BD_PARCELLAIRE (r)}
 \usage{
-BD_PARCA(PARCA, rep_BDPARCA)
+BD_PARCA(PARCA, repBDPARCA)
 }
 \arguments{
-\item{PARCA}{sf du parcellaire cadastral. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.}
+\item{PARCA}{Objet sf du parcellaire cadastral. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.}
 
-\item{rep_BDPARCA}{CHARACTER. Répertoire de la BD_PARCELLAIRE utilisée}
+\item{repBDPARCA}{CHARACTER. Répertoire de la BD_PARCELLAIRE utilisée}
 }
 \value{
 \item{ROAD_polygon}{Shapefile Vides cadatrés environnants la propriété: routes+tronçons fluviaux}  
@@ -23,7 +23,7 @@ La fonction BD_PARCA charge les données de la IGN (c) BD_PARCELLAIRE (r) autour
 }
 \examples{
 ### Fonctionnement :
-  BD_PARCA(PARCA)
+  BD_PARCA(PARCA=F, repBDPARCA=F)
 }
 \author{
 Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>

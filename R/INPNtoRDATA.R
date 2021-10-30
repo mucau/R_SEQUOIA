@@ -17,7 +17,7 @@
 #'   INPNtoRDATA(rep=F)
 #' @export
 #' 
-#' @import tcltk sf dplyr stringr
+#' @import tcltk sf dplyr stringr utils
 
 # Lancement des library
 # if (!require("sf")) {install.packages("sf")}

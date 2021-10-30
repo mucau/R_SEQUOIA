@@ -21,14 +21,15 @@ Les fichiers sf suivant sont généré dans l'environnement
 \description{
 La fonction \code{BHbyDRIAS} traite les données récupérée sur le serveur DRIAS.
 Procédure:
-\tabular{ll}{
-1) \tab Aller sur https://drias-prod.meteo.fr/okapi/accueil/okapiWebDrias/index.jsp \cr
-2) \tab Cliquer sur \emph{Simulations climatiques atmosphériques} / \emph{Métropole} / \emph{INDICATEUR DRIAS 2020} \cr
-3) \tab Sélectioner \emph{Indicateurs mensuels 'DRIAS-2020' par horizon} \cr
-4) \tab Dans \emph{Sélection du jeu de données }, sélectioner votre modèle. Je conseille \emph{ALADIN63_CNRM-CM5} / \emph{RCP8.5} \cr
-5) \tab Dans \emph{Référence temporelle}, cocher toutes les cases \cr
-6) \tab Dans \emph{Référence géographique}, chercher votre secteur \cr
-7) \tab Dans \emph{Indicateurs météorologiques}, cliquer sur "tous" \cr}
+#' \enumerate{
+  \item Aller sur \url{https://drias-prod.meteo.fr/okapi/accueil/okapiWebDrias/index.jsp} 
+  \item Cliquer sur \emph{Simulations climatiques atmosphériques} / \emph{Métropole} / \emph{INDICATEUR DRIAS 2020}
+  \item Sélectioner \emph{Indicateurs mensuels 'DRIAS-2020' par horizon}
+  \item Dans \emph{Sélection du jeu de données }, sélectioner votre modèle. Je conseille \emph{ALADIN63_CNRM-CM5} / \emph{RCP8.5}
+  \item Dans \emph{Référence temporelle}, cocher toutes les cases
+  \item Dans \emph{Référence géographique}, chercher votre secteur
+  \item Dans \emph{Indicateurs météorologiques}, cliquer sur "tous"
+}
 }
 \examples{
 ### Fonctionnement :

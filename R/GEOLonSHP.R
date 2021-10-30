@@ -3,17 +3,18 @@
 #' @encoding UTF-8
 #' @description 
 #' La fonction \code{GEOLonSHP} téléchargement la BRGM (C) BD_Charm50 (r) départementale détecté sur l'emprise du shapefile d'entrée, réalise une intersection des couches et calcul la surface SIG par entité géologique.
-#' @usage GEOLonSHP(shp)
+#' @usage GEOLonSHP(shp, NAME)
 #' @param shp Adresse du \code{.shp} de la zone d'étude. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.
+#' @param NAME CHARACTER. Nom du fichier qui s'implante en préfixe.
 #' @return
 #' \item{geol_polygon}{Shapefile de la géologie sur l'emprise. Généré dans le répertoire du fichier source.}
 #' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
 #' @examples 
 #' ### Fonctionnement :
-#'   GEOLonSHP(shp = F)
+#'   GEOLonSHP(shp = F, NAME=NULL)
 #' @export
 #' 
-#' @import tcltk sf dplyr osmdata stringr lwgeom
+#' @import tcltk sf dplyr osmdata stringr lwgeom utils
 
 # Lancement des library
 # if (!require("tcltk")) {install.packages("tcltk")}
@@ -50,7 +51,7 @@ GEOLonSHP <- function(shp = F, NAME=NULL){
   if(is.null(NAME)){
     
     if (Sys.info()["sysname"]=="Windows"){
-      NAME <- winDialogString("Entrer le nom du fichier de sortie:", "")
+      NAME <- utils::winDialogString("Entrer le nom du fichier de sortie:", "")
     }else {
       NAME <- readline(prompt="Entrer le nom du fichier de sortie:")
     }
@@ -82,8 +83,8 @@ GEOLonSHP <- function(shp = F, NAME=NULL){
       url <- paste0('https://infoterre.brgm.fr/telechargements/BDCharm50/GEO050K_HARM_', dep_code, '.zip')
       TD = tempdir() # répertoire temporaire
       TF = tempfile(tmpdir=TD, fileext=".zip") # fichier temporaire
-      download.file(url, TF, method="libcurl", quiet=F)
-      unzip(TF, exdir=TD)
+      utils::download.file(url, TF, method="libcurl", quiet=F)
+      utils::unzip(TF, exdir=TD)
       cat("        Le département", dep_code, "a été téléchargé \n \n")
     } else {
       cat("        Le département", dep_code, "n'est pas disponible \n \n")
@@ -114,5 +115,4 @@ GEOLonSHP <- function(shp = F, NAME=NULL){
   # Export des données
   message("        Export des données")
   SEQUOIA:::WRITE(geol_shp, dirname(shp_rep), paste0(NAME,"geol_polygon.shp"))
-  #st_write(geol_shp, dsn=dirname(shp_rep), layer ="geol.shp", update=TRUE, delete_layer = TRUE, driver = "ESRI Shapefile", quiet =T, layer_options = "ENCODING=UTF-8")
 }

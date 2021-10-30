@@ -13,7 +13,7 @@
 #'    WRITE(PARCA, repout2, paste(NAME,"PARCA.shp",sep="_"))
 #' @export
 #' 
-#' @import sf stringr 
+#' @import sf stringr utils
 
 # Lancement des library
 # if (!require("sf")) {install.packages("sf")}

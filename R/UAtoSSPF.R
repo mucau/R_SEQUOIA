@@ -18,7 +18,8 @@
 #'     UAtoSSPF(rep=F)
 #' @export
 #' 
-#' @import tcltk dplyr stringr sf lwgeom
+#' @import tcltk dplyr stringr sf lwgeom utils
+#' @importFrom stats aggregate
 
 # Lancement des library
 # if (!require("tcltk")) {install.packages("tcltk")}

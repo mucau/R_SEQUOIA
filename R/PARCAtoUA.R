@@ -3,7 +3,7 @@
 #' @encoding UTF-8
 #' @description 
 #' La fonction \code{PARCAtoUA} génère un ensemble de .shp (EPSG 2154) nécessaires à la réalisation d'une cartographie forestière ponctuelle à partir d'un parcellaire cadastral .shp formatée (EPSG 2154).
-#' @usage XLSXtoPARCA(rep)
+#' @usage PARCAtoUA(rep)
 #' @param rep CHARACTER. Adresse du fichier \code{.shp}. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.
 #' Les fichiers .shp suivants sont produits :
 #' @return
@@ -18,6 +18,7 @@
 #' @export
 #' 
 #' @import tcltk dplyr stringr sf
+#' @importFrom stats aggregate
 
 # Lancement des library
 # if (!require("tcltk")) {install.packages("tcltk")}

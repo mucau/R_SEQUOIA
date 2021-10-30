@@ -3,9 +3,9 @@
 #' @encoding UTF-8
 #' @description 
 #' La fonction \code{BDTOPO_HYDRO} charge et exporte les données IGN© BD TOPO® HYDROGRAPHIE autour d'un parcellaire cadastral (sf) et génère un ensemble d'objet sf nécessaires à la réalisation d'une cartographie forestière ponctuelle.
-#' @usage BDTOPO_HYDRO(PARCA, repBDTOPO)
-#' @param PARCA sf du parcellaire cadastral Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du shapefile
-#' @param repBDTOPO Répertoire de la IGN© BD TOPO® HYDROGRAPHIE. Deux choix possibles: départementale ou métropolitaine.
+#' @usage BDTOPO_HYDRO(PARCA, source)
+#' @param PARCA Objet sf du parcellaire cadastral. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.
+#' @param source CHARACTER. Source de la IGN© BD TOPO® HYDROGRAPHIE utilisée. Deux choix possibles: "IGN© BD TOPO® Hydrographie Départementale" ou "IGN© BD TOPO® Hydrographie Métropole". Si \code{FALSE}, la fonction génère une boite de dialogue de sélection.
 #' @return
 #' \item{HYDRO_polygon}{Objet sf ; SURFO: polygones hydrologique des surfaces hydrographiques permanentes, SURFOi: intermittentes, RESO: réservoirs d'eau}
 #' \item{HYDRO_line}{Objet sf ; RU: lignes hydrologiques des tronçons fluviaux permanentes, RUi: intermittents, CANO: canalisations}
@@ -13,7 +13,7 @@
 #' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
 #' @examples 
 #' ### Fonctionnement :
-#'   BDTOPO_HYDRO(PARCA, repBDTOPO)
+#'   BDTOPO_HYDRO(PARCA=F, source=F)
 #' @export
 #' 
 #' @import tcltk sf dplyr stringr lwgeom
@@ -25,7 +25,7 @@
 # if (!require("stringr")) {install.packages("stringr")}
 # if (!require("lwgeom")) {install.packages("lwgeom")}
 
-BDTOPO_HYDRO <- function(PARCA=F, source=F){
+BDTOPO_HYDRO <- function(PARCA=FALSE, source=FALSE){
   options(warn=-1) # Désactivation des warnings
   if(isFALSE(PARCA)) {
     rep  <- tk_choose.files(caption = "Choisir le fichier .shp",
@@ -42,7 +42,7 @@ BDTOPO_HYDRO <- function(PARCA=F, source=F){
     form <- c("IGN© BD TOPO® Hydrographie Départementale",
               "IGN© BD TOPO® Hydrographie Métropole")
 
-    source <- select.list(form,
+    source <- utils::select.list(form,
                        multiple = T,
                        title = "Source des données ?",
                        graphics = T)

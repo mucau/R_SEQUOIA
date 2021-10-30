@@ -6,12 +6,10 @@
 \title{CLIMonSHP
 Recuperation des donnees climatiques sur l'emprise d'un .shp}
 \usage{
-CLIMonSHP(repshp, repRdata)
+CLIMonSHP(shp)
 }
 \arguments{
-\item{repshp}{Adresse du fichier \code{.shp} de la zone d'étude. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.}
-
-\item{repRdata}{Répertoire des données \code{.Rdata}. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du dossier.}
+\item{shp}{Adresse du fichier \code{.shp} de la zone d'étude. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.}
 }
 \value{
 \item{METEOFRANCE_df}{Dataframe des données METEO-FRANCE}
@@ -23,18 +21,18 @@ CLIMonSHP(repshp, repRdata)
 \description{
 La fonction \code{CLIMonSHP} fournit les données nécéssaire à la production d'une fiche \code{.html} via le Rmakdown \code{CLIM.Rmd}. La fiche fait synthèse des données climatologiques sur une zone détude (\code{.shp} quelconque).
 La synthèse fournit:
-  \tabular{ll}{
-    \tab >>  Les normales en se basant sur les données issues des stations METEO-FRANCE (ou des données AURELHY) \cr
-    \tab >>  Les prévisions attendues en se basant sur les données Drias. \cr
-  }
+\enumerate{
+  \item Les normales en se basant sur les données issues des stations METEO-FRANCE (ou des données AURELHY)
+  \item Les prévisions attendues en se basant sur les données Drias.
+}
 }
 \details{
 La fonction seule produit une multitude d'objet dans l'environnement nécessaire à la fonction \code{CLIM.Rmd}.
 }
 \examples{
-#' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
+#' @author Matthieu CHEVEREAU <\\email{matthieuchevereau@yahoo.fr}>
 ### Fonctionnement :
-  CLIMonSHP(repshp = F, repRdata = F)
+  CLIMonSHP(shp = F)
 }
 \seealso{
 Pour mieux comprendre, voir les notices des fonctions suivantes:

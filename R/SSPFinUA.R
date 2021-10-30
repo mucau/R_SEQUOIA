@@ -3,7 +3,7 @@
 #' @encoding UTF-8
 #' @description 
 #' La fonction \code{SSPFinUA} affecte arbitrairement un code N_SSPARFOR pour des entités de UA_polygon pour lesquels les champs PLT_TYPE, PLT_ESS, PLT_STR et PLT_TSE ont été complétés.
-#' @usage UAtoSSPF(rep)
+#' @usage SSPFinUA(rep)
 #' @param rep CHARACTER. Adresse du fichier \code{.shp} UA_polygon. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.
 #' @return
 #' \item{UA_polygon}{Fichier shapefile ; unité d'analyse corrigé}

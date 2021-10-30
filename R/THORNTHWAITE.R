@@ -3,7 +3,7 @@
 #' @encoding UTF-8
 #' @description 
 #' La fonction \code{THORNTHWAITE} calcule des ETP à partir des données climatologiques et de la localisation.
-#' @usage THORNTHWAITE(rep)
+#' @usage THORNTHWAITE(series, latitude, ru, snow.init, Tsnow, fr.sn.acc, snow_melt_coeff)
 #' @param series tableau des données météo
 #' @param latitude latitude en WGS84
 #' @param ru réserve utile

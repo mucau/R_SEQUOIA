@@ -15,7 +15,7 @@
 #'    XLSXtoPARCA(rep=F)
 #' @export
 #' 
-#' @import tcltk sf dplyr stringr lwgeom
+#' @import tcltk sf dplyr stringr lwgeom utils
 #' @importFrom R.utils gunzip
 #' @importFrom rvest html_nodes
 #' @importFrom rvest html_attr

@@ -6,7 +6,7 @@
 \title{MNTonSHP
 Recuperation d'un modele numerique de terrain et creation des contours d'elevation}
 \usage{
-MNTonSHP(REP_SHP)
+MNTonSHP(REP_SHP, NAME, TEMP)
 }
 \arguments{
 \item{REP_SHP}{CHARACTER. Adresse du fichier \code{.shp}. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.}

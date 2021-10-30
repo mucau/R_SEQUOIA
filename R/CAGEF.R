@@ -51,7 +51,7 @@ CAGEF <- function(rep=F, CODECA=1){
   # Téléchargement des données OSM
   message("        Téléchargement des limites administratives & des infrastructures")
   
-  bdtopo <- askYesNo("Voulez-vous utiliser une IGN© BD TOPO® départementale ?")
+  bdtopo <- utils::askYesNo("Voulez-vous utiliser une IGN© BD TOPO® départementale ?")
   if(is.na(bdtopo)){break}
 
   if (isTRUE(bdtopo)) {

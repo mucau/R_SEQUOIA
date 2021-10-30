@@ -13,7 +13,7 @@
 #' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
 #' @examples 
 #' ### Fonctionnement :
-#'  BDTOPO_VEG(PARCA=F, repBDTOPO=F))
+#'     BDTOPO_VEG(PARCA=F, repBDTOPO=F)
 #' @export
 #' 
 #' @import tcltk sf dplyr stringr lwgeom

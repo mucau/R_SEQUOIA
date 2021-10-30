@@ -5,7 +5,7 @@
 #' Recuperation d'un modele numerique de terrain et creation des contours d'elevation
 #' La fonction \code{MNTonSHP} récupère ou télécharge un modèle numérique de terrain pour une zone d'étude et génère des contours d'élévation topographiques (équidistances à 5 ou 10 mètres) enregistrés au format \code{.shp}.
 #' Le MNT récupérée peut correspondre à celui proposer sur l'Amazon Web Service, à celui de l'IGN© BD Alti® ou à celui de l'IGN© RGE Alti 5m
-#' @usage MNTonSHP(REP_SHP)
+#' @usage MNTonSHP(REP_SHP, NAME, TEMP)
 #' @param REP_SHP CHARACTER. Adresse du fichier \code{.shp}. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.
 #' @param NAME CHARACTER. Nom du fichier de sortie sans l'extension.Défault = \code{"TOPO_line"}
 #' @param TEMP NUMERIC. Valeur du tempon (buffer) pour l'emprise de travail. Défault = \code{200}
@@ -18,9 +18,12 @@
 #'   TOPO_line <- MNTonSHP(REP_SHP = F, NAME = NULL, TEMP = 50)
 #' @export
 #' 
-#' @import tcltk dplyr stringr sf elevatr smoothr stars
+#' @import tcltk dplyr stringr sf elevatr smoothr stars utils
 #' @importFrom raster raster
 #' @importFrom raster extent
+#' @importFrom raster projectRaster
+#' @importFrom raster crop
+#' @importFrom raster getValues
 
 # Lancement des library
 # if (!require("tcltk")) {install.packages("tcltk")}

@@ -4,13 +4,12 @@
 #' @description 
 #' La fonction \code{CLIMonSHP} fournit les données nécéssaire à la production d'une fiche \code{.html} via le Rmakdown \code{CLIM.Rmd}. La fiche fait synthèse des données climatologiques sur une zone détude (\code{.shp} quelconque).
 #' La synthèse fournit:
-#'   \tabular{ll}{
-#'     \tab >>  Les normales en se basant sur les données issues des stations METEO-FRANCE (ou des données AURELHY) \cr
-#'     \tab >>  Les prévisions attendues en se basant sur les données Drias. \cr
-#'   }
-#' @usage CLIMonSHP(repshp, repRdata)
-#' @param repshp Adresse du fichier \code{.shp} de la zone d'étude. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.
-#' @param repRdata Répertoire des données \code{.Rdata}. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du dossier.
+#' \enumerate{
+#'   \item Les normales en se basant sur les données issues des stations METEO-FRANCE (ou des données AURELHY)
+#'   \item Les prévisions attendues en se basant sur les données Drias.
+#' }
+#' @usage CLIMonSHP(shp)
+#' @param shp Adresse du fichier \code{.shp} de la zone d'étude. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.
 #' @return
 #' \item{METEOFRANCE_df}{Dataframe des données METEO-FRANCE}
 #' \item{AURELHY_df}{Dataframe des données AURELHY}
@@ -25,10 +24,10 @@
 #' @examples 
 #' #' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
 #' ### Fonctionnement :
-#'   CLIMonSHP(repshp = F, repRdata = F)
+#'   CLIMonSHP(shp = F)
 #' @export
 #' 
-#' @import tcltk sf dplyr stringr prettydoc plotly
+#' @import tcltk sf dplyr stringr prettydoc plotly utils
 
 # Lancement des library
 # if (!require("tcltk")) {install.packages("tcltk")}
@@ -45,7 +44,7 @@ CLIMonSHP <- function(shp = F){
   if (!length(shp)){stop("Pas de shapefile sélectionné")}
 
   # Bloc Aurelhy
-  AURELHY <- askYesNo("Voulez-vous intégrer les données AURELHY ?")
+  AURELHY <- utils::askYesNo("Voulez-vous intégrer les données AURELHY ?")
   if(is.na(AURELHY)){break}
   
   if(isTRUE(AURELHY)){
@@ -77,7 +76,7 @@ CLIMonSHP <- function(shp = F){
 
   # Nom de fichier
   if (Sys.info()["sysname"]=="Windows"){
-    name <- winDialogString("Entrer le nom du fichier de sortie:", "")
+    name <- utils::winDialogString("Entrer le nom du fichier de sortie:", "")
   }else {
     name <- readline(prompt="Entrer le nom du fichier de sortie:")
   }

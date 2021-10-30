@@ -6,7 +6,7 @@
 \title{PARCAtoUA
 Creation d'un ensemble de .shp a partir d'un parcellaire cadastral .shp}
 \usage{
-XLSXtoPARCA(rep)
+PARCAtoUA(rep)
 }
 \arguments{
 \item{rep}{CHARACTER. Adresse du fichier \code{.shp}. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.
