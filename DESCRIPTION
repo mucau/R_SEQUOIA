@@ -1,7 +1,7 @@
 Package: SEQUOIA
 Type: Package
 Title: SEQUOIA : Boite a outils a destination des forestiers
-Version: 0.3.05
+Version: 0.3.08
 Author: Matthieu CHEVEREAU, Paul CARTERON
 Maintainer: Matthieu CHEVEREAU <matthieuchevereau@yahoo.fr>
 Description: Boite a outils a destination des forestiers.

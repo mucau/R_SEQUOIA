@@ -128,7 +128,7 @@ SEQUOIA <- function(enrg=FALSE) {
     if ("Outils cartographiques" %in% RES1) { # Outils cartographiques
 
       form <- c("MNT sur shapefile",
-                "Zonnage environnementaux",
+                "Zonage environnementaux",
                 "MH sur shapefile",
                 "AAC sur shapefile",
                 "Création d'une fiche Climatologique",
@@ -154,7 +154,7 @@ SEQUOIA <- function(enrg=FALSE) {
           SEQUOIA:::AAConSHP(F)
         }
 
-        if ("Zonnage environnementaux" %in% RES3) {
+        if ("Zonage environnementaux" %in% RES3) {
           if(!exists("repRdata")) {repRdata <- F}
           SEQUOIA:::INPNonSHP(F, repRdata)
         }

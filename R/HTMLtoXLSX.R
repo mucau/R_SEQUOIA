@@ -5,14 +5,14 @@
 #' La fonction \code{HTMLtoXLSX} parcourt un dossier contenant des matrices cadastrales au format .html et génère un fichier .xlsx compilant l'ensemble des matrices.
 #' @usage HTMLtoXLSX(rephtml, repRdata)
 #' @param rephtml Répertoire du dossier contenant les matrices cadastrales .html  Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du dossier.
-#' @param repRdata Répertoire du fichier .Rdata contenant les données administratives Si \code{FALSE}, la fonction [INSEEtoRDATA] est lancée.
+#' @param repRdata Répertoire du fichier .Rdata contenant les données administratives Si \code{FALSE}, la fonction \code{\link{INSEEtoRDATA}} est lancée.
 #' @return 
 #' \item{_matrice.xlsx}{Tableur Excel. Matrice cadastrale}
 #' \item{_subdi.xlsx}{Tableur Excel. Matrice cadastrale avec subdivision}
 #' \item{XLSX}{Objet dataframe. Matrice cadastrale}
 #' \item{rep.xlsx}{Character. Répertoire de sortie}
 #' @seealso
-#' L'archive .Rdata contenant les données administratives est produite par la fonction [INSEEtoRDATA].
+#' L'archive .Rdata contenant les données administratives est produite par la fonction \code{\link{INSEEtoRDATA}}.
 #' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
 #' @examples 
 #' ### Fonctionnement :
@@ -150,7 +150,7 @@ HTMLtoXLSX <- function(rephtml=F,repRdata=F) {
           df <- rbind(df, t1) # Mise du dataframe dans le précédent
         }
       }
-      df <- unique (df)%>%
+      df <- df%>%
         filter(!str_detect(SURFACE, "Â"))
       
       ### Inscription des données de la parcelle à ses subdivisions

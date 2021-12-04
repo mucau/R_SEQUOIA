@@ -1,5 +1,5 @@
 #' @title BDTOPOonPARCA
-#' Telechargement de données depuis IGN(c) BD TOPO(r))
+#' Telechargement de donnees depuis IGN(c) BD TOPO(r))
 #' @encoding UTF-8
 #' @description 
 #'La fonction \code{BDTOPOonPARCA} télécharge des données issues d'une IGN(c) BD TOPO(r)) autour d'un parcellaire cadastral (sf) et génère un ensemble de .shp (EPSG 2154) et d'objet sf nécessaires à la réalisation d'une cartographie forestière ponctuelle.

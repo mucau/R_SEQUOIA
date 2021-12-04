@@ -114,5 +114,5 @@ GEOLonSHP <- function(shp = F, NAME=NULL){
 
   # Export des données
   message("        Export des données")
-  SEQUOIA:::WRITE(geol_shp, dirname(shp_rep), paste0(NAME,"geol_polygon.shp"))
+  SEQUOIA:::WRITE(geol_shp, dirname(shp_rep), paste0(NAME,"GEOL_polygon.shp"))
 }

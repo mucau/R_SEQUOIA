@@ -4,19 +4,19 @@
 #' @description 
 #' La fonction \code{INPNonSHP} recherche les intersections entre une zone d' étude (.shp quelconque) et les zonnages environnementaux référencées sur le site de l'INPN.
 #' Pour chaque enjeux, une couche .shp contenant les zones intersectant la zone d'étude est exportée.
-#' @usage INPNonSHP(rep, repRdata)
-#' @param rep Adresse du \code{.shp} de la zone d'étude. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.
+#' @usage INPNonSHP(shp, repRdata)
+#' @param shp Adresse du \code{.shp} de la zone d'étude. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.
 #' @param repRdata Répertoire du fichier .Rdata contenant les données INPN. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du dossier.
 #' @param NAME Préfixe des fichers shapefile générés.
 #' @details 
-#' La fonction réclame une archive .Rdata externe produite par la fonction [INPNtoRDATA].
+#' La fonction réclame une archive .Rdata externe produite par la fonction \code{\link{INPNtoRDATA}}.
 #' @return
 #' La fontion retourne un ensemble de .shp dans le dossier source.
 #' @references Vous pouvez retrouvé les données environnementales sur le site de l'Institut national pour la protection de la nature (INPN) : \url{https://inpn.mnhn.fr/accueil/index}
 #' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
 #' @examples 
 #' ### Fonctionnement :
-#'   INPNonSHP(rep=F, repRdata=F, NAME=NULL)
+#'   INPNonSHP(shp=F, repRdata=F, NAME=NULL)
 #' @export
 #' 
 #' @import tcltk sf dplyr stringr utils
@@ -27,10 +27,10 @@
 # if (!require("dplyr")) {install.packages("dplyr")}
 # if (!require("stringr")) {install.packages("stringr")}
 
-INPNonSHP <- function(rep = F, repRdata = F, NAME=NULL){
+INPNonSHP <- function(shp = F, repRdata = F, NAME=NULL){
   message("- - - Zonnage environnementaux - - -")
-  if(isFALSE(rep)){
-    rep  <- tcltk::tk_choose.files(default = "~", caption = "Selectionner le fichier .shp",
+  if(isFALSE(shp)){
+    shp  <- tcltk::tk_choose.files(default = "~", caption = "Selectionner le fichier .shp",
                                    filter = matrix(c("ESRI Shapefile", ".shp"), 1, 2, byrow = TRUE))
   }
   if(isFALSE(repRdata)){

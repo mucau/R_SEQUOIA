@@ -19,7 +19,7 @@ INPNtoRDATA(rep)
 La fonction \code{INPNtoRDATA} télécharge depuis le site de l'INPN l'ensemble des fichiers .shp des enjeux environnementaux et sauvegarde ces couches dans une archive .Rdata
 }
 \details{
-La fonction produit une archive .Rdata nécessaire à la fonction [INPNonSHP].
+La fonction produit une archive .Rdata nécessaire à la fonction \code{\link{INPNonSHP}}.
 }
 \examples{
 ### Fonctionnement :

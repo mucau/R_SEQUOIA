@@ -12,6 +12,8 @@
 #' @details Le shapefile road d'entrée doit disposer d'une table attributaire complétée. Le champ "TYPE" doit correspondre à la nomenclature suivante =
 #' TYPE='RN' : routes nationnales & autoroutes, TYPE='RD' : routes départementales,  TYPE='RC' : routes revêtues non départementales, TYPE='RF' : les routes empierrées/forestières, TYPE='PN' : les pistes en terrain naturel
 #' Dans ROAD_polygon.shp, les codes TYPE='CR' pour chemins ruraux et TYPE='CC' pour chemins privés cadastrés sont acceptés en plus des codes précédents.
+#' @note 
+#' Les fichiers ROAD_line et ROAD_polygon sont produits par \code{\link{CAGEF}}.
 #' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
 #' @examples 
 #' ### Fonctionnement :
@@ -57,20 +59,29 @@ ROADtoROUTE <- function(road=F){
   if (grepl('polygon', road)){ # Boucle 1. Cadastre
     message('        Conversion de ROAD_polygon')
     # Lecture du fichier
-    ROAD_polygon <- ROAD
+    ROUTE_polygon <- ROAD
     cat('        ROAD_polygon devient ROUTE_polygon \n')
 
-    # Conversion de ROAD_polygon vers ROUTE_line
-    ROUTE_line <- st_cast(ROAD_polygon, 'MULTILINESTRING') # Linéarisation du polygon
+    # Conversion de ROUTE_polygon vers ROUTE_line
+    ROUTE_line <- st_cast(ROUTE_polygon, 'MULTILINESTRING') # Linéarisation du polygon
     cat('        lignes: linéarisation effectuée \n')
-    ROUTE_line <- st_difference(ROUTE_line, st_buffer(st_union(ROAD_polygon), -0.0001)) # Suppression des recouvrements
+    ROUTE_line <- st_difference(ROUTE_line, st_buffer(st_union(ROUTE_polygon), -0.0001)) # Suppression des recouvrements
     cat('        lignes: débordements supprimés \n')
 
     # Pré-découpage des bordures
-    CONV_polygon <- st_simplify(st_convex_hull(ROAD_polygon), preserveTopology = T, dTolerance = 2)
+    CONV_polygon <- st_simplify(st_convex_hull(ROUTE_polygon), preserveTopology = T, dTolerance = 2)
     CONV_point  <- st_cast(st_combine(CONV_polygon),'MULTIPOINT', warn = F)
     ROUTE_line <- st_split(st_cast(ROUTE_line,'MULTILINESTRING'), CONV_point)
     ROUTE_line <- st_collection_extract(ROUTE_line,'LINESTRING')
+    
+    # Import 'PN' depuis IGN BDTopo
+    road <- str_replace(road,"polygon","line")
+    ROAD2 <- st_read(road, options = "ENCODING=UTF-8", quiet=T) %>%
+      filter(TYPE=='PN')
+    if (nrow(ROAD2)>0){
+      ROAD2<-st_difference(ROAD2, st_union(ROUTE_polygon))
+      ROAD2$LENGTH <- as.numeric(st_length(ROAD2)) # Ajouter un champ longueur
+    }
 
     # Nettoyage de la table
     ROUTE_line$LENGTH <- as.numeric(st_length(ROUTE_line)) # Ajouter un champ longueur
@@ -78,12 +89,21 @@ ROADtoROUTE <- function(road=F){
     d=0.1
     #units(d) = "m"
     ROUTE_line<- ROUTE_line%>%
-      filter(!(ROUTE_line$LENGTH < d))
+      filter(!(ROUTE_line$LENGTH < d)) %>%
+      mutate(DECA=as.character(""),
+             NATURE=as.character("")) %>% 
+      dplyr::select(TYPE, NATURE, NAME, LENGTH, DECA)
+    
+    # Import 'PN' depuis IGN BDTopo
+    if (nrow(ROAD2)>0){
+      ROUTE_line <- rbind(ROUTE_line, ROAD2)
+    }
+    
     cat('        lignes: découpe réalisée \n')
     cat('        ROUTE_line a été crée \n \n')
 
     SEQUOIA:::WRITE(ROUTE_line, repout2, paste(NAME,"ROUTE_line.shp",sep="_"))
-    SEQUOIA:::WRITE(ROAD_polygon, repout2, paste(NAME,"ROUTE_polygon.shp",sep="_"))
+    SEQUOIA:::WRITE(ROUTE_polygon, repout2, paste(NAME,"ROUTE_polygon.shp",sep="_"))
   } # Fin Boucle 1. Cadastre
 
   # Chargement 2. OSM
@@ -200,15 +220,17 @@ ROADtoROUTE <- function(road=F){
       summarise_each(funs(mean)) %>% 
       dplyr::select(TYPE, NATURE, NAME, DECA)
     
+    ROUTE_line$LENGTH <- as.numeric(st_length(ROUTE_line)) # Ajouter un champ longueur
+    ROUTE_line <- ROUTE_line %>%
+      dplyr::select(TYPE, NATURE, NAME, LENGTH, DECA)
+    
     cat('        lignes: découpe réalisée \n')
     cat('        ROUTE_line a été crée \n \n')
 
     # Sorties des fichiers
     message('        Export des fichiers')
-    SEQUOIA:::WRITE(point, repout2, paste(NAME,"ROUTE_point.shp",sep="_"))
     SEQUOIA:::WRITE(ROUTE_polygon, repout2, paste(NAME,"ROUTE_polygon.shp",sep="_"))
     SEQUOIA:::WRITE(ROUTE_line, repout2, paste(NAME,"ROUTE_line.shp",sep="_"))
-    SEQUOIA:::WRITE(test4, repout2, paste(NAME,"ROUTE-test_line.shp",sep="_"))
     
   } # Fin Boucle 2. OSM
 

@@ -4,7 +4,7 @@
 \name{CAGEF}
 \alias{CAGEF}
 \title{CAGEF
-Creation de données pour la réalisation d'un fond vectoriel}
+Creation de donnees pour la realisation d'un fond vectoriel}
 \usage{
 CAGEF(rep, CODECA)
 }
@@ -22,7 +22,7 @@ La fonction \code{CAGEF} utilise les fonctions \code{OSMonPARCA}, \code{BDTOPOon
 }
 \seealso{
 Les fonctions utilisées:
-[OSMonPARCA],[BDTOPOonPARCA],[BDTOPO_HYDRO],[BDTOPO_VEG],[ETALAB],[BD_PARCA],[EDIGEO]
+\code{\link{OSMonPARCA}}, \code{\link{BDTOPOonPARCA}}, \code{\link{BDTOPO_HYDRO}}, \code{\link{BDTOPO_VEG}}, \code{\link{ETALAB}}, \code{\link{BD_PARCA}}, \code{\link{EDIGEO}}
 }
 \author{
 Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>

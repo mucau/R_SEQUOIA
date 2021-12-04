@@ -4,7 +4,7 @@
 #' @description 
 #' La fonction \code{BHbyDRIAS} traite les données récupérée sur le serveur DRIAS.
 #' Procédure:
-#' #' \enumerate{
+#' \enumerate{
 #'   \item Aller sur \url{https://drias-prod.meteo.fr/okapi/accueil/okapiWebDrias/index.jsp} 
 #'   \item Cliquer sur \emph{Simulations climatiques atmosphériques} / \emph{Métropole} / \emph{INDICATEUR DRIAS 2020}
 #'   \item Sélectioner \emph{Indicateurs mensuels 'DRIAS-2020' par horizon}

@@ -6,10 +6,10 @@
 \title{INPNonSHP
 Detection des enjeux environnementaux sur une zone d'etude}
 \usage{
-INPNonSHP(rep, repRdata)
+INPNonSHP(shp, repRdata)
 }
 \arguments{
-\item{rep}{Adresse du \code{.shp} de la zone d'étude. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.}
+\item{shp}{Adresse du \code{.shp} de la zone d'étude. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.}
 
 \item{repRdata}{Répertoire du fichier .Rdata contenant les données INPN. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du dossier.}
 
@@ -23,11 +23,11 @@ La fonction \code{INPNonSHP} recherche les intersections entre une zone d' étud
 Pour chaque enjeux, une couche .shp contenant les zones intersectant la zone d'étude est exportée.
 }
 \details{
-La fonction réclame une archive .Rdata externe produite par la fonction [INPNtoRDATA].
+La fonction réclame une archive .Rdata externe produite par la fonction \code{\link{INPNtoRDATA}}.
 }
 \examples{
 ### Fonctionnement :
-  INPNonSHP(rep=F, repRdata=F, NAME=NULL)
+  INPNonSHP(shp=F, repRdata=F, NAME=NULL)
 }
 \references{
 Vous pouvez retrouvé les données environnementales sur le site de l'Institut national pour la protection de la nature (INPN) : \url{https://inpn.mnhn.fr/accueil/index}

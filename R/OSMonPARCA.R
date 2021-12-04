@@ -15,7 +15,7 @@
 #' \item{INFRA_line}{Objet sf ; Infrastructures environnantes. Y sont intégrés TYPE='LE' : les lignes électriques, TYPE='VF' : les voies ferrées}
 #' \item{ROAD_line}{Fichier shapefile ; Routes environnantes. Le TYPE renseigné correspond à la nomenclature de l'OSM.}
 #' @note 
-#' Pour utilier le script ROADtoROUTE, le champ "TYPE" de ROAD_line doit être rectifié mannuellement pour correspondre à la nomenclature suivante = TYPE='RN' : routes nationnales & autoroutes, TYPE='RD' : routes départementales,  TYPE='RC' : routes revêtues non départementales, TYPE='RF' : les routes empierrées/forestières, TYPE='PN' : les pistes en terrain naturel
+#' Pour utilier le script \code{\link{ROADtoROUTE}}, le champ "TYPE" de ROAD_line doit être rectifié mannuellement pour correspondre à la nomenclature suivante = TYPE='RN' : routes nationnales & autoroutes, TYPE='RD' : routes départementales,  TYPE='RC' : routes revêtues non départementales, TYPE='RF' : les routes empierrées/forestières, TYPE='PN' : les pistes en terrain naturel
 #' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
 #' @examples 
 #' ### Fonctionnement :

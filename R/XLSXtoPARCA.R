@@ -150,13 +150,15 @@ XLSXtoPARCA <- function(rep=F){
     DEPS <- unique(XLSX["DEP_CODE"])
     cat(paste0("        Départements à charger: ", unlist(as.list(DEPS[1]))))
     cat("\n")
-
-    shp_rep  <- tcltk::tk_choose.files(default = "~", caption = "Selectionner le fichier .shp",
-                                       filter = matrix(c("ESRI Shapefile", ".shp"), 1, 2, byrow = TRUE))
-    if (!length(shp_rep)){stop("Aucune BD Parcellaire sélectionnée !")}
+    
+    repBDPARCELLAIRE <- tk_choose.dir(default= getwd(),
+                                 caption = "Choisir le répertoire de l'IGN (c) BD PARCELLAIRE (r)")
+    if (!length(repBDPARCELLAIRE)){stop("Aucune BD Parcellaire sélectionnée !")}
+    
+    shp_rep  <- list.files(repBDPARCELLAIRE, "PARCELLE.SHP", recursive = T)
 
     message('\n        Lecture IGN (c) BD Parcellaire (r)')
-    SHP <- st_read(shp_rep, agr="constant", quiet=T, stringsAsFactors = F)
+    SHP <- st_read(paste(repBDPARCELLAIRE,shp_rep,sep="/"), agr="constant", quiet=T, stringsAsFactors = F)
     cat('        La BD Parcellaire (r) a été chargée \n')
     SHP <- SHP %>%
       mutate(IDU = paste(CODE_DEP, CODE_COM,COM_ABS,SECTION,NUMERO, sep=""))
@@ -308,7 +310,7 @@ XLSXtoPARCA <- function(rep=F){
     if (Sys.info()["sysname"]=="Windows"){
       NAME <- utils::winDialogString("Entrer le nom du fichier de sortie:", "")
     }else {
-      NAME <- readline(prompt="Entrer le nom du fichier de sortie:")
+      NAME <- readline(prompt="Entrer le nom de la forêt (préfixe) :")
     }
     assign("NAME", NAME, envir=globalenv())
 

@@ -1,5 +1,5 @@
 #' @title CAGEF
-#' Creation de données pour la réalisation d'un fond vectoriel
+#' Creation de donnees pour la realisation d'un fond vectoriel
 #' @encoding UTF-8
 #' @description 
 #' La fonction \code{CAGEF} utilise les fonctions \code{OSMonPARCA}, \code{BDTOPOonPARCA}, \code{BDTOPO_HYDRO}, \code{BDTOPO_VEG} et \code{ETALAB}/\code{BD_PARCA}/\code{EDIGEO} pour générer un ensemble de .shp (EPSG 2154) et d'objet sf nécessaires à la réalisation d'une cartographie forestière ponctuelle.
@@ -8,7 +8,7 @@
 #' @param CODECA Code de référence des données cadastrales à utiliser 1: Etalab, 2: IGN© BD Parcellaire®, 3: Edigeo
 #' @seealso
 #' Les fonctions utilisées:
-#' [OSMonPARCA],[BDTOPOonPARCA],[BDTOPO_HYDRO],[BDTOPO_VEG],[ETALAB],[BD_PARCA],[EDIGEO]
+#' \code{\link{OSMonPARCA}}, \code{\link{BDTOPOonPARCA}}, \code{\link{BDTOPO_HYDRO}}, \code{\link{BDTOPO_VEG}}, \code{\link{ETALAB}}, \code{\link{BD_PARCA}}, \code{\link{EDIGEO}}
 #' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
 #' @examples 
 #' ### Fonctionnement :
@@ -24,7 +24,7 @@
 # if (!require("stringr")) {install.packages("stringr")}
 # if (!require("lwgeom")) {install.packages("lwgeom")}
 
-CAGEF <- function(rep=F, CODECA=1){
+CAGEF <- function(rep=F, CODECA=NULL){
   message('- - - Création du fond vectoriel - - -')
   if(isFALSE(rep)) {
     rep  <- tk_choose.files(caption = "Choisir le fichier .shp du parcellaire cadastral (PARCA)",
@@ -94,6 +94,7 @@ CAGEF <- function(rep=F, CODECA=1){
   SEQUOIA:::WRITE(INFRA_point, repout2, paste(NAME, "INFRA_point.shp", sep="_"))
 
   # Création des données cadastrales
+  if(!exists("CODECA")) {CODECA <- as.integer(readline(prompt="Entrer le CODECA :"))}
   if (CODECA==1){
     message("\n        Téléchargement des données ETALAB")
     SEQUOIA:::ETALAB(PARCA)

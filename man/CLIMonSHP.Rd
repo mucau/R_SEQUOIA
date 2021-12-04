@@ -30,11 +30,13 @@ La synthèse fournit:
 La fonction seule produit une multitude d'objet dans l'environnement nécessaire à la fonction \code{CLIM.Rmd}.
 }
 \examples{
-#' @author Matthieu CHEVEREAU <\\email{matthieuchevereau@yahoo.fr}>
 ### Fonctionnement :
   CLIMonSHP(shp = F)
 }
 \seealso{
 Pour mieux comprendre, voir les notices des fonctions suivantes:
-[METEOFRANCEonSHP],[AURELHYonSHP],[BHbyDRIAS]
+\code{\link{METEOFRANCEonSHP}}, \code{\link{AURELHYonSHP}}, \code{\link{BHbyDRIAS}}
+}
+\author{
+Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
 }

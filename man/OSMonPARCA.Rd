@@ -25,7 +25,7 @@ OSMonPARCA(rep)
 La fonction \code{OSMonPARCA} télécharge les données OSM autour d'un parcellaire cadastral (sf) et génère un ensemble de .shp (EPSG 2154) et d'objet sf nécessaires à la réalisation d'une cartographie forestière ponctuelle.
 }
 \note{
-Pour utilier le script ROADtoROUTE, le champ "TYPE" de ROAD_line doit être rectifié mannuellement pour correspondre à la nomenclature suivante = TYPE='RN' : routes nationnales & autoroutes, TYPE='RD' : routes départementales,  TYPE='RC' : routes revêtues non départementales, TYPE='RF' : les routes empierrées/forestières, TYPE='PN' : les pistes en terrain naturel
+Pour utilier le script \code{\link{ROADtoROUTE}}, le champ "TYPE" de ROAD_line doit être rectifié mannuellement pour correspondre à la nomenclature suivante = TYPE='RN' : routes nationnales & autoroutes, TYPE='RD' : routes départementales,  TYPE='RC' : routes revêtues non départementales, TYPE='RF' : les routes empierrées/forestières, TYPE='PN' : les pistes en terrain naturel
 }
 \examples{
 ### Fonctionnement :

@@ -11,7 +11,7 @@ HTMLtoXLSX(rephtml, repRdata)
 \arguments{
 \item{rephtml}{Répertoire du dossier contenant les matrices cadastrales .html  Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du dossier.}
 
-\item{repRdata}{Répertoire du fichier .Rdata contenant les données administratives Si \code{FALSE}, la fonction [INSEEtoRDATA] est lancée.}
+\item{repRdata}{Répertoire du fichier .Rdata contenant les données administratives Si \code{FALSE}, la fonction \code{\link{INSEEtoRDATA}} est lancée.}
 }
 \value{
 \item{_matrice.xlsx}{Tableur Excel. Matrice cadastrale}
@@ -27,7 +27,7 @@ La fonction \code{HTMLtoXLSX} parcourt un dossier contenant des matrices cadastr
   HTMLtoXLSX(rephtml=F, repRdata=F)
 }
 \seealso{
-L'archive .Rdata contenant les données administratives est produite par la fonction [INSEEtoRDATA].
+L'archive .Rdata contenant les données administratives est produite par la fonction \code{\link{INSEEtoRDATA}}.
 }
 \author{
 Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>

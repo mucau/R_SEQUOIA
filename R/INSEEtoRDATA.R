@@ -6,7 +6,7 @@
 #' @usage INSEEtoRDATA(rep)
 #' @param rep Répertoire de sortie de l'archive .Rdata. Si \code{NULL}, les données sont justes ajoutées à l'environnement.
 #' @details 
-#' La fonction produit une archive .Rdata nécessaire à la fonction [HTMLtoXLSX].
+#' La fonction produit une archive .Rdata nécessaire à la fonction \code{\link{HTMLtoXLSX}}.
 #' @return
 #' \item{INSEE_POST}{Base officielle des codes postaux}
 #' \item{INSEE_REGS}{Liste des régions. Codes officiels géographiques au 1er janvier 2018.}

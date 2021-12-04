@@ -6,7 +6,7 @@
 #' @usage INPNtoRDATA(rep)
 #' @param rep Répertoire de sortie de l'archive .Rdata Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du dossier.
 #' @details 
-#' La fonction produit une archive .Rdata nécessaire à la fonction [INPNonSHP].
+#' La fonction produit une archive .Rdata nécessaire à la fonction \code{\link{INPNonSHP}}.
 #' @return
 #' \item{list_INPN}{Liste de fichiers cartographiques sf}
 #' \item{list_INPN_NOM}{Liste des noms des fichiers cartographiques sf de la liste précédente}

@@ -11,7 +11,7 @@ BD_PARCA(PARCA, repBDPARCA)
 \arguments{
 \item{PARCA}{Objet sf du parcellaire cadastral. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.}
 
-\item{repBDPARCA}{CHARACTER. Répertoire de la BD_PARCELLAIRE utilisée}
+\item{repBDPARCA}{CHARACTER. Répertoire de la IGN© BD_PARCELLAIRE® utilisée}
 }
 \value{
 \item{ROAD_polygon}{Shapefile Vides cadatrés environnants la propriété: routes+tronçons fluviaux}  

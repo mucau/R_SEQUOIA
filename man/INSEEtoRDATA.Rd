@@ -21,7 +21,7 @@ INSEEtoRDATA(rep)
 La fonction \code{INSEEtoRDATA} télécharge depuis la plateforme ouverte des données publiques françaises (data.gouv) et du site de l'INSEE plusieurs fichiers de référence administratives. La fonction les sauvegarde ensuite dans une archive .Rdata si un répertoire de sauvegarde est fournit.
 }
 \details{
-La fonction produit une archive .Rdata nécessaire à la fonction [HTMLtoXLSX].
+La fonction produit une archive .Rdata nécessaire à la fonction \code{\link{HTMLtoXLSX}}.
 }
 \examples{
 ### Fonctionnement :

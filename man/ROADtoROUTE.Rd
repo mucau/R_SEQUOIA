@@ -24,6 +24,9 @@ Le shapefile road d'entrée doit disposer d'une table attributaire complétée. 
 TYPE='RN' : routes nationnales & autoroutes, TYPE='RD' : routes départementales,  TYPE='RC' : routes revêtues non départementales, TYPE='RF' : les routes empierrées/forestières, TYPE='PN' : les pistes en terrain naturel
 Dans ROAD_polygon.shp, les codes TYPE='CR' pour chemins ruraux et TYPE='CC' pour chemins privés cadastrés sont acceptés en plus des codes précédents.
 }
+\note{
+Les fichiers ROAD_line et ROAD_polygon sont produits par \code{\link{CAGEF}}.
+}
 \examples{
 ### Fonctionnement :
   ROADtoROUTE(road = F)

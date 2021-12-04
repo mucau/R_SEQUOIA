@@ -11,13 +11,13 @@ BDFORETonSHP(shp, repBDFORET)
 \arguments{
 \item{shp}{CHARACTER. Adresse du fichier .shp de la zone d'étude. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.}
 
-\item{repBDFORET}{CHARACTER. Répertoire du dossier de la BD. Si FALSE, la fonction génère une boite de dialogue de sélection du dossier.}
+\item{repBDFORET}{CHARACTER. Répertoire du dossier de la BD. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du dossier.}
 }
 \value{
-\item{BDFORET_polygon}{Shapefile de la BDFORET sur l'emprise. Généré dans le répertoire du fichier source.}
+\item{BDFORET_polygon}{Shapefile de la IGN© BD Foret V2® sur l'emprise. Généré dans le répertoire du fichier source.}
 }
 \description{
-La fonction \code{BDFORETonSHP} intersecte un shapefile avec la  IGN (C) BD Foret V2 (r).
+La fonction \code{BDFORETonSHP} intersecte un shapefile avec la  IGN© BD Foret V2®.
 }
 \examples{
 ### Fonctionnement :

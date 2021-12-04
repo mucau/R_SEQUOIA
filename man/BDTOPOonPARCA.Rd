@@ -4,7 +4,7 @@
 \name{BDTOPOonPARCA}
 \alias{BDTOPOonPARCA}
 \title{BDTOPOonPARCA
-Telechargement de données depuis IGN(c) BD TOPO(r))}
+Telechargement de donnees depuis IGN(c) BD TOPO(r))}
 \usage{
 BDTOPOonPARCA(rep, repBDTOPO)
 }
