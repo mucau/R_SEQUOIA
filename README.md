@@ -19,8 +19,8 @@ L'idée serait d'extraire les données dans un répertoire du type : `GIS DataBa
 ## Comment on joue ?
 Pour télécharger, c'est simple, vous tapez: 
 
-`if (!require("devtools")) {install.packages("devtools")}
-devtools::install_github("paul-carteron/cadastreAnalysis")
+`if (!require("devtools")) {install.packages("devtools")} \n
+devtools::install_github("paul-carteron/cadastreAnalysis") \n
 devtools::install_github("mucau/R_Sequoia")`
 
 Pour utiliser, c'est simple aussi:
