@@ -20,6 +20,12 @@
 #' \item{DRIAS_serie}{Dataframe des données pour création de diagramme ombrothermique}
 #' \item{RIAS_bh}{Dataframe des données pour création de diagramme ETP}
 #' \item{Periode}{Horizon retenu dans le code}
+#' @return Les horizons retenus sont les suivants :
+#' \enumerate{
+#' \item H1 Horizon proche : indicateurs calculés sur la période 2021-2050
+#' \item H2 Horizon moyen : indicateurs calculés sur la période 2041-2070
+#' \item H3 Horizon lointain : indicateurs calculés sur la période 2071-2100
+#' }
 #' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
 #' @examples 
 #' ### Fonctionnement :

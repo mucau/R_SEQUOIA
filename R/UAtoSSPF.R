@@ -108,6 +108,24 @@ UAtoSSPF <- function(rep=F) {
                      by="PARFOR")
 
   SEQUOIA:::WRITE(SSPF_POLY, repout2, paste(NAME,"SSPF_polygon.shp",sep="_"))
+  
+  # Création du .shp "SSPFinv_polygon"
+  message('        Création de SSPF-inv_polygon')
+  exist <- list.files(dirname(rep), paste0(NAME, "_SSPFinv_polygon.shp"))
+  if (length(exist)>0){
+    SSPF_inv_POLY <- as.data.frame(st_read(paste(dirname(rep), paste0(NAME, "_SSPFinv_polygon.shp"), sep="/"), options = "ENCODING=UTF-8",
+                             agr = "constant", crs=2154, quiet=T, stringsAsFactors = FALSE)) %>%
+      dplyr::select(PARFOR, INV)
+    SSPF_inv_POLY <- merge(x=SSPF_POLY,
+                           y=SSPF_inv_POLY,
+                           by="PARFOR",
+                           all.x=T)
+    SEQUOIA:::WRITE(SSPF_inv_POLY, repout2, paste(NAME,"SSPFinv_polygon.shp",sep="_"))
+  } else {
+    SSPF_inv_POLY <- SSPF_POLY %>%
+      mutate(INV = as.character(""))
+    SEQUOIA:::WRITE(SSPF_inv_POLY, repout2, paste(NAME,"SSPFinv_polygon.shp",sep="_")) 
+  }
 
   # Actualisation de SSPF_line
   if (paste(NAME,"SSPF_line.shp",sep="_") %in% LIST_SHP) {
@@ -129,7 +147,7 @@ UAtoSSPF <- function(rep=F) {
     }
   }
 
-  # Créatio de AME_polygon
+  # Création de AME_polygon
   RES2 <- askYesNo(type = "yesno","Voulez-vous créer AME_polygon ?")
   if (isTRUE(RES2)) {
     message('\n        Création de AME_polygon')

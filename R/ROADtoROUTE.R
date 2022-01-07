@@ -75,8 +75,8 @@ ROADtoROUTE <- function(road=F){
     ROUTE_line <- st_collection_extract(ROUTE_line,'LINESTRING')
     
     # Import 'PN' depuis IGN BDTopo
-    road <- str_replace(road,"polygon","line")
-    ROAD2 <- st_read(road, options = "ENCODING=UTF-8", quiet=T) %>%
+    road2 <- str_replace(road,"polygon","line")
+    ROAD2 <- st_read(road2, options = "ENCODING=UTF-8", quiet=T) %>%
       filter(TYPE=='PN')
     if (nrow(ROAD2)>0){
       ROAD2<-st_difference(ROAD2, st_union(ROUTE_polygon))
@@ -235,15 +235,13 @@ ROADtoROUTE <- function(road=F){
   } # Fin Boucle 2. OSM
 
   # Suppression débordement INFRA_line
-  repINFRA_line <- str_replace(road,"ROAD","INFRA")
-
-  repINFRA_line <- str_replace(repINFRA_line,"polygon","line")
+  repINFRA_line <- paste(dirname(rep), paste0(NAME,"_INFRA_line.shp"), sep="/")
   INFRA_line <- st_read(repINFRA_line, options = "ENCODING=UTF-8", quiet=T)  # Lecture du shapefile
   INFRA_line <- st_difference(INFRA_line, st_make_valid(st_buffer(st_combine(ROUTE_polygon),2)))
   SEQUOIA:::WRITE(INFRA_line, repout2, paste(NAME,"INFRA_line.shp",sep="_")) # Export du shapefile
 
-  repINFRA_line <- str_replace(repINFRA_line,"line","polygon")
-  INFRA_polygon <- st_read(repINFRA_line, options = "ENCODING=UTF-8", quiet=T)  # Lecture du shapefile
+  repINFRA_polygon <- paste(dirname(rep), paste0(NAME,"_INFRA_polygon.shp"), sep="/")
+  INFRA_polygon <- st_read(repINFRA_polygon, options = "ENCODING=UTF-8", quiet=T)  # Lecture du shapefile
   INFRA_polygon <- st_difference(INFRA_polygon, st_make_valid(st_buffer(st_combine(ROUTE_polygon),2)))
   SEQUOIA:::WRITE(INFRA_polygon, repout2, paste(NAME,"INFRA_polygon.shp",sep="_")) # Export du shapefile
 
