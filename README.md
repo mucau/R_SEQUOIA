@@ -22,7 +22,6 @@ Pour utiliser, c'est simple aussi:
 
 ```
 # Répertoire de travail
-repBDTOPO <- "votrerépertoire/IGN BD TOPO HYDRO"
 repRdata  <- "votrerépertoire/RDATA"
 
 # Lancement de SEQUOIA
