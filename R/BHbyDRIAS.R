@@ -19,7 +19,7 @@
 #' \item{DRIAS_df}{Dataframe des données brut DRIAS} 
 #' \item{DRIAS_serie}{Dataframe des données pour création de diagramme ombrothermique}
 #' \item{RIAS_bh}{Dataframe des données pour création de diagramme ETP}
-#' \item{Periode}{Horizon retenu dans le code}
+#' \item{periode}{Horizon retenu dans le code}
 #' @return Les horizons retenus sont les suivants :
 #' \enumerate{
 #' \item H1 Horizon proche : indicateurs calculés sur la période 2021-2050
@@ -32,48 +32,59 @@
 #'    BHbyDRIAS(txt = F)
 #' @export
 #' 
-#' @import tcltk sf dplyr stringr
+#' @import tcltk utils sf dplyr stringr
 
 # Lancement des library
 # if (!require("dplyr")) {install.packages("dplyr")}
 # if (!require("stringr")) {install.packages("stringr")}
 
-BHbyDRIAS <- function(txt=F) {
+BHbyDRIAS <- function(txt=F, periode=F) {
+  # Sélection du fichier
   if(isFALSE(txt)){
     txt  <- tcltk::tk_choose.files(default = "~", caption = "Selectionner le fichier .txt de donnée",
                                    filter = matrix(c("Fichier texte", ".txt"), 1, 2, byrow = TRUE))
   }
   if (!length(txt)){stop("Aucune sélection effectuée > Traitement annulé \n")}
   
-  data <- utils::read.table(file=txt, sep=";", quote="")
-  colnames(data) <- c("Point", "Latitude", "Longitude", "Contexte", "Periode", "Mois", "NORTAV", "NORTNAV", "NORTXAV", "NORSD", "NORTX35", "NORTXND", "NORTNHT", "NORTR", "NORTNFD", "NORTNND", "NORTXFD", "NORTNCWD", "NORTXHWD", "NORTRAV", "NORTXQ90", "NORTXQ10", "NORTNQ10", "NORTNQ90", "NORHDD", "NORCDD", "NORPAV", "NORRR", "NORRR1MM", "NORPN20MM", "NORPFL90", "NORPXCWD", "NORPXCDD", "NORPINT", "NORHUSAV", "ATAV", "ATNAV", "ATXAV", "ASD", "ATX35", "ATXND", "ATNHT", "ATR", "ATNFD", "ATNND", "ATXFD", "ATNCWD", "ATXHWD", "ATRAV", "ATXQ90", "ATXQ10", "ATNQ10", "ATNQ90", "AHDD", "ACDD", "APAV", "ARR", "ARR1MM", "APN20MM", "APFL90", "APXCWD", "APXCDD", "APINT", "AFFAV", "AFF3", "AHUSAV")
+  # Lecture du chapeau
+  header <- read.delim(file=txt, encoding="latin1")
+  for (a in 1:nrow(header)){
+    if (grepl("Modele", header[a,1])) {Modele <- str_replace(header[a,1], "# Modele     : ", "")}
+    if (grepl("Scenario ", header[a,1])) {Scenario <- str_replace(header[a+1,1], "#     ", "")}
+    if (grepl("# Format des enregistrements", header[a,1])) {colnames <- strsplit(str_replace(header[a+1,1], "# ", ""), ";")[[1]]}
+  }
+  colnames[length(colnames)+1]<-""
+  data <- read.table(file=txt, sep=";", quote="", col.names=colnames)
+  assign("DRIAS_df", data, envir=globalenv())
   
   #Sélection de la période
-  form <- c("H1","H2", "H3")
+  if(isFALSE(periode)){
+    form <- c("H1 Horizon proche [2021-2050]",
+              "H2 Horizon moyen [2041-2070]", 
+              "H3 Horizon lointain [2071-2100]")
+    
+    periode <- utils::select.list(form, multiple = F,
+                                  title = "Quelle période ?",
+                                  graphics = T)
+    }
+  if (periode==""){stop("Aucune source sélectionnée !")}
   
-  Res <- utils::select.list(form, multiple = F,
-                     title = "Quelle période ?",
-                     graphics = T)
-  if (!length(Res)){stop("Aucune sélection effectuée > Traitement annulé \n")}
+  Horizon <- str_sub(periode, 0, 2)
   
-  data2 <- data %>% 
-    select(Point, Latitude, Periode, Mois, NORTAV, NORTNAV, NORTXAV, NORRR) %>%
-    filter(Periode %in% Res)
+  serie <- data %>%
+    filter(periode %in% Horizon) %>% 
+    group_by(Mois) %>%
+    summarize(Tm = mean (NORTAV), 
+              Tn = mean(NORTNAV), 
+              Tx = mean(NORTXAV), 
+              P = mean(NORRR), 
+              ETP = mean(NORETPC)) %>%
+    mutate(Période = Horizon) %>%
+    select(Période, Mois, Tn, Tx, P, ETP)
   
-  n <- length(unique(data$Point))
-  years<- length(unique(data$Periode))
-  latitude = mean(data$Latitude)
-  
-  serie <- data2 %>% group_by(Mois) %>%
-    summarize(Tm = mean (NORTAV), Tn = mean(NORTNAV), Tx = mean(NORTXAV), 
-              Pl = mean(NORRR))%>%
-    mutate(year = 2050, month=Mois) %>%
-    select(year, month, Tn, Tx, Pl)
-  
-  data3 <- SEQUOIA::THORNTHWAITE(serie, latitude)%>%mutate(Annee=Res)
-  
-  assign("Periode", Res, envir=globalenv())
+  assign("DRIAS_modele", Modele, envir=globalenv())
+  assign("DRIAS_scenario", Scenario, envir=globalenv())
+  assign("DRIAS_horizon", Horizon, envir=globalenv())
+  assign("DRIAS_periode", periode, envir=globalenv())
   assign("DRIAS_serie", serie, envir=globalenv())
-  assign("DRIAS_df", data, envir=globalenv())
-  assign("DRIAS_bh", data3, envir=globalenv())
 }

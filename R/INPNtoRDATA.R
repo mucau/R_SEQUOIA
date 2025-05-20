@@ -17,18 +17,16 @@
 #'   INPNtoRDATA(rep=F)
 #' @export
 #' 
-#' @import tcltk sf dplyr stringr utils
+#' @import tcltk sf
 
 # Lancement des library
-# if (!require("sf")) {install.packages("sf")}
-# if (!require("stringr")) {install.packages("stringr")}
-# if (!require("tcltk")) {install.packages("tcltk")}
+# library(tcltk)
+# library(sf)
 
 INPNtoRDATA <- function(rep=F){
+  message('- - - Téléchargement de données INPN - - -')
   if(isFALSE(rep)) {rep <- tk_choose.dir(default= getwd(), caption = "Choisir le répertoire de telechargement des archives .Rdata")}
-  if(!length(rep)){
-    warning("Aucun fichier sélectionné >> Traitement annulé")
-  } else {
+  if(is.na(rep)){warning("Aucun fichier sélectionné >> Traitement annulé")}
 
 # Adresses de téléchargement et de destination
   INPN_URL <- "https://inpn.mnhn.fr/docs/Shape"
@@ -58,13 +56,13 @@ INPNtoRDATA <- function(rep=F){
     list_shp <- list.files(b, "*.shp$")
 
     for (c in list_shp) {
-      SHP <- sf::st_read(paste(b, c, sep="/"), options = "ENCODING=UTF-8", quiet=T) # Lecture du fichier .shp
-      SHP <- sf::st_transform(SHP, 2154)
+      SHP <- st_read(paste(b, c, sep="/"), options = "ENCODING=UTF-8", quiet=T) # Lecture du fichier .shp
+      SHP <- st_transform(SHP, 2154)
 
       SUPR <- c(".shp","N_ENP_","_S_000","1712","2013","2013_09")
       NAME <- c
       for (e in 1:length(SUPR)) {
-        NAME <- stringr::str_replace(NAME, SUPR[e],"")
+        NAME <- gsub(SUPR[e], "", NAME)
       }
       NOM <- paste0("INPN_", toupper(NAME),"_polygon")
 
@@ -73,7 +71,7 @@ INPNtoRDATA <- function(rep=F){
 
       d=d+1 # Avancé dans l'index
 
-      cat("Le fichier", NOM, "a été ajouté à l'archive", "\n", "\n")
+      cat("Le fichier", NOM, "a été ajouté à l'archive", "\n")
     }
   }
 
@@ -82,7 +80,6 @@ INPNtoRDATA <- function(rep=F){
   cat("Les", d-1, "fichiers téléchargés ont été sauvegardés dans ", rep, "\n")
   assign("list_INPN",list_INPN,envir=globalenv())
   assign("list_INPN_NOM",list_INPN_NOM,envir=globalenv())
- }
 }
 
 

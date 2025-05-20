@@ -9,16 +9,18 @@ Creation de donnees pour la realisation d'un fond vectoriel}
 CAGEF(rep, CODECA)
 }
 \arguments{
-\item{rep}{adresse du parcellaire cadastral PARCA_polygon. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du shapefile}
+\item{rep}{Character. Répertoire du shapefile. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du shapefile.}
 
-\item{CODECA}{Code de référence des données cadastrales à utiliser 1: Etalab, 2: IGN© BD Parcellaire®, 3: Edigeo}
+\item{source_bdt}{Character. BD Topo utilisée. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection de la source.}
+
+\item{source_cadastre}{Character. Source du casdastre utilisée. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection de la source.}
 }
 \description{
 La fonction \code{CAGEF} utilise les fonctions \code{OSMonPARCA}, \code{BDTOPOonPARCA}, \code{BDTOPO_HYDRO}, \code{BDTOPO_VEG} et \code{ETALAB}/\code{BD_PARCA}/\code{EDIGEO} pour générer un ensemble de .shp (EPSG 2154) et d'objet sf nécessaires à la réalisation d'une cartographie forestière ponctuelle.
 }
 \examples{
 ### Fonctionnement :
-  CAGEF(rep=F, CODECA=1)
+  CAGEF(rep=F, source_bdt=F, source_cadastre=F)
 }
 \seealso{
 Les fonctions utilisées:

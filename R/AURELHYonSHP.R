@@ -30,7 +30,7 @@ AURELHYonSHP <- function(shp=F, Rdata=F){
   if(isFALSE(shp)) {shp <- tk_choose.files(caption = "Choisir le fichier .shp",
                                                  filter = matrix(c("ESRI Shapefile", ".shp"), 1, 2, byrow = TRUE))}
   if(isFALSE(Rdata)) {Rdata <- tk_choose.dir(caption = "Choisir le dossier contenant les données AURELHY.Rdata")}
-  if (!length(shp) || !length(Rdata)){
+  if (!length(shp) || is.na(Rdata)){
     warning("Pas de répertoire >> Traitement annulé")
   } else {
 

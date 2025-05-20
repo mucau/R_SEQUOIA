@@ -27,61 +27,69 @@
 #'   CLIMonSHP(shp = F)
 #' @export
 #' 
-#' @import tcltk sf dplyr stringr prettydoc plotly utils
+#' @import tcltk openxlsx rmarkdown prettydoc
 
 # Lancement des library
-# if (!require("tcltk")) {install.packages("tcltk")}
-# if (!require("sf")) {install.packages("sf")}
-# if (!require("stringr")) {install.packages("stringr")}
-# if (!require("dplyr")) {install.packages("dplyr")}
+# library(tcltk)
+# library(openxlsx)
+# library(rmarkdown)
+# library(prettydoc)
 
-CLIMonSHP <- function(shp = F){
+CLIMonSHP <- function(shp=F, aurelhy=T, drias=T, dsn=T){
   message("- - - Création d'une fiche Climatologique - - -")
   if(isFALSE(shp)){
-    shp  <- tcltk::tk_choose.files(default = "~", caption = "Selectionner le fichier .shp",
+    shp  <- tk_choose.files(default = "~", caption = "Selectionner le fichier .shp",
                                    filter = matrix(c("ESRI Shapefile", ".shp"), 1, 2, byrow = TRUE))
   }
   if (!length(shp)){stop("Pas de shapefile sélectionné")}
+  NAMEofSHP(shp, actu=F)
 
   # Bloc Aurelhy
-  AURELHY <- utils::askYesNo("Voulez-vous intégrer les données AURELHY ?")
-  if(is.na(AURELHY)){break}
-  
-  if(isTRUE(AURELHY)){
+  if(isTRUE(aurelhy)){
+    aurelhy <- askYesNo("Voulez-vous intégrer les données AURELHY ?")
+    if(is.na(aurelhy)){stop("Pas de réponse sélectionnée")}
+  }
+  if(isTRUE(aurelhy)){
     if(exists("repRdata")) {Rdata <- repRdata} else {
-      Rdata <- tcltk::tk_choose.dir(caption = "Choisir le dossier contenant les données AURELHY.Rdata")
+      Rdata <- tk_choose.dir(caption = "Choisir le dossier contenant les données AURELHY.Rdata")
       if(is.na(Rdata)){stop("Pas de dossier sélectionné")}
     }
   } else {Rdata<-""}
 
   # Bloc DRIAS
-  DRIAS <- askYesNo("Voulez-vous intégrer les données DRIAS ?")
-  if(is.na(DRIAS)){break}
-  
-  if(isTRUE(DRIAS)){
-    txt  <- tcltk::tk_choose.files(default = "~", caption = "Selectionner le fichier .txt de donnée",
+  if(isTRUE(drias)){
+    drias <- askYesNo("Voulez-vous intégrer les données DRIAS ?")
+    if(is.na(drias)){stop("Pas de réponse sélectionnée")}
+  }
+  if(isTRUE(drias)){
+    txt  <- tk_choose.files(default = "~", caption = "Selectionner le fichier .txt de donnée",
                                    filter = matrix(c("Fichier texte", ".txt"), 1, 2, byrow = TRUE))
-    if (!length(txt)){stop("Pas de txt sélectionné")}
+    if (is.na(txt)){stop("Pas de txt sélectionné")}
   } else {txt<-""}
 
   # Répertoire
-  dsn <- setwd("~/")
-  ask <- askYesNo(paste0("Le fichier sera exporté dans ", dsn, "\nC'est bon pour vous ?"))
-  if(is.na(ask)){break}
-  
-  if(isFALSE(ask)) {
-    dsn <- tcltk::tk_choose.dir(default = dirname(shp), caption = "Choisir le dossier de destination")
-    if(is.na(dsn)){dsn <- setwd("~/")}
+  if(isTRUE(dsn)){
+    ask <- askYesNo(paste0("Le fichier sera exporté dans ", setwd("~/"), "\nC'est bon pour vous ?"))
+    if(is.na(ask)){stop("Pas de réponse sélectionnée")}
+  }
+  if(isFALSE(dsn)) {
+    dsn <- tk_choose.dir(default = dirname(shp), caption = "Choisir le dossier de destination")
+  } else {dsn <- setwd("~/")}
+  if(is.na(dsn)) {
+    dsn <- setwd("~/")
   }
 
   # Nom de fichier
-  if (Sys.info()["sysname"]=="Windows"){
-    name <- utils::winDialogString("Entrer le nom du fichier de sortie:", "")
-  }else {
-    name <- readline(prompt="Entrer le nom du fichier de sortie:")
+  if(is.na(NAME)){
+    if (Sys.info()["sysname"]=="Windows"){
+      name <- utils::winDialogString("Entrer le nom du fichier de sortie:", "")
+    }else {
+      name <- readline(prompt="Entrer le nom du fichier de sortie:")
+    }
+    if(is.na(name)){name <- paste0("Fiche_du_", format(Sys.time(), '%y.%m.%d'))}
+  } else {
+    name <- NAME
   }
-
-  if(!length(name)){name <- paste0("Fiche_du_", format(Sys.time(), '%y.%m.%d'))}
 
   # Affectation du wd
   setwd("~/")
@@ -91,28 +99,29 @@ CLIMonSHP <- function(shp = F){
   library(SEQUOIA)
   rep <- path.package("SEQUOIA", quiet = FALSE)
   rmd <- paste(rep, "CLIM.Rmd", sep='/')
-  rmarkdown::render(rmd, prettydoc::html_pretty(theme = "cayman"),
-                    paste0(name,"_FICHE-CLIM.html"),
-                    dsn, encoding = "UTF-8")
+  render(rmd, html_pretty(theme = "cayman"),
+         paste0(name,"_FICHE-CLIM.html"),
+         dsn, 
+         encoding = "UTF-8")
 
   # Export des tableurs de données
-  if (isFALSE(AURELHY) & isFALSE(DRIAS)){
+  if (isFALSE(aurelhy) & isFALSE(drias)){
     export <- list("METEOFRANCE_ombro" = METEOFRANCE_ombro,
                    "METEOFRANCE_etp" = METEOFRANCE_etp)
   }
-  if (isTRUE(AURELHY) & isFALSE(DRIAS)){
+  if (isTRUE(aurelhy) & isFALSE(drias)){
     export <- list("METEOFRANCE_ombro" = METEOFRANCE_ombro,
                    "METEOFRANCE_etp" = METEOFRANCE_etp,
                    "AURELHY_ombro"=AURELHY_ombro,
                    "AURELHY_etp"=AURELHY_etp)
   }
-  if (isFALSE(AURELHY) & isTRUE(DRIAS)){
+  if (isFALSE(aurelhy) & isTRUE(drias)){
     export <- list("METEOFRANCE_ombro" = METEOFRANCE_ombro,
                    "METEOFRANCE_etp" = METEOFRANCE_etp,
                    "DRIAS_ombro"=DRIAS_ombro,
                    "DRIAS_etp"=DRIAS_etp)
   }
-  if (isTRUE(AURELHY) & isTRUE(DRIAS)){
+  if (isTRUE(aurelhy) & isTRUE(drias)){
     export <- list("METEOFRANCE_ombro" = METEOFRANCE_ombro,
                    "METEOFRANCE_etp" = METEOFRANCE_etp,
                    "AURELHY_ombro"=AURELHY_ombro,
@@ -120,5 +129,5 @@ CLIMonSHP <- function(shp = F){
                    "DRIAS_ombro"=DRIAS_ombro,
                    "DRIAS_etp"=DRIAS_etp)
   }
-  openxlsx::write.xlsx(export, paste(dsn, paste0(name, "_climat.xlsx"),sep="/"))
+  write.xlsx(export, paste(dsn, paste0(name, "_climat.xlsx"),sep="/"))
 }

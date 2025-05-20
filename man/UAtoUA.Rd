@@ -10,6 +10,8 @@ UAtoUA(rep)
 }
 \arguments{
 \item{rep}{CHARACTER. Adresse du fichier \code{.shp} UA_polygon. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.}
+
+\item{actu}{BOOLEAN. Si TRUE, la fonction propose l'actualisation du répertoire si l'ancienne arborescence SEQUOIA est détectée}
 }
 \value{
 \item{UA_polygon}{Fichier shapefile ; unité d'analyse complété}

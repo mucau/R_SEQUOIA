@@ -4,110 +4,127 @@
 #' @description 
 #' La fonction \code{CAGEF} utilise les fonctions \code{OSMonPARCA}, \code{BDTOPOonPARCA}, \code{BDTOPO_HYDRO}, \code{BDTOPO_VEG} et \code{ETALAB}/\code{BD_PARCA}/\code{EDIGEO} pour générer un ensemble de .shp (EPSG 2154) et d'objet sf nécessaires à la réalisation d'une cartographie forestière ponctuelle.
 #' @usage CAGEF(rep, CODECA)
-#' @param rep adresse du parcellaire cadastral PARCA_polygon. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du shapefile
-#' @param CODECA Code de référence des données cadastrales à utiliser 1: Etalab, 2: IGN© BD Parcellaire®, 3: Edigeo
+#' @param rep Character. Répertoire du shapefile. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du shapefile.
+#' @param source_bdt Character. BD Topo utilisée. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection de la source.
+#' @param source_cadastre Character. Source du casdastre utilisée. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection de la source.
 #' @seealso
 #' Les fonctions utilisées:
 #' \code{\link{OSMonPARCA}}, \code{\link{BDTOPOonPARCA}}, \code{\link{BDTOPO_HYDRO}}, \code{\link{BDTOPO_VEG}}, \code{\link{ETALAB}}, \code{\link{BD_PARCA}}, \code{\link{EDIGEO}}
 #' @author Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
 #' @examples 
 #' ### Fonctionnement :
-#'   CAGEF(rep=F, CODECA=1)
+#'   CAGEF(rep=F, source_bdt=F, source_cadastre=F)
 #' @export
 #' 
-#' @import tcltk sf dplyr stringr lwgeom
+#' @import tcltk sf
 
 # Lancement des library
-# if (!require("sf")) {install.packages("sf")}
-# if (!require("tcltk")) {install.packages("tcltk")}
-# if (!require("dplyr")) {install.packages("dplyr")}
-# if (!require("stringr")) {install.packages("stringr")}
-# if (!require("lwgeom")) {install.packages("lwgeom")}
+# library(tcltk)
+# library(sf)
 
-CAGEF <- function(rep=F, CODECA=NULL){
+CAGEF <- function(rep=F, source_bdt=F, source_cadastre=F){
+  options(warn=-1)
   message('- - - Création du fond vectoriel - - -')
+  
+  # Lecture du shapefile
   if(isFALSE(rep)) {
-    rep  <- tk_choose.files(caption = "Choisir le fichier .shp du parcellaire cadastral (PARCA)",
+    rep  <- tk_choose.files(caption = "Choisir le fichier .shp",
                             filter = matrix(c("ESRI Shapefile", ".shp"), 1, 2, byrow = TRUE))
   }
   if (!length(rep)){stop("Aucune sélection effectuée > Traitement annulé \n")}
 
-  # Lecture de PARCA
-  message('        Lecture des données')
-  PARCA <- st_read(rep ,options = "ENCODING=UTF-8", quiet=T)
-  assign("PARCA", PARCA, envir=globalenv())
-  cat('        Objet sf PARCA détecté \n \n')
-
-  NAME <- str_sub(rep,
-                  str_locate_all(rep,'/')[[1]][nrow(str_locate_all(rep,'/')[[1]]),1]+1,
-                  str_locate(rep,'_PARCA')[1,1]-1)
-  assign("NAME", NAME, envir=globalenv())
-
-  repout2 <- paste(dirname(dirname(dirname(rep))),"SIG","2 PSG",sep="/")
-  assign("repout2", repout2, envir=globalenv())
-  repout3 <- paste(dirname(dirname(dirname(rep))),"SIG","3 TEMPO",sep="/")
-  assign("repout3", repout3, envir=globalenv())
-
-  # Téléchargement des données OSM
-  message("        Téléchargement des limites administratives & des infrastructures")
+  message("\n        Choix de la source pour les données infrastructures")
+  if(isFALSE(source_bdt)){
+    form <- c("1 web IGN© BD TOPO®",
+              "2 loc IGN© BD TOPO®")
+    
+    source_bdt <- select.list(form,
+                        multiple = F,
+                        title = "Choix de la source cadastrale",
+                        graphics = T)
+    }
+  if (source_bdt==""){stop("Aucune source sélectionnée !")}
   
-  bdtopo <- utils::askYesNo("Voulez-vous utiliser une IGN© BD TOPO® départementale ?")
-  if(is.na(bdtopo)){break}
-
-  if (isTRUE(bdtopo)) {
-    repTOPO <- tk_choose.dir(default= getwd(),
-                             caption = "Choisir le répertoire de l'IGN (c) BD TOPO (r)")
-    assign("repTOPO", repTOPO, envir=globalenv())
-    if (!length(repTOPO)){stop("Aucune sélection effectuée > Traitement annulé \n")}
-    SEQUOIA:::BDTOPOonPARCA(rep, repTOPO)
-  } else {
-    SEQUOIA:::OSMonPARCA(rep)
+  cat(paste0("        ", source_bdt, " retenu \n"))
+  
+  message("\n        Téléchargement des limites administratives & des infrastructures")
+  if ("1 web IGN© BD TOPO®" %in% source_bdt){
+    INFRAbyBDTweb(rep)
+  }
+  
+  if ("2 loc IGN© BD TOPO®" %in% source_bdt){
+    bdt <- tk_choose.dir(default= getwd(),
+                          caption = "Choisir le répertoire de l'IGN (c) BD TOPO (r)")
+    if (is.na(bdt)){stop("Aucune sélection effectuée > Traitement annulé \n")}
+    
+    INFRAbyBDTloc(rep, bdt)
   }
 
   # Téléchargement des données BDTOPO_HYDRO
   message(" \n        Téléchargement des données IGN© BD TOPO® Hydrologie")
-
-  if (isTRUE(bdtopo)) {
-    SEQUOIA:::BDTOPO_HYDRO(PARCA, "IGN© BD TOPO® Hydrographie Départementale")
-  } else {
-    SEQUOIA:::BDTOPO_HYDRO(PARCA, "IGN© BD TOPO® Hydrographie Métropole")
+  if ("1 web IGN© BD TOPO®" %in% source_bdt){
+    HYDRObyBDTweb(rep)
   }
-
-  INFRA_polygon <- rbind(INFRA_polygon, HYDRO_polygon)
-  INFRA_line <- rbind(INFRA_line, HYDRO_line)
-  INFRA_point <- rbind(INFRA_point, HYDRO_point)
+  
+  if ("2 loc IGN© BD TOPO®" %in% source_bdt){
+    HYDRObyBDTloc(rep, bdt)
+  }
+  
+  if(exists("HYDRO_polygon")){  INFRA_polygon <- unique(rbind(INFRA_polygon, HYDRO_polygon))}
+  if(exists("HYDRO_line")){     INFRA_line    <- unique(rbind(INFRA_line, HYDRO_line))}
+  if(exists("HYDRO_point")){    INFRA_point   <- unique(rbind(INFRA_point, HYDRO_point))}
 
   # Import de la végétation
   message("        Import de la végétation depuis IGN© BD TOPO®")
-  if (isTRUE(bdtopo)) {
-    SEQUOIA:::BDTOPO_VEG(PARCA, repTOPO)
-    INFRA_polygon <- rbind(INFRA_polygon, VEG_polygon)
-    INFRA_line <- rbind(INFRA_line, VEG_line)
-    INFRA_point <- rbind(INFRA_point, VEG_point)
-  } else {
-    cat("        Pas d'import de végétation \n \n")
+  if ("1 web IGN© BD TOPO®" %in% source_bdt){
+    VEGbyBDTweb(rep)
   }
+  
+  if ("2 loc IGN© BD TOPO®" %in% source_bdt){
+    VEGbyBDTloc(rep, bdt)
+  }
+  
+  if(exists("VEG_polygon")){    INFRA_polygon <- rbind(INFRA_polygon, VEG_polygon)}
+  if(exists("VEG_line")){       INFRA_line    <- rbind(INFRA_line, VEG_line)}
+  if(exists("VEG_point")){      INFRA_point   <- rbind(INFRA_point, VEG_point)}
 
-  # Sortie de INFRA_polygon & INFRA_line
-  SEQUOIA:::WRITE(INFRA_polygon, repout2, paste(NAME,"INFRA_polygon.shp",sep="_"))
-  SEQUOIA:::WRITE(INFRA_line, repout2, paste(NAME,"INFRA_line.shp",sep="_"))
-  SEQUOIA:::WRITE(INFRA_point, repout2, paste(NAME, "INFRA_point.shp", sep="_"))
-
-  # Création des données cadastrales
-  if(!exists("CODECA")) {CODECA <- as.integer(readline(prompt="Entrer le CODECA :"))}
-  if (CODECA==1){
-    message("\n        Téléchargement des données ETALAB")
-    SEQUOIA:::ETALAB(PARCA)
+  # Export de INFRA_polygon & INFRA_line
+  write <- function(nom, rep, name){
+    st_write(nom, rep, name, append=FALSE, delete_layer = TRUE, driver = "ESRI Shapefile", quiet =T, layer_options = "ENCODING=UTF-8")
+    cat(paste("        Le fichier", name, "a été exporté dans", rep),"\n")
   }
-  if (CODECA==2){
-    message("\n        Chargement et export des données BD_PARCELLAIRE")
-    if(!exists("repBDPARCA")) {repBDPARCA <- tk_choose.dir(default= getwd(), caption = "Choisir le répertoire du dossier'IGN BD PARCA'")}
-    SEQUOIA:::BD_PARCA(PARCA, repBDPARCA)
+  
+  write(INFRA_polygon, repout2, paste(NAME,"INFRA_polygon.shp",sep="_"))
+  write(INFRA_line, repout2, paste(NAME,"INFRA_line.shp",sep="_"))
+  write(INFRA_point, repout2, paste(NAME, "INFRA_point.shp", sep="_"))
+  
+  message("\n        Choix de la source pour les données cadastrales")
+  if(isFALSE(source_cadastre)){
+    form <- c("1 web IGN© BD Parcellaire®",
+              "2 loc IGN© BD Parcellaire®",
+              "3 web PCI Etalab from cadastre.data.gouv.fr")
+    
+    source_cadastre <- select.list(form,
+                                   multiple = F,
+                                   title = "Choix de la source cadastrale",
+                                   graphics = T)
   }
-  if (CODECA==3){
-    message("\n        Chargement et export des données EDIGEO")
-    SEQUOIA:::EDIGEO(PARCA)
+  if (source_cadastre==""){stop("Aucune source sélectionnée !")}
+  
+  if ("1 web IGN© BD Parcellaire®" %in% source_cadastre) {
+    CADbyBDPweb(rep)
   }
+  
+  if ("2 loc IGN© BD Parcellaire®" %in% source_cadastre) {
+    CADbyBDPloc(rep, F)
+  }
+  
+  if ("3 web PCI Etalab from cadastre.data.gouv.fr" %in% source_cadastre) {
+    CADbyETALAB(rep)
+  } 
+  
+  
   # Fin de programme
   message("\n        Fin de téléchargement")
+  options(warn=1)
 }

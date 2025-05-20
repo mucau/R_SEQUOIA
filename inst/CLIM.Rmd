@@ -14,194 +14,222 @@ output:
 ---
 
 ```{r SEQUOIA, include=FALSE, echo=FALSE, message=FALSE}
-# Lancement des library
-if (!require("tcltk")) {install.packages("tcltk")}
-if (!require("sf")) {install.packages("sf")}
-if (!require("stringr")) {install.packages("stringr")}
-if (!require("dplyr")) {install.packages("dplyr")}
-if (!require("rlang")) {install.packages("tcltk")}
-if (!require("SEQUOIA")) {install.packages("SEQUOIA")}
-if (!require("plotly")) {install.packages("plotly")}
-vers <- packageVersion("SEQUOIA")
+  # Lancement des library
+  if (!require("tcltk")) {install.packages("tcltk")}
+  if (!require("sf")) {install.packages("sf")}
+  if (!require("stringr")) {install.packages("stringr")}
+  if (!require("dplyr")) {install.packages("dplyr")}
+  if (!require("plotly")) {install.packages("plotly")}
+  library("SEQUOIA")
+  vers <- packageVersion("SEQUOIA")
 
-    # Lecture du fichier .shp
-    SHP <- st_read(shp, options = "ENCODING=UTF-8", quiet=T, agr='constant')
+  # Lecture du fichier .shp
+  SHP <- st_read(shp, options = "ENCODING=UTF-8", quiet=T, agr='constant')
 
-    # Téléchargement des données IFN
-    RFN_sf_polygon <- SEQUOIA:::IFNtoSHP('RFN')
-    SER_sf_polygon <- SEQUOIA:::IFNtoSHP('SER')
+  # Téléchargement des données IFN
+  RFN_sf_polygon <- SEQUOIA::IFNtoSHP('RFN')
+  SER_sf_polygon <- SEQUOIA::IFNtoSHP('SER')
     
-    METEOFRANCE_df <- SEQUOIA:::METEOFRANCEonSHP(shp)
-    assign("METEOFRANCE_df", METEOFRANCE_df, envir=globalenv())
+  METEOFRANCE_df <- METEOFRANCEonSHP(shp)
     
-    # Détermination de la SER & de la RFN
-    JOIN <- function(a, b, t){
-      a <- st_transform(a, st_crs(b))       # Changement de système de coordonnées
-      a[t] <- t                             # Création d'un champs spécial
-      if(t=="SER"){n <- c(2,3)} else {n <- c(6,7)}
-      df <- unique(as.data.frame(st_join(a[t], b))[,n]) # Union par attribut
-      names(df) <- c(paste0(t,"_CODE"),paste0(t,"_NOM"))# Changement des intitulés de colonnes
-      return(df)
-    }
+  # Détermination de la SER & de la RFN
+  JOIN <- function(a, b, t){
+    a <- st_transform(a, st_crs(b))       # Changement de système de coordonnées
+    a[t] <- t                             # Création d'un champs spécial
+    if(t=="SER"){n <- c(2,3)} else {n <- c(6,7)}
+    df <- unique(as.data.frame(st_join(a[t], b))[,n]) # Union par attribut
+    names(df) <- c(paste0(t,"_CODE"),paste0(t,"_NOM"))# Changement des intitulés de colonnes
+    return(df)
+  }
 
-    SER_df <- JOIN(SHP, SER_sf_polygon, "SER")
-    RFN_df <- JOIN(SHP, RFN_sf_polygon, "RFN")
-    assign("SER_df", SER_df, envir=globalenv())
-    assign("RFN_df", RFN_df, envir=globalenv())
+  SER_df <- JOIN(SHP, SER_sf_polygon, "SER")
+  RFN_df <- JOIN(SHP, RFN_sf_polygon, "RFN")
+  assign("SER_df", SER_df, envir=globalenv())
+  assign("RFN_df", RFN_df, envir=globalenv())
+  
 ```
+
 Cette fiche fait synthèse des éléments climatologiques disponibles pour la propriété.
 
-# Localisation
-```{r Localisation, echo=FALSE, message=FALSE}
-    SER_CODE <- SER_df[1,1]   
-    SER_NOM  <- SER_df[1,2]
-    RFN_CODE <- RFN_df[1,1]
-    RFN_NOM  <- RFN_df[1,2]
+# 1. Localisation
+
+```{r Localisation, echo=FALSE}
+  SER_CODE <- SER_df[1,1]   
+  SER_NOM  <- SER_df[1,2]
+  RFN_CODE <- RFN_df[1,1]
+  RFN_NOM  <- RFN_df[1,2]
+    
+  url      <- "https://inventaire-forestier.ign.fr/IMG/pdf/"
+  ser      <- paste0(str_sub(as.character(SER_df[1,1]),1,1), "_",str_sub(as.character(SER_df[1,1]),2,3))
+  SER_LIEN <- paste0(url, ser, ".pdf")
+  
 ```
-La propriété est située dans la sylvoécorégion `r SER_NOM` correspondante à l'ancienne région forestière `r RFN_NOM`.  
-**Sylvoécorégion** : `r SER_CODE` - `r SER_NOM`  
+
+La propriété est située dans la sylvoécorégion `r SER_NOM` correspondante à l'ancienne région forestière `r RFN_NOM`.\
+**Sylvoécorégion** : `r SER_CODE` - `r SER_NOM`\
 **Région forestière** : `r RFN_CODE` - `r RFN_NOM`
 
-# Données normales
+Vous trouverez plus d'information sur la sylvoécorégion `r SER_CODE` en consultant la [fiche IFN de la SER](`r SER_LIEN`).
 
-## climatiques de Météo-France 
-La station Météo France la plus proche de la propriété est la station de `r STATION` située à `r DISTANCE` km à une altitude de `r ALTITUDE` m.  
-Les informations ci-dessous correspondantes aux normales et records disponibles pour cette station. `r STAT`
+# 2. Les normales climatiques de Météo-France
 
-```{r plotly, echo=FALSE, results='asis', fig.width=10}
-graph <- function(data, n, p){
-  if (n==1){
-    max <- plyr::round_any(max(data$P),10)
-    plot <- plotly::plot_ly(data) %>%
-      add_trace(x = ~month, y = ~P, type = 'bar', name = 'Précipitation',
-                marker = list(color = '#C9EFF9'),
-                hoverinfo = "text",
-                text = ~paste(P, ' mm')) %>%
-      add_trace(x = ~month, y = ~Tm, type = 'scatter', mode = 'lines+markers', name = 'Température', yaxis = 'y2',
-                line = list(color = 'rgb(205, 12, 24)'),
-                hoverinfo = "text",
-                text = ~paste(Tm, '°C')) %>%
-      layout(title = 'Diagramme ombrothermique',
-             xaxis = list(title = "", 
-                          ticktext = list("Jan.", "Fev.", "Mars", "Avril", "Mai", "Juin",
-                                          "Jui.", "Aout", "Sep", "Oct.", "Nov.", "Dec."),
-                          tickvals = list(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)),
-             yaxis = list(autotick = T, side = "left", title = 'Précipitation (mm)', 
-                          showgrid = FALSE, zeroline = FALSE, range=c(0,max)),
-             yaxis2 = list(autotick = T, side = "right", overlaying = "y", title = 'Température (°C)', 
-                           showgrid = FALSE, zeroline = FALSE, range=c(0,max/2)))
+Les normales climatiques nous sont fournies par la station Météo-France la plus proche de la propriété. Il s'agit de la station de `r MF_STATION` située à `r MF_DISTANCE` km à une altitude de `r MF_ALTITUDE` m.\
+Les informations ci-dessous correspondantes aux normales et records disponibles pour cette station. `r MF_STAT`
+
+```{r MF_text1, echo=FALSE, results='asis', fig.width=10}
+ 
+ if (MF_DISTANCE>=10){
+    cat("Attention: la distance de cette station est supérieure à 10km. Les biais peuvent être importants et nous vous invitons à rechercher des informations plus locales soit en utilisant les données AURELHY, soit en utilisant des stations amateurs. Vous pouvez à ce titre utiliser le site ")
+    cat("<a href='", "https://www.infoclimat.fr/climatologie/", "'>", "infoclimat", "</a>")
+    cat("\n\n")
   }
-  if (n==2){
-    plot <- plotly::plot_ly(data, x = ~Mois, y = ~Precipitation, type = 'bar', name = 'Précipitation') %>%
-      add_trace(y = ~ETP, name = 'ETP') %>%
-      add_trace(y = ~Precipitation-ETP, name = 'P-ETP') %>%
-      layout(xaxis = list(title = "", 
-                          ticktext = list("Jan.", "Fev.", "Mars", "Avril", "Mai", "Juin",
-                                          "Jui.", "Aout", "Sep", "Oct.", "Nov.", "Dec."),
-                          tickvals = list(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)),
-             yaxis = list(title = "Lame d'eau (mm)"), barmode = 'group')
-  }
-  if (isTRUE(p)){return(plot)}
-}
+
 ```
 
-```{r Météo-France, echo=FALSE, results='asis', fig.width=10}
+```{r plotly, echo=FALSE, results='asis', fig.width=10}
+graph_ombro_simple <- function(data, p){
+  max <- plyr::round_any(max(data$P),10)
+  plot <- plotly::plot_ly(data) %>%
+  add_trace(x = ~month, y = ~P, 
+            type = 'bar', 
+            name = 'Précipitation',
+            marker = list(color = '#C9EFF9'),
+            hoverinfo = "text",
+            text = ~paste(P, ' mm')) %>%
+  add_trace(x = ~month, 
+            y = ~Tm, 
+            type = 'scatter', 
+            mode = 'lines+markers', 
+            name = 'Température', 
+            yaxis = 'y2',
+            line = list(color = 'rgb(205, 12, 24)'),
+            hoverinfo = "text",
+            text = ~paste(Tm, '°C')) %>%
+  layout(title = 'Diagramme ombrothermique',
+          xaxis = list(title = "", 
+                       ticktext = list("Jan.", "Fev.", "Mars", "Avril", "Mai", "Juin",
+                                          "Jui.", "Aout", "Sep", "Oct.", "Nov.", "Dec."),
+                       tickvals = list(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)),
+          yaxis = list(autotick = T, side = "left", title = 'Précipitation (mm)', showgrid = FALSE, zeroline = FALSE, range=c(0,max)),
+          yaxis2 = list(autotick = T, side = "right", overlaying = "y", title = 'Température (°C)', showgrid = FALSE, zeroline = FALSE,
+                        range=c(0,max/2)))
+  if (isTRUE(p)){return(plot)}
+}
+
+graph_etp <- function(data, P, ETP, p, title){
+  plot <- plotly::plot_ly(data, x = ~Mois, y = ~P, type = 'bar', name = 'Précipitation', marker = list(color = '#C9EFF9')) %>%
+  add_trace(y = ~ETP, name = 'ETP', marker = list(color = '#FFF2CC')) %>%
+  add_trace(y = ~P-ETP, name = 'P-ETP', marker = list(color = case_when(P-ETP>0~'#00B050',
+                                                                        P-ETP<=0~'#FF0000'))) %>%
+  layout(title = title,
+         xaxis = list(title = "", 
+                      ticktext = list("Jan.", "Fev.", "Mars", "Avril", 
+                                      "Mai", "Juin","Jui.", "Aout", "Sep", "Oct.", "Nov.", "Dec."),
+                      tickvals = list(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)),
+         yaxis = list(title = "Lame d'eau (mm)"), barmode = 'group')
+  if (isTRUE(p)){return(plot)}
+}
+
+```
+
+```{r MF_text2, echo=FALSE, results='asis', fig.width=10}
 MOIS <- c("SOURCE", colnames(METEOFRANCE_df)[3:15])
 
-VAR <- c("Température maximale (Moyenne en °C)", 
-         "Température moyenne (Moyenne en °C)",
-         "Température minimale (Moyenne en °C)",
-         "Précipitations : Hauteur moyenne mensuelle (mm)",
-         "Durée d'insolation (Moyenne en heures)")
-
-for (i in 1:length(VAR)){
-  df1 <- METEOFRANCE_df%>%
-    filter(VARIABLE %in% VAR[i])
-  if (nrow(df1)>0){
-    DETAIL <- df1[1,2]
-    df2 <- df1[1,2:15] %>%
-      mutate(DETAIL=STATION)
-    colnames(df2) <- MOIS
-    print(knitr::kable(df2, caption = VAR[i], align = "l"))
-    cat("\n")
+for (i in 1:nrow(METEOFRANCE_df)){
+  if (!is.na(METEOFRANCE_df[i,15])) {
+    if (i %in% c(3:5, 8:13, 16, 22:23, 27:28, 29:33)){
+      if(is.na(METEOFRANCE_df[i,2])){
+        df <- METEOFRANCE_df[i,2:15]
+        colnames(df) <- MOIS
+        rownames(df) <- NULL
+        df[1,1]<-as.character(MF_STATION)
+        print(knitr::kable(df, caption = METEOFRANCE_df[i,1], align = "l"))
+        cat("\n")
+      } else {
+        if(METEOFRANCE_df[i,2]!='Données non disponibles'){
+          df <- METEOFRANCE_df[i,2:15]
+          colnames(df) <- MOIS
+          rownames(df) <- NULL
+          df[1,1]<-as.character(MF_STATION)
+          print(knitr::kable(df, caption = METEOFRANCE_df[i,1], align = "l"))
+          cat("\n")
+        }
+      }
+    }
   }
 }
 
-df1 <- METEOFRANCE_df%>%
-    filter(VARIABLE %in% "Nombre moyen de jours avec",
-           DETAIL %in% "Tn <=   0°C ")
-if (nrow(df1)>0){
-    df2 <- df1[1,2:15] %>%
-      mutate(DETAIL=STATION)
-    colnames(df2) <- MOIS
-    print(knitr::kable(df2, caption = "Nombre moyen de jours de gel (nbr/mois)", align = "l"))
-    cat("\n")
-}
+data1 <- data.table::transpose(METEOFRANCE_df[,c(1, 3:15)])
+colnames(data1) <- data1[1,]
+rownames(data1) <- colnames(METEOFRANCE_df[,c(1, 3:15)])
+data1<-data1[-c(1,14),]
 
-VAR <- c("Brouillard  ", 
-         "Orage       ",
-         "Grêle       ",
-         "Neige       ")
-df1 <- METEOFRANCE_df%>%
-    filter(VARIABLE %in% VAR)
-if (nrow(df1)>0){
-    df2 <- df1 %>%
-      mutate(DETAIL = VARIABLE,
-             VARIABLE=STATION)
-    colnames(df2) <- c("SOURCE", "DETAILS", colnames(METEOFRANCE_df)[3:15])
-    print(knitr::kable(df2, caption = "Nombre moyen de jours avec :", align = "l"))
-    cat("\n")
-}
-
-data1 <- data.table::transpose(METEOFRANCE_df[,c(1, 3:15)]); colnames(data1) <- data1[1,]
-data2 <- data1[2:13,c(5,4,3,16)] ; colnames(data2) <- c("Tn", "Tm", "Tx", "P")
+data2 <- data1[,c(5,4,3,16)] ; colnames(data2) <- c("Tn", "Tm", "Tx", "P")
 serie <- data2 %>%
-    mutate(year = 8110, month=1:12, Tn=as.numeric(Tn),Tm=as.numeric(Tm), Tx=as.numeric(Tx), P=as.numeric(P)) %>%
+    mutate(year = 8110, month=rownames(data2), Tn=as.numeric(Tn),Tm=as.numeric(Tm), Tx=as.numeric(Tx), P=as.numeric(P)) %>%
     select(year, month, Tn, Tm, Tx, P)
-data4 <- SEQUOIA:::THORNTHWAITE(serie, LATITUDE)%>%
-    mutate(Bilan=Surplus-Deficit)
-p=T
-graph(serie,1,p)
+data4 <- SEQUOIA::THORNTHWAITE(serie, MF_LATITUDE)%>%
+    mutate(Bilan=Surplus-Deficit) ; colnames(data4) <- c("Annee", "Mois", "P", "ETP", "RU", "P_ETP", "Deficit", "Surplus", "Bilan")
 
-graph(data4,2,p)
+p=T
+graph_ombro_simple(serie,p)
+graph_etp(data4, data4$P, data4$ETP, p, "Bilan hydrique sur les données normales Météo-France")
 p=F
+
 assign("METEOFRANCE_ombro", serie, envir=globalenv())
 assign("METEOFRANCE_etp", data4, envir=globalenv())
     
 ```
+Le bilan hydrique ci-dessus a été établi par SEQUOIA sur la base de la formule de THORNTHWAITE. Ces données sont à utiliser avec prudence. Nous vous conseillons d'utiliser préférentiellement le bilan hydrique H0 de Drias.
 
-```{r texte, echo=FALSE, results='asis', fig.width=10}
-if(Rdata!=""){
-  cat("## Données climatiques d'AURELHY\n\n")
-  cat("Les données climatiques Aurelhy [© Météo-France, 2001] ont été obtenues à partir de jeux de données ponctuelles des stations Météo-France qui ont été spatialisées en utilisant des modèles statistiques élaborés à l’aide de variables topographiques.
-Les informations ci-dessous correspondantes aux normales déterminés par le modèle Aurelhy sur une étendue de 2,5 km autour de la forêt pour la période 1981-2010.")
+Les statistiques climatiques normales reflètent le climat et les conditions de croissances qu’a connu la propriété par le passé. Avec le changement climatique, ces conditions sont amenées à évoluer : les normales d’hier ne reflèteront pas le climat de demain ; c’est pourquoi une analyse complémentaire s’impose.
+
+```{r Aurelhy_text1, echo=FALSE, results='asis', fig.width=10}
+  if(Rdata!=""){
+    cat("# 2. Les normale climatiques d'AURELHY\n\n")
+    cat("Les données climatiques Aurelhy [© Météo-France, 2001] ont été obtenues à partir de jeux de données ponctuelles des stations Météo-France qui ont été spatialisées en utilisant des modèles statistiques élaborés à l’aide de variables topographiques.\n\n",
+"Les informations ci-dessous correspondantes aux normales déterminés par le modèle Aurelhy sur une étendue de 2,5 km autour de la forêt pour la période 1981-2010.\n\n")
+  if (MF_DISTANCE>=10){
+    cat("La station Météo-France étant situées à plus de 10km, nous vous conseillons d'utiliser les informations qui suivent en remplacement des données de la rubrique précédente.\n\n")
+  }
 }
 ```
 
-```{r include=F}
+```{r Aurelhy_calcul, include=F}
 if(Rdata!=""){
-  AURELHY_df <- SEQUOIA:::AURELHYonSHP(shp, Rdata)
+  AURELHY_df <- AURELHYonSHP(shp, Rdata)
   assign("AURELHY_df", AURELHY_df, envir=globalenv())
 }
 ```
 
-```{r Aurelhy, echo=FALSE, results='asis', fig.width=10}
+```{r Aurelhy_text2, echo=FALSE, results='asis', fig.width=10}
 if(Rdata!=""){
-  df <- data.table::transpose(AURELHY_df) 
+  df <- data.table::transpose(AURELHY_df) ; rownames(df) <-colnames(AURELHY_df) ; colnames(df)<- AURELHY_df[,1]
+  df <- df[-1,]
   df$Annee <- as.numeric(1.1)
-  df[2,13] <- sum(df[2,1:12])
-  df[3,13] <- mean(unlist(df[3,1:12]))
-  df[4,13] <- mean(unlist(df[4,1:12]))
-  df[5,13] <- mean(unlist(df[5,1:12]))
-  df[6,13] <- sum(df[6,1:12])
+  df[1,1:12]<- round(df[1,1:12])
+  df[1,13] <- round(sum(df[1,1:12]))
+  
+  df[2,1:12]<- round(df[2,1:12],1)
+  df[2,13] <- round(mean(unlist(df[2,1:12])),1)
+  
+  df[3,1:12]<- round(df[3,1:12],1)
+  df[3,13] <- round(mean(unlist(df[3,1:12])),1)
+  
+  df[4,1:12]<- round(df[4,1:12],1)
+  df[4,13] <- round(mean(unlist(df[4,1:12])),1)
+  
+  df[5,1:12]<- round(df[5,1:12])
+  df[5,13] <- round(sum(df[5,1:12]))
+  
   df <- cbind(SOURCE="AURELHY", df)
   colnames(df) <- MOIS
-  
-  AU_Pm <- df[2,]
-  AU_Tn <- df[3,]
-  AU_Tm <- df[4,]
-  AU_Tx <- df[5,]
-  AU_Ge <- df[6,]
+  rownames(df) <- NULL
+  AU_Pm <- df[1,]
+  AU_Tn <- df[2,]
+  AU_Tm <- df[3,]
+  AU_Tx <- df[4,]
+  AU_Ge <- df[5,]
   
   print(knitr::kable(AU_Tx, caption = "Température maximale (Moyenne en °C)", align = "l", row.names = FALSE))
   cat("\n")
@@ -217,144 +245,297 @@ if(Rdata!=""){
   serie <- AURELHY_df %>%
     mutate(year = 8110) %>%
   select(year, month, Tn, Tm, Tx, P)
-  data2 <- SEQUOIA:::THORNTHWAITE(serie, latitude) %>%
-    mutate(Bilan=Surplus-Deficit)
+  data2 <- SEQUOIA:::THORNTHWAITE(serie, MF_LATITUDE) %>%
+    mutate(Bilan=Surplus-Deficit) ; colnames(data2) <- c("Annee", "Mois", "P", "ETP", "RU", "P_ETP", "Deficit", "Surplus", "Bilan")
   
   assign("AURELHY_ombro", serie, envir=globalenv())
   assign("AURELHY_etp", data2, envir=globalenv())
-  p=T
-
 }
+p=T
 ```
 
-```{r , echo=FALSE, results='asis', fig.width=10}
-graph(serie,1,p)
-graph(data2,2,p)
+```{r Aurelhy_figure, echo=FALSE, results='asis', fig.width=10}
+
+if(Rdata!=""){graph_ombro_simple(serie,p)}
+p=T
+
+```
+```{r Aurelhy_figure2, echo=FALSE, results='asis', fig.width=10}
+
+if(Rdata!=""){graph_etp(data2, data2$P, data2$ETP, p, "Bilan hydrique sur les données normales Aurelhy")}
 p=F
+
 ```
 
-```{r text, echo=FALSE, results='asis', fig.width=10}
-if(txt!=""){
-  cat("# Données futures \n\n")
-  cat("Drias-les futurs du climat a pour vocation de mettre à disposition des projections climatiques régionalisées réalisées dans les laboratoires français de modélisation du climat.")
+```{r Aurelhy_text3, echo=FALSE, results='asis', fig.width=10}
+
+if(Rdata!=""){
+    cat(" Le bilan hydrique ci-dessus a été établi par SEQUOIA sur la base de la formule de THORNTHWAITE. Ces données sont à utiliser avec prudence. Nous vous conseillons d'utiliser préférentiellement le bilan hydrique H0 de Drias.\n\n",
+        "Les statistiques climatiques normales reflètent le climat et les conditions de croissances qu’a connu la propriété par le passé. Avec le changement climatique, ces conditions sont amenées à évoluer : les normales d’hier ne reflèteront pas le climat de demain ; c’est pourquoi une analyse complémentaire s’impose. \n\n")
 }
+
 ```
 
-```{r Drias, echo=FALSE, results='asis', fig.width=10}
+```{r drias_text1, echo=FALSE, results='asis', fig.width=10}
+
 if(txt!=""){
-  SEQUOIA:::BHbyDRIAS(txt)
+  # BHbyDRIAS(txt, periode = "H3 Horizon lointain [2071-2100]")
+  BHbyDRIAS(txt, periode = F)
+  
+  cat("# 3. Données futures \n\n")
+  cat("<a href='", "http://www.drias-climat.fr/", "'>", "Drias-les futurs du climat", "</a> a pour vocation de mettre à disposition des projections climatiques régionalisées réalisées dans les laboratoires français de modélisation du climat. \n\n",
+      "Les données climatologiques futures sont obtenues à partir de Drias-les futurs du climat. Elles ont été obtenues à partir de la simulation suivante:\n\n")
+  cat("Scnénario : ", DRIAS_scenario, "\n\n","Modèle : ", DRIAS_modele, "\n\n")
+  cat("Ces modèles ne préfigurent en rien de ce qui se passera réellement, mais ils fournissent, pour cette région, des éléments qu’il convient de prendre en considération.\n\n")
   
   tab_indice <- function(indice, data, ndec, sum){
       ind_brut  <- paste0("NOR", indice)
       ind_ecart <- paste0("A", indice)
       
-      
       df <- data[,c(1,5,6,grep(ind_brut, colnames(data))[1],grep(ind_ecart, colnames(data))[1])] 
-      colnames(df)<-c("point","periode","mois", "ind_brut", "ind_ecart")
+      colnames(df)<-c("Point","Période","Mois", "ind_brut", "ind_ecart")
       
       df <- df %>%
         mutate(H0=ind_brut-ind_ecart,
-               H3=ind_brut,
+               H_=ind_brut,
                EC=ind_ecart) %>%
-        filter(periode %in% Periode) 
+        filter(Période %in% DRIAS_horizon) 
       
       df2 <- df %>%
-        group_by(mois) %>% 
+        group_by(Mois) %>% 
         summarize(H0 = round(mean(H0),ndec), 
-                  H3 = round(mean(H3),ndec), 
+                  H_ = round(mean(H_),ndec), 
                   EC = round(mean(EC),ndec))
       
-      mois <- "TOT"
+      Mois <- "TOT"
       if (sum==1){
         H0 <- sum(unlist(df2[2]))
-        H3 <- sum(unlist(df2[3]))
+        H_ <- sum(unlist(df2[3]))
         EC <- sum(unlist(df2[4]))
       } else {
         H0 <- round(mean(unlist(df2[2])),ndec)
-        H3 <- round(mean(unlist(df2[3])),ndec)
+        H_ <- round(mean(unlist(df2[3])),ndec)
         EC <- round(mean(unlist(df2[4])),ndec)
       }
 
       
-      df3 <- data.frame(mois, H0, H3, EC)
+      df3 <- data.frame(Mois, H0, H_, EC)
       
       df2 <- rbind(df2, df3)
       return(df2)
   }
   
-  indices_brut <- c("TXAV", "TAV", "TNAV")
-  indices_noms <- c("Température maximale journalière (°C)", 
-                    "Température moyenne journalière (°C)",
-                    "Température minimale journalière (°C)")
+  cat("## 3.1. Indicateurs de températures \n\n")
+  indices_brut <- c("TXAV", "TAV", "TNAV", "TRAV","TNCWD", "TXHWD", "TNFD", "SD", "TX35")
+  indices_noms <- c("Température maximale journalière TX (°C) : moy. des temp. max. quotidienne [Σ(i=1→N) TXi/N]",
+                    "Température moyenne journalière TM (°C) : moy. des temp. moy. quotidienne [Σ(i=1→N) TMi/N]",
+                    "Température minimale journalière TN (°C) : moy. des temp. min. quotidienne [Σ(i=1→N) TNi/N]",
+                    "Amplitude thermique journalière A (°C) : moy. des amp. quotidienne[Σ(i=1→N) (TXi-TNi)/N]",
+                    "Nombre de jours d'une vague de froid (jour(s)) : [TNi≤TNRi-5°C sur 5 jours consécutif]",
+                    "Nombre de jours d'une vague de chaleur (jour(s)) : [TXi≥TXRi+5°C sur 5 jours consécutif]",
+                    "Nombre de jours de gel (jour(s)) : [TNi≤0°C]",
+                    "Nombre de journées d'été (jour(s)) : [TXi>25°C]",
+                    "Nombre de jours de fortes chaleur (jour(s)) : [TXi>35°C]")
+  
+  bilan_t <- as.data.frame(matrix(data = NA, nrow = 0, ncol = 4))
+  colnames(bilan_t)<-c("Indice", "H0", "H_", "EC")
   
   for (i in 1:length(indices_brut)){
     indice_brut <- indices_brut[i]
     indice_nom <- indices_noms[i]
-    tab <- tab_indice(indice_brut, DRIAS_df, 1, 0)
-    tab2<-data.table::transpose(tab[2:4])
-    tab2 <- cbind(SOURCE=c("H0",Periode,"EC"), tab2)
-    colnames(tab2) <- MOIS
-    
+    if(i<=4){ndec=1; sum=0} else {ndec=0; sum=1}
+    tab <- tab_indice(indice_brut, DRIAS_df, ndec, sum)
+    recap <- tab[13,] %>%
+      mutate(Indice = str_sub(indice_nom, 1, str_locate_all(indice_nom, ":")[[1]][1]-2)) %>%
+      select(Indice, H0, H_, EC)
+    bilan_t <- rbind(bilan_t, recap)
+    tab2 <- cbind(SOURCE=c("H0",DRIAS_horizon,"EC"), data.table::transpose(tab[2:4])) ; colnames(tab2) <- MOIS
     print(knitr::kable(tab2, caption = indice_nom, align = "l", row.names = FALSE))
-    
   }
+  colnames(bilan_t)<-c("Indice", "H0 référence [1976-2005]", DRIAS_periode, "Ecarts")
+  cat("Pour les indices de températures, nous obtenons la synthèse suivante: \n")
+  print(knitr::kable(bilan_t, caption = "Récapitulatif de l'évolution des indicateurs de températures", align = "l", row.names = FALSE))
   
-  indice_brut <- c("RR")
-  indice_nom <- c("Cumul de précipitation (mm)")
-  tab <- tab_indice(indice_brut, DRIAS_df, 0, 1)
-  tab2<-data.table::transpose(tab[2:4])
-  tab2 <- cbind(SOURCE=c("H0",Periode,"EC"), tab2)
-  colnames(tab2) <- MOIS
-  print(knitr::kable(tab2, caption = indice_nom, align = "l", row.names = FALSE))
   
-  serie <- DRIAS_serie %>%
-    mutate(Tm=(Tx+Tn)/2, P=Pl) %>%
-    select(year, month, Tn, Tm, Tx, P)
-  data2 <- DRIAS_bh %>%
-    mutate(Bilan=Surplus-Deficit)
+  cat("## 3.2. Indicateurs de précipitations \n\n")
+  indices_brut <- c("RR", "RR1MM", "PN20MM", "PXCWD", "PXCDD")
+  indices_noms <- c("Cumul de précipitation RRC (mm) : cumul des pré.[Σ(i=1→N) RRi]",
+                    "Nombre de jours de pluie (jour(s)) : [Σ(i=1→N) RRi≥1mm]",
+                    "Nombre de jours de fortes précipitations (jour(s)) : [Σ(i=1→N) RRi≥20mm]",
+                    "Nombre max. de jours pluvieux consécutifs (jour(s)) : [max(nbr jrs consécutifs où RRi≥1mm)]",
+                    "Période de sécheresse (jour(s)) : [max(nbr jrs consécutifs où RRi<1mm)]")
   
-  assign("DRIAS_ombro", serie, envir=globalenv())
-  assign("DRIAS_etp", data2, envir=globalenv())
-  p=T
+  bilan_p <- as.data.frame(matrix(data = NA, nrow = 0, ncol = 4))
+  colnames(bilan_p)<-c("Indice", "H0", "H_", "EC")
   
+  for (i in 1:length(indices_brut)){
+    indice_brut <- indices_brut[i]
+    indice_nom <- indices_noms[i]
+    ndec=0; sum=1
+    tab <- tab_indice(indice_brut, DRIAS_df, ndec, sum)
+    recap <- tab[13,] %>%
+      mutate(Indice = str_sub(indice_nom, 1, str_locate_all(indice_nom, ":")[[1]][1]-2)) %>%
+      select(Indice, H0, H_, EC)
+    bilan_p <- rbind(bilan_p, recap)
+    tab2 <- cbind(SOURCE=c("H0",DRIAS_horizon,"EC"), data.table::transpose(tab[2:4])) ; colnames(tab2) <- MOIS
+    print(knitr::kable(tab2, caption = indice_nom, align = "l", row.names = FALSE))
+  }
+  colnames(bilan_p)<-c("Indice", "H0 référence [1976-2005]", DRIAS_periode, "Ecarts")
+  cat("Pour les indices de précipitations, nous obtenons la synthèse suivante: \n")
+  print(knitr::kable(bilan_p, caption = "Récapitulatif de l'évolution des indicateurs de précipitations", align = "l", row.names = FALSE))
+  
+  cat("## 3.3. Diagramme ombrothermique \n\n")
+  TAV <- tab_indice("TAV", DRIAS_df, 1, 0) %>%
+    mutate(TMH0=H0, TMH_=H_)%>%
+    select(Mois, TMH0, TMH_)
+  RR <- tab_indice("RR", DRIAS_df, 0, 1) %>%
+    mutate(PH0=H0, PH_=H_)%>%
+    select(Mois, PH0, PH_)
+  OMBRO <- cbind(TAV, RR)[-4][-13,]
+  
+  DRIAS_ombro <- OMBRO ; colnames(DRIAS_ombro) <- c("Mois", "TMH0", paste0("TM", DRIAS_horizon), "PH0", paste0("P", DRIAS_horizon))
+  assign("DRIAS_ombro", DRIAS_ombro, envir=globalenv())
+  assign("OMBRO", OMBRO, envir=globalenv())
 }
+
 ```
 
-```{r , echo=FALSE, results='asis', fig.width=10}
-graph(serie,1,p)
-graph(data2,2,p)
+
+```{r plotly 2, echo=FALSE, results='asis', fig.width=10}
+
+graph_ombro_double <- function(OMBRO, p){
+    max <- plyr::round_any(max(OMBRO$PH0),10)
+    plot <- plotly::plot_ly(OMBRO) %>%
+        add_trace(x = ~Mois, 
+                  y = ~PH0, 
+                  type = 'bar', 
+                  name = 'Prep. 1976-2005',
+                  marker = list(color = '#C9EFF9'),
+                  hoverinfo = "text",
+                  text = ~paste(PH0, ' mm')) %>%
+        add_trace(x = ~Mois, 
+                  y = ~PH_, 
+                  type = 'bar', 
+                  name = paste0('Prep. ',str_sub(DRIAS_periode, str_locate_all(DRIAS_periode, "20")[[1]][1], -2L)),
+                  marker = list(color = '#4472C4'),
+                  hoverinfo = "text",
+                  text = ~paste(PH_, ' mm')) %>%
+        add_trace(x = ~Mois, 
+                  y = ~TMH0, 
+                  type = 'scatter', 
+                  mode = 'lines+markers', 
+                  name = 'Temp. 1976-2005', 
+                  yaxis = 'y2',
+                  line = list(color = '#FF0000'),
+                  marker = list(color = '#FF0000'),
+                  hoverinfo = "text",
+                  text = ~paste(TMH0, '°C')) %>%
+        add_trace(x = ~Mois, 
+                  y = ~TMH_, 
+                  type = 'scatter', 
+                  mode = 'lines+markers', 
+                  name = paste0('Temp. ',str_sub(DRIAS_periode, str_locate_all(DRIAS_periode, "20")[[1]][1], -2L)), 
+                  yaxis = 'y2',
+                  line = list(color = '#C00000'),
+                  marker = list(color = '#C00000'),
+                  hoverinfo = "text",
+                  text = ~paste(TMH_, '°C')) %>%
+        layout(title = 'Diagramme ombrothermique',
+               xaxis = list(title = "", 
+                            ticktext = list("Jan.", "Fev.", "Mars", "Avril", "Mai", "Juin",
+                                            "Jui.", "Aout", "Sep", "Oct.", "Nov.", "Dec."),
+                            tickvals = list(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)),
+               yaxis = list(autotick = T, side = "left", title = 'Précipitation (mm)', 
+                            showgrid = FALSE, zeroline = FALSE, range=c(0,max)),
+               yaxis2 = list(autotick = T, side = "right", overlaying = "y", title = 'Température (°C)', 
+                             showgrid = FALSE, zeroline = FALSE, range=c(0,max/2)))
+  if (isTRUE(p)){return(plot)}
+}
+p=T
+
+```
+
+```{r Drias_figure, echo=FALSE, results='asis', fig.width=10}
+
+if(txt!=""){graph_ombro_double(OMBRO,p)}
 p=F
+
 ```
 
-```{r , echo=FALSE, results='asis', fig.width=10}
+```{r drias_text2, echo=FALSE, results='asis', fig.width=10}
+
 if(txt!=""){
-  indices_brut <- c("TNFD", "RR1MM", "PXCDD", "TXHWD", "TX35")
-  indices_noms <- c("Nombre de jours de gel (jour(s))", 
-                    "Nombre de jours de pluie (jour(s))",
-                    "Période de sécheresse (jour(s))",
-                    "Nombre de jours d'une vague de chaleur (jour(s))",
-                    "Nombre de jours de fortes chaleur ( TX>35°C ) (jour(s))")
+  cat("## 3.4. Evapotranspiration potentielle \n\n")
+  cat("Les précipitations qui conditionnent en grande partie les conditions de croissance sont à analyser en gardant à l’esprit les écarts mensuels, les quantités restantes après évapotranspiration (ETP), et la nature des sols. C’est pourquoi il peut être intéressant d'étudier le rapport P-ETP. \n\n", "L'ETP fourni par DRIAS est calculé à partir des variables météorologiques disponibles, à partir de la formule FAO avec un rayonnement estimé par la formule de Hargreaves. \n\n")
+  ETPC <- tab_indice("ETPC", DRIAS_df, 1, 0) %>%
+    mutate(ETPH0=H0, ETPH_=H_)%>%
+    select(Mois, ETPH0, ETPH_)
+  RR <- tab_indice("RR", DRIAS_df, 0, 1) %>%
+    mutate(PH0=H0, PH_=H_)%>%
+    select(Mois, PH0, PH_)
+  ETP <- cbind(ETPC, RR)[-4][-13,]%>%
+    mutate(PETPH0=PH0-ETPH0,
+           PETPH_=PH_-ETPH_)
   
-  for (i in 1:length(indices_brut)){
-    indice_brut <- indices_brut[i]
-    indice_nom <- indices_noms[i]
-    tab <- tab_indice(indice_brut, DRIAS_df, 0, 1)
-    tab2<-data.table::transpose(tab[2:4])
-    tab2 <- cbind(SOURCE=c("H0",Periode,"EC"), tab2)
-    colnames(tab2) <- MOIS
-    
-    print(knitr::kable(tab2, caption = indice_nom, align = "l", row.names = FALSE))
+  DRIAS_etp <- ETP ; colnames(DRIAS_etp) <- c("Mois", "ETPH0", paste0("ETP", DRIAS_horizon), "PH0", paste0("P", DRIAS_horizon), 
+                                              "PETPH0",  paste0("PETP", DRIAS_horizon))
+  assign("DRIAS_etp", DRIAS_etp, envir=globalenv())
+  assign("ETP", ETP, envir=globalenv())
+}
+p=T
+
+```
+
+```{r Drias_figure2, echo=FALSE, results='asis', fig.width=10}
+
+if(txt!=""){graph_etp(ETP, ETP$PH0, ETP$ETPH0, p, "Bilan hydrique sur H0 Horizon référence [1975-2006]")}
+p=T
+
+```
+```{r Drias_figure3, echo=FALSE, results='asis', fig.width=10}
+
+if(txt!=""){graph_etp(ETP, ETP$PH_, ETP$ETPH_, p, paste0("Bilan hydrique sur ", DRIAS_periode))}
+p=F
+
+```
+
+```{r drias_text3, echo=FALSE, results='asis', fig.width=10}
+if(txt!=""){
+  BH_H0 <- ETP %>% mutate(Mois=MOIS[2:13]) %>% filter(PETPH0<0)
+  minH0 <- BH_H0 %>% filter(PETPH0 %in% min(BH_H0$PETPH0))
+  cumulH0 <- sum(BH_H0[6])
+  firstH0 <- BH_H0[1,1]
+  lastH0 <- BH_H0[nrow(BH_H0),1]
+  
+  if (nrow(BH_H0)>0){
+    cat("Sur la période H0 Horizon référence [1975-2006], les données recuillies montre un ratio P-ETP déficitaire de ", firstH0, " à ", lastH0, ". Le déficit le plus prononcé a lieu en ", minH0[1,1], "(", minH0[1,6], "mm). Le déficit cumulé atteint", cumulH0, "mm. Lors de ces déficit, la végétation s'alimente dans la réserve utile des sols. Si la réserve est bonne, le déficit peut être compensé. Si la réserve est limitée, le déficit hydrique sera marqué et peut entrainer des phénomènes de cavitation et des mortalités. \n\n")
+  }
+  
+  BH_H_ <- ETP %>% mutate(Mois=MOIS[2:13]) %>% filter(PETPH_<0)
+  minH_ <- BH_H_ %>% filter(PETPH_ %in% min(BH_H_$PETPH_))
+  cumulH_ <- sum(BH_H_[7])
+  firstH_ <- BH_H_[1,1]
+  lastH_ <- BH_H_[nrow(BH_H_),1]
+  
+  if (nrow(BH_H_)>0){
+    cat("Sur la période", DRIAS_periode, "les données recuillies montre un ratio P-ETP déficitaire de", firstH_, "à ", lastH_, ". Le déficit le plus prononcé a lieu en ", minH_[1,1], "(", minH_[1,7], "mm). Le déficit cumulé atteint", cumulH_, "mm. \n\n")
+    if (nrow(BH_H_)-nrow(BH_H0)>=1){
+     cat("L'observation montre que le déficit s'allonge dans le temps. ")
+    }
+    if (cumulH_<cumulH0){
+     cat("L'observation montre également que le déficit s'aggrave sur cette durée.")
+    }
   }
 }
+
 ```
+
 ***
 
 ```{r, echo=FALSE}
-cat("  \n")
+cat("  \n\n")
 ```
-  
-  
-  
 
 * * *  
-*Cette fiche a été générée automatiquement le `r format(Sys.time(), '%d %B %Y')`  par R_SEQUOIA V.  `r vers`*
+
+*Cette fiche a été générée automatiquement le `r format(Sys.time(), '%d %B %Y')` par R_SEQUOIA V. `r vers`*

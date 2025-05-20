@@ -9,9 +9,7 @@ Import de la BRGM (C) BD_Charm50 (r) sur une emprise shapefile}
 GEOLonSHP(shp, NAME)
 }
 \arguments{
-\item{shp}{Adresse du \code{.shp} de la zone d'étude. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.}
-
-\item{NAME}{CHARACTER. Nom du fichier qui s'implante en préfixe.}
+\item{rep}{Character. Répertoire du shapefile. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du shapefile.}
 }
 \value{
 \item{geol_polygon}{Shapefile de la géologie sur l'emprise. Généré dans le répertoire du fichier source.}
@@ -21,7 +19,7 @@ La fonction \code{GEOLonSHP} téléchargement la BRGM (C) BD_Charm50 (r) départ
 }
 \examples{
 ### Fonctionnement :
-  GEOLonSHP(shp = F, NAME=NULL)
+  GEOLonSHP(rep=F)
 }
 \author{
 Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>

@@ -38,17 +38,17 @@
 # if (!require("rlist")) {install.packages("rlist")}
 # if (!require("openxlsx")) {install.packages("openxlsx")}
 
-HTMLtoXLSX <- function(rephtml=F,repRdata=F) {
-
+HTMLtoXLSX <- function(rephtml=F, repRdata=F) {
+  options(warn=-1)
 # Import des données .html
   if(isFALSE(rephtml)){
     rephtml <- tk_choose.dir(default= getwd(),
                              caption = "Choisir le dossier contenant les matrices")
     }
-  if (!length(rephtml)){stop("Pas de dossier sélectionnés > Traitement annulé","\n")}
+  if (is.na(rephtml)){stop("Pas de dossier sélectionnés > Traitement annulé","\n")}
 
   if(isFALSE(repRdata)) {
-    SEQUOIA:::INSEEtoRDATA()
+    INSEEtoRDATA(T)
   } else {
     load(paste0(repRdata, "/INSEE.Rdata"))
   }
@@ -62,9 +62,9 @@ HTMLtoXLSX <- function(rephtml=F,repRdata=F) {
     sortie2 <- data.frame() # Création d'un dataframe vierge de sortie
     
     # Boucle de traitement
-    for (i in LISTE_HTML) { # Pour chaque fichier .html de la liste
-      urldata <- RCurl::getURL(paste("file:/",rephtml,i, sep="/")) # Chargement du fichier .html
-
+    for (i in 1:length(LISTE_HTML)) { # Pour chaque fichier .html de la liste
+      urldata <- RCurl::getURL(str_replace_all(paste("file://", rephtml, LISTE_HTML[i], sep="/")," ","%20")) # Chargement du fichier .htmlread_html
+      
       ## Récupération des données générales
       ### Lecture des listes d'en-tête
       data <- XML::readHTMLTable(urldata, header=F, stringsAsFactors = F) # Chargement des listes d'en-têtes
@@ -250,11 +250,12 @@ HTMLtoXLSX <- function(rephtml=F,repRdata=F) {
       matrice <- merge(x = matrice, y = tab3, by = "IDU", all.y = TRUE) # Jointure des tables 1/2 et 3
       matrice <- matrice[,-c(11,12,13,14,15)] # Suppression des champs liés au subdivisions : NATURE, GROUPE, SURFACE, REV_CAD
 
-      names(INSEE_DEPS)<-c("REG_CODE","DEP_CODE","CHEFLIEU","TNCC","DEP_NOM","DEP_NOMI")
+      names(INSEE_DEPS)<-c("DEP_CODE","REG_CODE","CHEFLIEU","TNCC","DEP_NOM","DEP_NOMI", "LIBELLE")
       INSEE_DEPS <- INSEE_DEPS %>%
         mutate(DEP_CODE = str_pad(DEP_CODE, 2, "left", pad = "0"))
       matrice <- merge(x = matrice, y=INSEE_DEPS[,c(1,2,5)], by.x = "DEP_CODE",by.y= , all.y = FALSE)
-      names(INSEE_REGS)<-c("REG_CODE","CHEFLIEU","TNCC","REG_NOM","REG_NOMI")
+      
+      names(INSEE_REGS)<-c("REG_CODE","CHEFLIEU","TNCC","REG_NOM","REG_NOMI", "LIBELLE")
       matrice <- merge(x = matrice, y=INSEE_REGS[,c(1,4)], by="REG_CODE",all.y = FALSE)
 
       matrice <- unique(matrice) %>% # Suppression des doublons
@@ -288,5 +289,6 @@ HTMLtoXLSX <- function(rephtml=F,repRdata=F) {
     assign("XLSX",sortie,envir=globalenv())
     assign("rep.xlsx",repOut,envir=globalenv())
   }
+  options(warn=1)
 }
 

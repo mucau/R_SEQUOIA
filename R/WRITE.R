@@ -25,7 +25,7 @@ WRITE <- function(sf, repout, nom){
     st_write(sf, dsn=repout, layer =nom, update=TRUE, delete_layer = TRUE,
              driver = "ESRI Shapefile", quiet =T, layer_options = "ENCODING=UTF-8")
   } else {
-    st_write(sf, dsn=repout, layer =nom, append=TRUE, delete_layer = TRUE,
+    st_write(sf, dsn=repout, layer =nom, append=FALSE, delete_layer = TRUE,
              driver = "ESRI Shapefile", quiet =T, layer_options = "ENCODING=UTF-8")
   }
 

@@ -9,7 +9,9 @@ Creation d'un parcellaire cadastral .shp a partir d'une matrice cadastrale .xlsx
 XLSXtoPARCA(rep)
 }
 \arguments{
-\item{rep}{CHARACTER. Adresse du fichier \code{.xlsx}, tableur Excel contenant la matrice cadastrale Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.}
+\item{rep}{Character. Adresse du fichier \code{.xlsx}, tableur Excel contenant la matrice cadastrale. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.}
+
+\item{source_cadastre}{Character. Source du casdastre utilisée. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection de la source.}
 }
 \value{
 \item{PARCA_polygon}{Fichier shapefile ; Parcellaire cadastrale .shp EPSG 2154 pour post-traitement}
@@ -21,7 +23,7 @@ La fonction \code{XLSXtoPARCA} génère deux parcellaires cadastrals au format .
 }
 \examples{
 ### Fonctionnement :
-   XLSXtoPARCA(rep=F)
+   XLSXtoPARCA(rep=F, source_cadastre=F)
 }
 \author{
 Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>

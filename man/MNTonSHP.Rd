@@ -6,14 +6,14 @@
 \title{MNTonSHP
 Recuperation d'un modele numerique de terrain et creation des contours d'elevation}
 \usage{
-MNTonSHP(REP_SHP, NAME, TEMP)
+MNTonSHP(rep, buffer)
 }
 \arguments{
-\item{REP_SHP}{CHARACTER. Adresse du fichier \code{.shp}. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du fichier.}
+\item{rep}{Character. Répertoire du shapefile. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection du shapefile.}
 
-\item{NAME}{CHARACTER. Nom du fichier de sortie sans l'extension.Défault = \code{"TOPO_line"}}
+\item{buffer}{NUMERIC. Valeur du tempon (buffer) pour l'emprise de travail. Défault = \code{200}}
 
-\item{TEMP}{NUMERIC. Valeur du tempon (buffer) pour l'emprise de travail. Défault = \code{200}}
+\item{source_mnt}{Character. Choix de la source. Si \code{FALSE}, la fonction génère une boite de dialogue de sélection.}
 }
 \value{
 \item{MNT.tif}{Fichier raster .tiff ;  MNT enregistré dans le répertoire du fichier}
@@ -26,7 +26,7 @@ Le MNT récupérée peut correspondre à celui proposer sur l'Amazon Web Service
 }
 \examples{
 ### Fonctionnement :
-  TOPO_line <- MNTonSHP(REP_SHP = F, NAME = NULL, TEMP = 50)
+  TOPO_line <- MNTonSHP(rep=F)
 }
 \author{
 Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>

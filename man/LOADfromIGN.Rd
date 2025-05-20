@@ -30,5 +30,6 @@ La fonction télécharge les données depuis le serveur \url{http://files.openda
     LOADfromIGN(rep = F)
 }
 \author{
+Paul CARTERON <\email{carteronpaul@gmail.com}>
 Matthieu CHEVEREAU <\email{matthieuchevereau@yahoo.fr}>
 }

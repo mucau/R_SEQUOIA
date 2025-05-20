@@ -16,7 +16,7 @@ Les fichiers sf suivant sont généré dans l'environnement
 \item{DRIAS_df}{Dataframe des données brut DRIAS} 
 \item{DRIAS_serie}{Dataframe des données pour création de diagramme ombrothermique}
 \item{RIAS_bh}{Dataframe des données pour création de diagramme ETP}
-\item{Periode}{Horizon retenu dans le code}
+\item{periode}{Horizon retenu dans le code}
 
 Les horizons retenus sont les suivants :
 \enumerate{

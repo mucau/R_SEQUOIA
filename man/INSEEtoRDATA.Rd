@@ -12,7 +12,6 @@ INSEEtoRDATA(rep)
 \item{rep}{Répertoire de sortie de l'archive .Rdata. Si \code{NULL}, les données sont justes ajoutées à l'environnement.}
 }
 \value{
-\item{INSEE_POST}{Base officielle des codes postaux}
 \item{INSEE_REGS}{Liste des régions. Codes officiels géographiques au 1er janvier 2018.}
 \item{INSEE_DEPS}{Liste des départements. Codes officiels géographiques au 1er janvier 2018.}
 \item{INSEE_COMS}{Liste des communes. Codes officiels géographiques au 1er janvier 2018.}
