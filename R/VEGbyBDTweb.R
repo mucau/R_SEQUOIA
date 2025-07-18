@@ -59,7 +59,7 @@ VEGbyBDTweb <- function(rep=F){
   TEMPON5 <- BUF2CONV(PARCA, T*4)
   
   # Téléchargement de la donnée
-  invisible(capture.output(suppressMessages(VEG <- get_wfs(TEMPON4,
+  invisible(capture.output(suppressMessages(VEG <- get_wfs(TEMPON4 |> st_transform(4326),
                                                           "BDTOPO_V3:zone_de_vegetation",
                                                           NULL,
                                                           "intersects"))))

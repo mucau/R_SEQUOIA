@@ -64,7 +64,7 @@ HYDRObyBDTweb<- function(rep=F){ # function
   
   ## Lecture fonction
   load <- function(layer_name, type_name, tempon=TEMPON4){
-    invisible(capture.output(suppressMessages(sf <- get_wfs(tempon,
+    invisible(capture.output(suppressMessages(sf <- get_wfs(tempon |> st_transform(4326),
                                                             layer_name,
                                                             NULL,
                                                             "intersects"))))
@@ -106,7 +106,7 @@ HYDRObyBDTweb<- function(rep=F){ # function
   
   ## Lecture fonction
   load <- function(layer_name, type_name,  tempon=TEMPON4){
-    invisible(capture.output(suppressMessages(sf <- get_wfs(tempon,
+    invisible(capture.output(suppressMessages(sf <- get_wfs(tempon |> st_transform(4326),
                                                             layer_name,
                                                             NULL,
                                                             "intersects"))))
@@ -146,7 +146,7 @@ HYDRObyBDTweb<- function(rep=F){ # function
   
   ## Lecture fonction
   load <- function(layer_name, type_name,  tempon=TEMPON4){
-    invisible(capture.output(suppressMessages(sf <- get_wfs(tempon,
+    invisible(capture.output(suppressMessages(sf <- get_wfs(tempon |> st_transform(4326),
                                                             layer_name,
                                                             NULL,
                                                             "intersects"))))

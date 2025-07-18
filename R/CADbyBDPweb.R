@@ -64,7 +64,7 @@ CADbyBDPweb <- function(rep=F){
   }
 
   # Creation de BATICA_polygon
-  suppressMessages(BATICA_polygon <- get_wfs(TEMPON4,
+  suppressMessages(BATICA_polygon <- get_wfs(TEMPON4 |> st_transform(4326),
                                              "BDPARCELLAIRE-VECTEUR_WLD_BDD_WGS84G:batiment",
                                              NULL,
                                              "intersects"))
@@ -75,7 +75,7 @@ CADbyBDPweb <- function(rep=F){
   }
 
   # Creation de PARCELLES_polygon
-  suppressMessages(PARCELLES_polygon <- get_wfs(TEMPON4,
+  suppressMessages(PARCELLES_polygon <- get_wfs(TEMPON4 |> st_transform(4326),
                                                 "BDPARCELLAIRE-VECTEUR_WLD_BDD_WGS84G:parcelle",
                                                 NULL,
                                                 "intersects"))
