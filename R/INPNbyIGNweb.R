@@ -62,7 +62,7 @@ INPNbyIGNweb <- function(shp=F){
     name_data <- substr(data, position_colon + 1, nchar(data))
     name_shp <- paste0(toupper(name_data), "_polygon")
     
-    invisible(capture.output(suppressMessages(sf <-   get_wfs(TEMPON,
+    invisible(capture.output(suppressMessages(sf <-   get_wfs(TEMPON |> st_transform(4326),
                                                               layers_data[a, 1],
                                                               NULL,
                                                               "intersects"))))
