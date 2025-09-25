@@ -162,14 +162,14 @@ HYDRObyBDTweb<- function(rep=F){ # function
   }
 
   ## Hydronyme
-  NOO <- load("BDTOPO_V3:toponymie_hydrographie", "NOO")
-  if(!is.null(NOO)){
-    NOO$NATURE <- ifelse(NOO$classe_de_l_objet == 'Détail hydrographique', NOO$nature_de_l_objet, NOO$TYPE)
-    NOO$NATURE <- ifelse(NOO$classe_de_l_objet != 'Détail hydrographique', NOO$classe_de_l_objet, NOO$TYPE)
-    NOO$NOM <- as.character(NOO$graphie_du_toponyme)
-    NOO <- NOO[,c("TYPE", "NATURE", "NOM", "ROT")]
-    HYDRO_point <- rbind(HYDRO_point, NOO)
-  }
+  # NOO <- load("BDTOPO_V3:toponymie_hydrographie", "NOO")
+  # if(!is.null(NOO)){
+  #   NOO$NATURE <- ifelse(NOO$classe_de_l_objet == 'Détail hydrographique', NOO$nature_de_l_objet, NOO$TYPE)
+  #   NOO$NATURE <- ifelse(NOO$classe_de_l_objet != 'Détail hydrographique', NOO$classe_de_l_objet, NOO$TYPE)
+  #   NOO$NOM <- as.character(NOO$graphie_du_toponyme)
+  #   NOO <- NOO[,c("TYPE", "NATURE", "NOM", "ROT")]
+  #   HYDRO_point <- rbind(HYDRO_point, NOO)
+  # }
   
   ## Détail hydrographique
   MAR <- load("BDTOPO_V3:detail_hydrographique", "MAR")

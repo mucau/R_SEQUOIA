@@ -255,30 +255,13 @@ INFRAbyBDTweb <- function(rep=F){ # function
   }
   
   ## Toponyme bati
-  TOPOBT <- load("BDTOPO_V3:toponymie_bati", "NOM")
-  if(!is.null(TOPOBT)){
-    TOPOBT$NATURE <- as.character(TOPOBT$nature_de_l_objet)
-    TOPOBT$NOM <- as.character(TOPOBT$graphie_du_toponyme)
-    TOPOBT <- TOPOBT[,c("TYPE", "NATURE", "NOM", "ROT")]
-    INFRA_point <- rbind(INFRA_point, TOPOBT)
-  }
-  
-  ## Toponyme lieux
-  TOPOLD <- load("BDTOPO_V3:toponymie_lieux_nommes", "NOM")
-  if(!is.null(TOPOLD)){
-    TOPOLD$NATURE <- as.character(TOPOLD$nature_de_l_objet)
-    TOPOLD$NOM <- as.character(TOPOLD$graphie_du_toponyme)
-    TOPOLD <- TOPOLD[,c("TYPE", "NATURE", "NOM", "ROT")]
-    INFRA_point <- rbind(INFRA_point, TOPOLD)
-  }
-  
-  ## Toponyme transport
-  TOPOTR <- load("BDTOPO_V3:toponymie_transport", "NOM")
-  if(!is.null(TOPOTR)){
-    TOPOTR$NATURE <- as.character(TOPOTR$nature_de_l_objet)
-    TOPOTR$NOM <- as.character(TOPOTR$graphie_du_toponyme)
-    TOPOTR <- TOPOTR[,c("TYPE", "NATURE", "NOM", "ROT")]
-    INFRA_point <- rbind(INFRA_point, TOPOTR)
+  TOPO <- load("BDTOPO_V3:toponymie", "NOM")
+  if(!is.null(TOPO)){
+    TOPO$TYPE <- ifelse(TOPO$classe_de_l_objet %in% c("Détail hydrographique", "Cours d'eau"), "NOO", "NOM")
+    TOPO$NATURE <- as.character(TOPO$nature_de_l_objet)
+    TOPO$NOM <- as.character(TOPO$graphie_du_toponyme)
+    TOPO <- TOPO[,c("TYPE", "NATURE", "NOM", "ROT")]
+    INFRA_point <- rbind(INFRA_point, TOPO)
   }
   
   if(nrow(INFRA_point)>0){

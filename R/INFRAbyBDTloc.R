@@ -198,7 +198,7 @@ INFRAbyBDTloc <- function(rep=F, bdt=F){
   ## Ligne électrique
   LEL <-load("LIGNE_ELECTRIQUE.shp", bdt)
   LEL <- st_intersection(LEL, TEMPON4)
-  if(nrow(ORO)>0){
+  if(nrow(LEL)>0){
     LEL$TYPE <- as.character('LEL')
     LEL$NATURE <- as.character(LEL$VOLTAGE)
     LEL$NOM <- as.character(NA)
