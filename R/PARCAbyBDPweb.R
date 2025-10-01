@@ -49,8 +49,8 @@ PARCAbyBDPweb <- function(x=F){ # function
     insee= as.character(ID_CAD[a])
     invisible(capture.output(suppressMessages(PARCELLE_SF <- get_apicarto_cadastre(insee, type="parcelle", source = "BDP"))))
     
-    if (is_empty(PARCELLE_SF)){
-      cat("        La commune", insee, "n'a pas été téléchargée \n")
+    if (is.null(PARCELLE_SF)){
+      stop("        La commune", insee, "n'a pas été téléchargée \n")
     } else {
       st_crs(PARCELLES_SF) <- st_crs(PARCELLE_SF)
       PARCELLES_SF <- rbind(PARCELLES_SF,PARCELLE_SF)
