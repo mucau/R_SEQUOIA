@@ -207,7 +207,7 @@ INFRAbyBDTweb <- function(rep=F){ # function
     assign("INFRA_line", st_zm(st_transform(INFRA_line,2154)), envir=globalenv())
     cat("        L'object sf INFRA_line a été ajouté à l'environnement \n")
   } else {
-    assign("INFRA_line", INFRA_line, envir=globalenv())
+    assign("INFRA_line", st_transform(INFRA_line, 2154), envir=globalenv())
     message("        BDTOPO : Pas de lignes détectés sur l'emprise \n")
   }
   
