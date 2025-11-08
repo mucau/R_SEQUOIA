@@ -110,18 +110,17 @@ UAtoUA <- function(rep=F) {
   UA$N_SSPARFOR <- as.character(UA$N_SSPARFOR)
   
   ## Fonction pour ajouter des zéros à gauche jusqu'à une longueur donnée
-  pad_left <- function(x, width, pad_char = '0') {
+  pad_left <- function(x, width, pad_char = "0") {
     x <- as.character(x)
-    result <- sapply(x, function(val) {
-      n_pad <- pmax(0, width - nchar(val))
+    sapply(x, function(val) {
+      if (is.na(val) || val == "") return(val)
+      n_pad <- width - nchar(val)
       if (n_pad > 0) {
-        padding <- paste(rep(pad_char, n_pad), collapse = "")
+        paste0(strrep(pad_char, n_pad), val)
       } else {
-        padding <- ""
+        val
       }
-      return(paste0(padding, val))
-    })
-    return(result)
+    }, USE.NAMES = FALSE)
   }
   
   ## Mettre à jour N_PARFOR
