@@ -52,7 +52,7 @@ INPNbyIGNweb <- function(shp=F){
   
   # Récupération des ardresses web
   layers_data <- get_layers_metadata("wfs")[]
-  layers_data <- layers_data[grep("PROTECTEDAREAS", layers_data$Name, ignore.case = TRUE), ]
+  layers_data <- layers_data[grep("patrinat_", layers_data$Name, ignore.case = TRUE), ]
   
   # Intersection
   message('\n        Détection des intersections')
