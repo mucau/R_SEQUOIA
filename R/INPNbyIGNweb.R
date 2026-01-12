@@ -62,11 +62,9 @@ INPNbyIGNweb <- function(shp=F){
     name_data <- substr(data, position_colon + 1, nchar(data))
     name_shp <- paste0(toupper(name_data), "_polygon")
     
-    invisible(capture.output(suppressMessages(sf <-   get_wfs(TEMPON |> st_transform(4326),
-                                                              layers_data[a, 1],
-                                                              NULL,
-                                                              "intersects"))))
-    
+    invisible(capture.output(suppressMessages(sf <- happign::get_wfs(x = TEMPON |> st_transform(4326),
+                                                                     layer = layers_data[a, 1],
+                                                                     predicate = happign::intersects()))))
     if(!is.null(sf)){
       sf <- st_transform(sf, 2154)
       write(sf, repout, name_shp)

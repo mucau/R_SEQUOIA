@@ -67,10 +67,9 @@ INFRAbyBDTweb <- function(rep=F){ # function
   }
   
   # Création du .shp "COMS_polygon"
-  invisible(capture.output(suppressMessages(COMS <- get_wfs(TEMPON5 |> st_transform(4326),
-                                                            "BDTOPO_V3:commune",
-                                                            NULL,
-                                                            "intersects"))))
+  invisible(capture.output(suppressMessages(COMS <- happign::get_wfs(x = TEMPON5 |> st_transform(4326),
+                                                                     layer = "BDTOPO_V3:commune",
+                                                                     predicate = happign::intersects()))))
   if(!is.null(COMS)){
     COMS_polygon <- st_transform(COMS,2154)
     COMS_polygon$NOM <- as.character(COMS_polygon$nom_officiel)
@@ -109,10 +108,9 @@ INFRAbyBDTweb <- function(rep=F){ # function
   
   ## Lecture fonction
   load <- function(layer_name, type_name, tempon=TEMPON4){
-    invisible(capture.output(suppressMessages(sf <- get_wfs(tempon |> st_transform(4326),
-                                                            layer_name,
-                                                            NULL,
-                                                            "intersects"))))
+    invisible(capture.output(suppressMessages(sf <- happign::get_wfs(x = tempon |> st_transform(4326),
+                                                                     layer = "BDTOPO_V3:commune",
+                                                                     predicate = happign::intersects()))))
     if(!is.null(sf)){
       sf$TYPE <- as.character(type_name)
       sf$NATURE <- as.character(sf$nature)
@@ -156,10 +154,9 @@ INFRAbyBDTweb <- function(rep=F){ # function
   
   ## Lecture fonction
   load <- function(layer_name, type_name,  tempon=TEMPON4){
-    invisible(capture.output(suppressMessages(sf <- get_wfs(tempon |> st_transform(4326),
-                                                            layer_name,
-                                                            NULL,
-                                                            "intersects"))))
+    invisible(capture.output(suppressMessages(sf <- happign::get_wfs(x = tempon |> st_transform(4326),
+                                                                     layer = "BDTOPO_V3:commune",
+                                                                     predicate = happign::intersects()))))
     if(!is.null(sf)){
       sf$TYPE <- as.character(type_name)
       sf$NATURE <- as.character(NA)
@@ -220,10 +217,9 @@ INFRAbyBDTweb <- function(rep=F){ # function
   
   ## Lecture fonction
   load <- function(layer_name, type_name,  tempon=TEMPON4){
-    invisible(capture.output(suppressMessages(sf <- get_wfs(tempon |> st_transform(4326),
-                                                            layer_name,
-                                                            NULL,
-                                                            "intersects"))))
+    invisible(capture.output(suppressMessages(sf <- happign::get_wfs(x = tempon |> st_transform(4326),
+                                                                     layer = "BDTOPO_V3:commune",
+                                                                     predicate = happign::intersects()))))
     if(!is.null(sf)){
       sf$TYPE <- as.character(type_name)
       sf$NATURE <- as.character(NA)
@@ -273,10 +269,9 @@ INFRAbyBDTweb <- function(rep=F){ # function
   }
   
   # Création de ROAD_line
-  invisible(capture.output(suppressMessages(ROAD <- get_wfs(TEMPON4 |> st_transform(4326),
-                                     "BDTOPO_V3:troncon_de_route",
-                                     NULL,
-                                     "intersects"))))
+  invisible(capture.output(suppressMessages(ROAD <- happign::get_wfs(x = TEMPON4 |> st_transform(4326),
+                                                                     layer = "BDTOPO_V3:troncon_de_route",
+                                                                     predicate = happign::intersects()))))
   
   if(!is.null(ROAD)){
     ROAD$NATURE <- as.character(ROAD$nature)

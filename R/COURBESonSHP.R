@@ -87,9 +87,9 @@ COURBESonSHP <- function(rep=F, source_courbes=F){ # Function
   if ("1 web IGN© Courbes®" %in% source_courbes){
     layers_data <- get_layers_metadata("wfs")
   
-    invisible(capture.output(suppressMessages(courbes_export <- get_wfs(TEMPON1, 
-                                                                        "ELEVATION.CONTOUR.LINE:courbe",
-                                                                        spatial_filter = "intersects") |> st_intersection(st_transform(TEMPON1,4326)))))
+    invisible(capture.output(suppressMessages(courbes_export <- happign::get_wfs(x = TEMPON1,
+                                                                                 layer = "ELEVATION.CONTOUR.LINE:courbe",
+                                                                                 predicate = happign::intersects()))))
     if (nrow(courbes_export)>0){
       courbes_export <- st_transform(courbes_export, 2154)
     }

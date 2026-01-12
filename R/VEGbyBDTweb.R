@@ -59,10 +59,9 @@ VEGbyBDTweb <- function(rep=F){
   TEMPON5 <- BUF2CONV(PARCA, T*4)
   
   # Téléchargement de la donnée
-  invisible(capture.output(suppressMessages(VEG <- get_wfs(TEMPON4 |> st_transform(4326),
-                                                          "BDTOPO_V3:zone_de_vegetation",
-                                                          NULL,
-                                                          "intersects"))))
+  invisible(capture.output(suppressMessages(VEG <- happign::get_wfs(x = TEMPON4 |> st_transform(4326),
+                                                                    layer = "BDTOPO_V3:zone_de_vegetation",
+                                                                    predicate = happign::intersects()))))
   VEG <- st_make_valid(st_zm(st_transform(VEG, 2154)))
 
   # Difference

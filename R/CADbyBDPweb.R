@@ -64,21 +64,18 @@ CADbyBDPweb <- function(rep=F){
   }
 
   # Creation de BATICA_polygon
-  suppressMessages(BATICA_polygon <- get_wfs(TEMPON4 |> st_transform(4326),
-                                             "BDPARCELLAIRE-VECTEUR_WLD_BDD_WGS84G:batiment",
-                                             NULL,
-                                             "intersects"))
-  
+  suppressMessages(BATICA_polygon <- happign::get_wfs(x = TEMPON4 |> st_transform(4326),
+                                                      layer = "BDPARCELLAIRE-VECTEUR_WLD_BDD_WGS84G:batiment",
+                                                      predicate = happign::intersects()))
   if(!is.null(BATICA_polygon)){
     BATICA_polygon <- st_sf(st_intersection(st_transform(BATICA_polygon, 2154), TEMPON1), agr="constant")
     write(BATICA_polygon, repout2)
   }
 
   # Creation de PARCELLES_polygon
-  suppressMessages(PARCELLES_polygon <- get_wfs(TEMPON4 |> st_transform(4326),
-                                                "BDPARCELLAIRE-VECTEUR_WLD_BDD_WGS84G:parcelle",
-                                                NULL,
-                                                "intersects"))
+  suppressMessages(PARCELLES_polygon <- happign::get_wfs(x = TEMPON4 |> st_transform(4326),
+                                                         layer = "BDPARCELLAIRE-VECTEUR_WLD_BDD_WGS84G:parcelle",
+                                                         predicate = happign::intersects()))
   
   if(!is.null(PARCELLES_polygon)){
     PARCELLES_polygon <- st_collection_extract(st_intersection(st_make_valid(st_transform(PARCELLES_polygon,2154), TEMPON4), agr="constant"), "POLYGON")[,2:9]
