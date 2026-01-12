@@ -109,7 +109,7 @@ INFRAbyBDTweb <- function(rep=F){ # function
   ## Lecture fonction
   load <- function(layer_name, type_name, tempon=TEMPON4){
     invisible(capture.output(suppressMessages(sf <- happign::get_wfs(x = tempon |> st_transform(4326),
-                                                                     layer = "BDTOPO_V3:commune",
+                                                                     layer = layer_name,
                                                                      predicate = happign::intersects()))))
     if(!is.null(sf)){
       sf$TYPE <- as.character(type_name)
@@ -155,7 +155,7 @@ INFRAbyBDTweb <- function(rep=F){ # function
   ## Lecture fonction
   load <- function(layer_name, type_name,  tempon=TEMPON4){
     invisible(capture.output(suppressMessages(sf <- happign::get_wfs(x = tempon |> st_transform(4326),
-                                                                     layer = "BDTOPO_V3:commune",
+                                                                     layer = layer_name,
                                                                      predicate = happign::intersects()))))
     if(!is.null(sf)){
       sf$TYPE <- as.character(type_name)
@@ -218,7 +218,7 @@ INFRAbyBDTweb <- function(rep=F){ # function
   ## Lecture fonction
   load <- function(layer_name, type_name,  tempon=TEMPON4){
     invisible(capture.output(suppressMessages(sf <- happign::get_wfs(x = tempon |> st_transform(4326),
-                                                                     layer = "BDTOPO_V3:commune",
+                                                                     layer = layer_name,
                                                                      predicate = happign::intersects()))))
     if(!is.null(sf)){
       sf$TYPE <- as.character(type_name)
