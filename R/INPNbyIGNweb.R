@@ -65,7 +65,7 @@ INPNbyIGNweb <- function(shp=F){
     invisible(capture.output(suppressMessages(sf <- happign::get_wfs(x = TEMPON |> st_transform(4326),
                                                                      layer = layers_data[a, 1],
                                                                      predicate = happign::intersects()))))
-    if(!is.null(sf)){
+    if(!is.null(sf) & nrow(sf)>0){
       sf <- st_transform(sf, 2154)
       write(sf, repout, name_shp)
     } else {
